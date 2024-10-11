@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    ports:
+      - "3004:3000"
+
+  api:
+    build: ./api
+    volumes:
+      - ./api:/app/api
+    ports:
+      - "8084:8080"
+    depends_on:
+      - mysql
+
+  data-analysis:
+    build: ./data-analysis
+    volumes:
+      - ./data-analysis:/app/data-analysis
+    ports:
+      - "5004:5000"
+    depends_on:
+      - mysql
+    environment:
+      - FLASK_PORT=
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: 
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: 
+    ports:
+      - "84:80"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
