@@ -24,72 +24,72 @@ Write-Output "Root path is: $rootPath"
 cd $rootPath
 
 # プロジェクトのルートディレクトリを作成
-New-Item -ItemType Directory -Path frontend -Force
+# New-Item -ItemType Directory -Path frontend -Force
 New-Item -ItemType Directory -Path api -Force
-New-Item -ItemType Directory -Path data-analysis -Force
+# New-Item -ItemType Directory -Path data-analysis -Force
 
-# frontendディレクトリのDockerfileを作成
-$frontendDockerfile = @'
-FROM node:18
-WORKDIR /app/frontend
-COPY package.json package-lock.json ./ 
-RUN npm install
-COPY . . 
-EXPOSE 3000 
-CMD ["npm", "start"]
-'@
+# # frontendディレクトリのDockerfileを作成
+# $frontendDockerfile = @'
+# FROM node:18
+# WORKDIR /app/frontend
+# COPY package.json package-lock.json ./ 
+# RUN npm install -g create-react-app
+# COPY . . 
+# EXPOSE 3000 
+# CMD ["npm", "start"]
+# '@
 
-New-Item -ItemType File -Path frontend\Dockerfile -Value $frontendDockerfile -Force
-Write-Output "Dockerfile for frontend has been created."
+# New-Item -ItemType File -Path frontend\Dockerfile -Value $frontendDockerfile -Force
+# Write-Output "Dockerfile for frontend has been created."
 
-# frontendディレクトリのpackage.jsonを作成
-$frontendPackageJson = @'
-{
-  "name": "frontend",
-  "version": "1.0.0",
-  "main": "index.js",
-  "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "typescript": "^4.1.3"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
-}
-'@
+# # frontendディレクトリのpackage.jsonを作成
+# $frontendPackageJson = @'
+# {
+#   "name": "frontend",
+#   "version": "1.0.0",
+#   "main": "index.js",
+#   "dependencies": {
+#     "react": "^17.0.2",
+#     "react-dom": "^17.0.2",
+#     "react-scripts": "4.0.3",
+#     "typescript": "^4.1.3"
+#   },
+#   "scripts": {
+#     "start": "react-scripts start",
+#     "build": "react-scripts build",
+#     "test": "react-scripts test",
+#     "eject": "react-scripts eject"
+#   },
+#   "eslintConfig": {
+#     "extends": [
+#       "react-app",
+#       "react-app/jest"
+#     ]
+#   },
+#   "browserslist": {
+#     "production": [
+#       ">0.2%",
+#       "not dead",
+#       "not op_mini all"
+#     ],
+#     "development": [
+#       "last 1 chrome version",
+#       "last 1 firefox version",
+#       "last 1 safari version"
+#     ]
+#   }
+# }
+# '@
 
-New-Item -ItemType File -Path frontend\package.json -Value $frontendPackageJson -Force
-Write-Output "package.json for frontend has been created."
+# New-Item -ItemType File -Path frontend\package.json -Value $frontendPackageJson -Force
+# Write-Output "package.json for frontend has been created."
 
-# package-lock.jsonがない場合は生成する
-if (-Not (Test-Path frontend\package-lock.json)) {
-    cd frontend
-    npm install
-    cd .. 
-}
+# # package-lock.jsonがない場合は生成する
+# if (-Not (Test-Path frontend\package-lock.json)) {
+#     cd frontend
+#     npm install
+#     cd .. 
+# }
 
 # apiディレクトリのDockerfileを作成
 $apiDockerfile = @'
@@ -158,66 +158,58 @@ if (-Not (Test-Path api\go.sum)) {
     cd .. 
 }
 
-# data-analysisディレクトリのDockerfileを作成
-$dataAnalysisDockerfile = @'
-FROM python:3.11
-WORKDIR /app/data-analysis
-COPY requirements.txt ./ 
-RUN pip install --no-cache-dir -r requirements.txt 
-COPY . . 
-EXPOSE 5000 
-CMD ["flask", "run", "--host=0.0.0.0", "--reload"]
-'@
+# # data-analysisディレクトリのDockerfileを作成
+# $dataAnalysisDockerfile = @'
+# FROM python:3.11
+# WORKDIR /app/data-analysis
+# COPY requirements.txt ./ 
+# RUN pip install --no-cache-dir -r requirements.txt 
+# COPY . . 
+# EXPOSE 5000 
+# CMD ["flask", "run", "--host=0.0.0.0", "--reload"]
+# '@
 
-New-Item -ItemType File -Path data-analysis\Dockerfile -Value $dataAnalysisDockerfile -Force
-Write-Output "Dockerfile for data-analysis has been created."
+# New-Item -ItemType File -Path data-analysis\Dockerfile -Value $dataAnalysisDockerfile -Force
+# Write-Output "Dockerfile for data-analysis has been created."
 
-# data-analysisディレクトリのrequirements.txtを作成
-$requirementsTxt = @'
-yfinance
-pandas
-numpy
-flask
-'@
+# # data-analysisディレクトリのrequirements.txtを作成
+# $requirementsTxt = @'
+# yfinance
+# pandas
+# numpy
+# flask
+# '@
 
-New-Item -ItemType File -Path data-analysis\requirements.txt -Value $requirementsTxt -Force
-Write-Output "requirements.txt for data-analysis has been created."
+# New-Item -ItemType File -Path data-analysis\requirements.txt -Value $requirementsTxt -Force
+# Write-Output "requirements.txt for data-analysis has been created."
 
-# Flask アプリケーションの main.pyファイルを作成
-$dataAnalysisMainPy = @'
-from flask import Flask, jsonify
-import yfinance as yf
-import pandas as pd
+# # Flask アプリケーションの main.pyファイルを作成
+# $dataAnalysisMainPy = @'
+# from flask import Flask, jsonify
+# import yfinance as yf
+# import pandas as pd
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
-@app.route('/stocks/<ticker>', methods=['GET'])
-def get_stock_data(ticker):
-    stock = yf.Ticker(ticker)
-    hist = stock.history(period="1mo")
-    data = hist[['Open', 'High', 'Low', 'Close']].to_dict(orient="index")
-    return jsonify(data)
+# @app.route('/stocks/<ticker>', methods=['GET'])
+# def get_stock_data(ticker):
+#     stock = yf.Ticker(ticker)
+#     hist = stock.history(period="1mo")
+#     data = hist[['Open', 'High', 'Low', 'Close']].to_dict(orient="index")
+#     return jsonify(data)
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
-'@
+# if __name__ == "__main__":
+#     app.run(debug=True, host="0.0.0.0", port=5000)
+# '@
 
-New-Item -ItemType File -Path data-analysis\main.py -Value $dataAnalysisMainPy -Force
-Write-Output "main.py for data-analysis has been created."
+# New-Item -ItemType File -Path data-analysis\main.py -Value $dataAnalysisMainPy -Force
+# Write-Output "main.py for data-analysis has been created."
 
 # プロジェクトルートにdocker-compose.yamlを作成
 $dockerComposeYaml = @'
 version: '3.8'
+
 services:
-  frontend:
-    build: ./frontend
-    volumes:
-      - ./frontend:/app/frontend
-      - /app/frontend/node_modules
-    ports:
-      - "3004:3000"
-    depends_on:
-      - mysql
 
   api:
     build: ./api
@@ -228,14 +220,7 @@ services:
     depends_on:
       - mysql
 
-  data-analysis:
-    build: ./data-analysis
-    volumes:
-      - ./data-analysis:/app/data-analysis
-    ports:
-      - "5004:5000"
-    depends_on:
-      - mysql
+  
 
   mysql:
     image: mysql:8
@@ -268,17 +253,17 @@ $dockerComposePath = "$rootPath\docker-compose.yml"
 New-Item -ItemType File -Path $dockerComposePath -Value $dockerComposeYaml -Force
 Write-Output "docker-compose.yml has been created."
 
-# data-analysisディレクトリで仮想環境を作成
-cd data-analysis
-python -m venv venv
-Write-Output "Virtual environment has been created in data-analysis."
+# # data-analysisディレクトリで仮想環境を作成
+# cd data-analysis
+# python -m venv venv
+# Write-Output "Virtual environment has been created in data-analysis."
 
-# 仮想環境をアクティブにする
-& .\venv\Scripts\Activate
+# # 仮想環境をアクティブにする
+# & .\venv\Scripts\Activate
 
-# requirements.txtに基づいてパッケージをインストール
-pip install -r requirements.txt
-Write-Output "Packages have been installed in the virtual environment."
+# # requirements.txtに基づいてパッケージをインストール
+# pip install -r requirements.txt
+# Write-Output "Packages have been installed in the virtual environment."
 
 # 終了メッセージ
 Write-Output "Project structure has been created."
