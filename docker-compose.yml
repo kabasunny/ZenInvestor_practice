@@ -1,14 +1,6 @@
 version: '3.8'
+
 services:
-  frontend:
-    build: ./frontend
-    volumes:
-      - ./frontend:/app/frontend
-      - /app/frontend/node_modules
-    ports:
-      - "3004:3000"
-    depends_on:
-      - mysql
 
   api:
     build: ./api
@@ -19,14 +11,7 @@ services:
     depends_on:
       - mysql
 
-  data-analysis:
-    build: ./data-analysis
-    volumes:
-      - ./data-analysis:/app/data-analysis
-    ports:
-      - "5004:5000"
-    depends_on:
-      - mysql
+  
 
   mysql:
     image: mysql:8

@@ -20,5 +20,6 @@ func main() {
     if err != nil {
         panic("failed to connect database")
     }
-    db.AutoMigrate(&User{})
+    
+    db.AutoMigrate(&User{}) 
 }
