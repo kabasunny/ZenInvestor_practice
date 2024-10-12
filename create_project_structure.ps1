@@ -23,25 +23,27 @@ Write-Output "Root path is: $rootPath"
 # プロジェクトディレクトリへ移動
 cd $rootPath
 
-
 # プロジェクトのルートディレクトリを作成
-New-Item -ItemType Directory -Path frontend
-New-Item -ItemType Directory -Path api
-New-Item -ItemType Directory -Path data-analysis
+New-Item -ItemType Directory -Path frontend -Force
+New-Item -ItemType Directory -Path api -Force
+New-Item -ItemType Directory -Path data-analysis -Force
 
-# frontendディレクトリのファイルを作成
-$frontendDockerfile = @"
+# frontendディレクトリのDockerfileを作成
+$frontendDockerfile = @'
 FROM node:18
 WORKDIR /app/frontend
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./ 
 RUN npm install
-COPY . .
-EXPOSE 3000
+COPY . . 
+EXPOSE 3000 
 CMD ["npm", "start"]
-"@
-New-Item -ItemType File -Path frontend\Dockerfile -Value $frontendDockerfile
+'@
 
-$frontendPackageJson = @"
+New-Item -ItemType File -Path frontend\Dockerfile -Value $frontendDockerfile -Force
+Write-Output "Dockerfile for frontend has been created."
+
+# frontendディレクトリのpackage.jsonを作成
+$frontendPackageJson = @'
 {
   "name": "frontend",
   "version": "1.0.0",
@@ -77,24 +79,36 @@ $frontendPackageJson = @"
     ]
   }
 }
-"@
-New-Item -ItemType File -Path frontend\package.json -Value $frontendPackageJson
+'@
 
-# apiディレクトリのファイルを作成
-$apiDockerfile = @"
-FROM golang:1.20
+New-Item -ItemType File -Path frontend\package.json -Value $frontendPackageJson -Force
+Write-Output "package.json for frontend has been created."
+
+# package-lock.jsonがない場合は生成する
+if (-Not (Test-Path frontend\package-lock.json)) {
+    cd frontend
+    npm install
+    cd .. 
+}
+
+# apiディレクトリのDockerfileを作成
+$apiDockerfile = @'
+FROM golang:1.23
 WORKDIR /app/api
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-COPY . .
-RUN go install github.com/cosmtrek/air@latest
-EXPOSE 8080
+COPY go.mod ./ 
+COPY go.sum ./ 
+RUN go mod download 
+COPY . . 
+RUN go install github.com/air-verse/air@latest 
+EXPOSE 8080 
 CMD ["air"]
-"@
-New-Item -ItemType File -Path api\Dockerfile -Value $apiDockerfile
+'@
 
-$apiMainGo = @"
+New-Item -ItemType File -Path api\Dockerfile -Value $apiDockerfile -Force
+Write-Output "Dockerfile for API has been created."
+
+# apiディレクトリのmain.goを作成
+$apiMainGo = @'
 package main
 
 import (
@@ -112,38 +126,65 @@ type User struct {
 }
 
 func main() {
-    dsn := "user:password@tcp(127.0.0.1:3306)/mydb?charset=utf8mb4&parseTime=True&loc=Local"
+    dsn := "user:password@tcp(mysql:3306)/mydb?charset=utf8mb4&parseTime=True&loc=Local"
     db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
     if err != nil {
         panic("failed to connect database")
     }
     db.AutoMigrate(&User{})
 }
-"@
-New-Item -ItemType File -Path api\main.go -Value $apiMainGo
+'@
 
-# data-analysisディレクトリのファイルを作成
-$dataAnalysisDockerfile = @"
+New-Item -ItemType File -Path api\main.go -Value $apiMainGo -Force
+Write-Output "main.go for API has been created."
+
+# go.modとgo.sumの存在を確認し、存在しない場合は作成
+if (-Not (Test-Path api\go.mod)) {
+    cd api
+    go mod init api
+    
+    # 必要な依存関係を追加
+    go get gorm.io/gorm
+    go get gorm.io/driver/mysql
+    
+    go mod tidy
+    cd .. 
+}
+
+# go.sumが存在しない場合は作成
+if (-Not (Test-Path api\go.sum)) {
+    cd api
+    go mod tidy
+    cd .. 
+}
+
+# data-analysisディレクトリのDockerfileを作成
+$dataAnalysisDockerfile = @'
 FROM python:3.11
 WORKDIR /app/data-analysis
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-EXPOSE 5000
+COPY requirements.txt ./ 
+RUN pip install --no-cache-dir -r requirements.txt 
+COPY . . 
+EXPOSE 5000 
 CMD ["flask", "run", "--host=0.0.0.0", "--reload"]
-"@
-New-Item -ItemType File -Path data-analysis\Dockerfile -Value $dataAnalysisDockerfile
+'@
 
-$requirementsTxt = @"
+New-Item -ItemType File -Path data-analysis\Dockerfile -Value $dataAnalysisDockerfile -Force
+Write-Output "Dockerfile for data-analysis has been created."
+
+# data-analysisディレクトリのrequirements.txtを作成
+$requirementsTxt = @'
 yfinance
 pandas
 numpy
 flask
-"@
-New-Item -ItemType File -Path data-analysis\requirements.txt -Value $requirementsTxt
+'@
 
-# Flask アプリケーションの main ファイルを作成
-$dataAnalysisMainPy = @"
+New-Item -ItemType File -Path data-analysis\requirements.txt -Value $requirementsTxt -Force
+Write-Output "requirements.txt for data-analysis has been created."
+
+# Flask アプリケーションの main.pyファイルを作成
+$dataAnalysisMainPy = @'
 from flask import Flask, jsonify
 import yfinance as yf
 import pandas as pd
@@ -154,16 +195,18 @@ app = Flask(__name__)
 def get_stock_data(ticker):
     stock = yf.Ticker(ticker)
     hist = stock.history(period="1mo")
-    data = hist[['Open', 'High', 'Low', 'Close']].to_dict(orient='index')
+    data = hist[['Open', 'High', 'Low', 'Close']].to_dict(orient="index")
     return jsonify(data)
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
-"@
-New-Item -ItemType File -Path data-analysis\main.py -Value $dataAnalysisMainPy
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
+'@
 
-# プロジェクトルートに docker-compose.yaml を作成
-$dockerComposeYaml = @"
+New-Item -ItemType File -Path data-analysis\main.py -Value $dataAnalysisMainPy -Force
+Write-Output "main.py for data-analysis has been created."
+
+# プロジェクトルートにdocker-compose.yamlを作成
+$dockerComposeYaml = @'
 version: '3.8'
 services:
   frontend:
@@ -173,6 +216,8 @@ services:
       - /app/frontend/node_modules
     ports:
       - "3004:3000"
+    depends_on:
+      - mysql
 
   api:
     build: ./api
@@ -191,8 +236,6 @@ services:
       - "5004:5000"
     depends_on:
       - mysql
-    environment:
-      - FLASK_PORT=${FLASK_PORT}
 
   mysql:
     image: mysql:8
@@ -218,14 +261,32 @@ services:
 
 volumes:
   mysql_data:
+'@
 
-"@
-
-# ファイルのパス
+# docker-compose.yamlを作成
 $dockerComposePath = "$rootPath\docker-compose.yml"
+New-Item -ItemType File -Path $dockerComposePath -Value $dockerComposeYaml -Force
+Write-Output "docker-compose.yml has been created."
 
-# docker-compose.yaml を作成
-New-Item -ItemType File -Path $dockerComposePath -Value $dockerComposeYaml
+# data-analysisディレクトリで仮想環境を作成
+cd data-analysis
+python -m venv venv
+Write-Output "Virtual environment has been created in data-analysis."
 
-Write-Output "docker-compose.yml has been created at $dockerComposePath"
+# 仮想環境をアクティブにする
+& .\venv\Scripts\Activate
 
+# requirements.txtに基づいてパッケージをインストール
+pip install -r requirements.txt
+Write-Output "Packages have been installed in the virtual environment."
+
+# 終了メッセージ
+Write-Output "Project structure has been created."
+
+# スクリプトを実行
+# PowerShell スクリプトの実行を確認
+try {
+    & $PSCommandPath
+} catch {
+    Write-Error "Error occurred while executing the script: $_"
+}

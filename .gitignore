@@ -1,2 +1,9 @@
 
 .env
+
+./frontend/package-lock.json
+./frontend/package.json
+
+./data-analysis/venv
+
+./api/tmp

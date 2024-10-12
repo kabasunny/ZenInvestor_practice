@@ -7,6 +7,8 @@ services:
       - /app/frontend/node_modules
     ports:
       - "3004:3000"
+    depends_on:
+      - mysql
 
   api:
     build: ./api
@@ -25,16 +27,14 @@ services:
       - "5004:5000"
     depends_on:
       - mysql
-    environment:
-      - FLASK_PORT=
 
   mysql:
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: 
-      MYSQL_DATABASE: 
-      MYSQL_USER: 
-      MYSQL_PASSWORD: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -44,7 +44,7 @@ services:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "84:80"
     depends_on:

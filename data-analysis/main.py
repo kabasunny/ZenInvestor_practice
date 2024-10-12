@@ -8,8 +8,8 @@ app = Flask(__name__)
 def get_stock_data(ticker):
     stock = yf.Ticker(ticker)
     hist = stock.history(period="1mo")
-    data = hist[['Open', 'High', 'Low', 'Close']].to_dict(orient='index')
+    data = hist[['Open', 'High', 'Low', 'Close']].to_dict(orient="index")
     return jsonify(data)
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
