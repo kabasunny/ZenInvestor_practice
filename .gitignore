@@ -1,9 +1,15 @@
-
+# 環境変数ファイル
 .env
 
-./frontend/package-lock.json
-./frontend/package.json
+# フロントエンドのパッケージファイル
+/frontend/package-lock.json
+/frontend/package.json
 
-./data-analysis/venv
+# 仮想環境のフォルダ
+/data-analysis/venv
 
-./api/tmp
+# 一時ファイル
+/api/tmp
+
+# ノードモジュール
+/frontend/node_modules/
