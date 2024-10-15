@@ -1,32 +1,17 @@
 version: '3.8'
 services:
-  frontend:
-    build: ./frontend
-    volumes:
-      - ./frontend:/app/frontend
-      - /app/frontend/node_modules
-    ports:
-      - "3004:3000"
-
   api:
     build: ./api
-    volumes:
-      - ./api:/app/api
     ports:
       - "8084:8080"
-    depends_on:
-      - mysql
-
-  data-analysis:
-    build: ./data-analysis
-    volumes:
-      - ./data-analysis:/app/data-analysis
-    ports:
-      - "5004:5000"
-    depends_on:
-      - mysql
     environment:
-      - FLASK_PORT=
+      MYSQL_HOST: 
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+      MYSQL_DB: 
+    depends_on:
+      - mysql
+    tty: true
 
   mysql:
     image: mysql:8
