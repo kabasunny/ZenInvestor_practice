@@ -1,69 +1,38 @@
-﻿version: "3.8"
-
+version: '3.8'
 services:
-  # Frontend service
-  frontend:
-    build: ./frontend
-    ports:
-      - "3006:3000"
-    volumes:
-      - ./frontend:/usr/src/app
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    stdin_open: true
-    tty: true
-
-  # API service
   api:
     build: ./api
     ports:
-      - "8086:8080"
-    volumes:
-      - ./api:/go/src/app
+      - "8084:8080"
     environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      MYSQL_HOST: mysql
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+      MYSQL_DB: 
     depends_on:
       - mysql
 
-  # Data Analysis service
-  data-analysis:
-    build: ./data-analysis
-    ports:
-      - "5006:5000"
-    volumes:
-      - ./data-analysis:/usr/src/app
-    environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
-
-  # MySQL database
   mysql:
-    image: mysql:latest
-    restart: always
+    image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: 
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
     ports:
       - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
 
-  # phpMyAdmin service
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - "86:80"
     environment:
       PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: 
+    ports:
+      - "84:80"
     depends_on:
       - mysql
 
 volumes:
-  db_data:
+  mysql_data:

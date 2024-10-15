@@ -1,22 +1,22 @@
-﻿# Dockerfile for API
-FROM golang:1.21-alpine
+# Dockerfile
+FROM golang:1.23
 
-WORKDIR /go/src/app
+WORKDIR /app/api
 
-# Install Air
-RUN go install github.com/cosmtrek/air@latest
-
-# Copy Go modules and download dependencies
 COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 
-# Copy application source code
-COPY . .
+# srcチE��レクトリを正しい場所にコピ�E
+COPY src/ ./
 
-# Copy Air config file if necessary
-# COPY .air.toml .
+# golang と air のインスト�Eル
+RUN apt-get update && apt-get install -y golang-go
+RUN go install github.com/air-verse/air@v1.61.0
+
+ENV PATH="/go/bin:/usr/local/go/bin:"
 
 EXPOSE 8080
-
 CMD ["air"]
+
+
