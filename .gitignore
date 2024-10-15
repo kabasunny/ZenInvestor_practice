@@ -1,2 +1,15 @@
+﻿# Node modules
+/frontend/node_modules
 
-.env
+# Python cache
+/data-analysis/__pycache__/
+/data-analysis/*.pyc
+
+# Go binary
+/api/*.exe
+/api/air
+
+# Docker
+**/Dockerfile
+docker-compose.yml
+

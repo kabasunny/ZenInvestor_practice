@@ -1,18 +1,22 @@
-FROM golang:1.23
+﻿# Dockerfile for API
+FROM golang:1.21-alpine
 
-WORKDIR /app/api
+WORKDIR /go/src/app
 
+# Install Air
+RUN go install github.com/cosmtrek/air@latest
+
+# Copy Go modules and download dependencies
 COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 
+# Copy application source code
 COPY . .
 
-# air縺ｮ繧､繝ｳ繧ｹ繝医・繝ｫ縺ｨPATH縺ｫ霑ｽ蜉
-RUN go install github.com/air-verse/air@latest
-
-# PATH繧定ｨｭ螳壹☆繧九◆繧√↓CMD繧堤峩謗･螳溯｡・
-ENV PATH="/root/go/bin:"
+# Copy Air config file if necessary
+# COPY .air.toml .
 
 EXPOSE 8080
+
 CMD ["air"]
