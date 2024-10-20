@@ -9,8 +9,6 @@ __pycache__/
 venv/
 
 # Go
-go.mod
-go.sum
 tmp/
 
 # Docker
