@@ -5,12 +5,12 @@ Function CreateDirectoryStructure {
     $directories = @(
         "src",
         "src/components",
-        "src/components/LoginForm",
         "src/pages",
         "src/hooks",
         "src/services",
         "src/utils",
-        "src/types"
+        "src/types",
+        "src/context"
     )
     
     foreach ($dir in $directories) {
