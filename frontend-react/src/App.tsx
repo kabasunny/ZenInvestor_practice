@@ -6,7 +6,7 @@ import MarketInsights from './pages/MarketInsights';
 import Portfolio from './pages/Portfolio';
 import Education from './pages/Education';
 import LoginForm from './components/LoginForm';
-import { AuthProvider } from './context/AuthContext'; // AuthProvider をインポート
+// import { AuthProvider } from './context/AuthContext'; // AuthProvider をインポート
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -49,9 +49,9 @@ const App: React.FC = () => {
           <Footer />
         </>
       ) : ( // 未ログインの場合
-        <AuthProvider> {/* LoginForm を AuthProvider でラップ */}
-        <LoginForm onLogin={handleLogin} />
-      </AuthProvider>
+        <div className="flex items-center justify-center min-h-screen">
+          <LoginForm onLogin={handleLogin} /> {/* onLogin プロパティを渡す */}
+        </div>
       )}
     </div>
   );
