@@ -1,13 +1,13 @@
-// App.tsx (修正後)
-import React, { useRef, useEffect } from "react";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Dashboard from "./pages/Dashboard";
-import MarketInsights from "./pages/MarketInsights";
-import Portfolio from "./pages/Portfolio";
-import Education from "./pages/Education";
-import LoginForm from "./components/LoginForm";
-import { useAuth } from "./context/AuthContext"; // useAuth をインポート
+import React, { useState, useRef } from 'react';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Dashboard from './pages/Dashboard';
+import MarketInsights from './pages/MarketInsights';
+import Portfolio from './pages/Portfolio';
+import Education from './pages/Education';
+import LoginForm from './components/LoginForm';
+// import { AuthProvider } from './context/AuthContext'; // AuthProvider をインポート
+
 
 const App: React.FC = () => {
   const { isLoggedIn, login, logout } = useAuth(); // useAuth()を使ってログイン状態を取得 index.tsx内でAppをAuthProviderでラップしているため使用可能
@@ -52,10 +52,10 @@ const App: React.FC = () => {
           </main>
           <Footer />
         </>
-      ) : (
-        // 未ログインの場合
+      ) : ( // 未ログインの場合
         <div className="flex items-center justify-center min-h-screen">
-          <LoginForm onLogin={login} /> {/* onLogin プロパティを渡す */}
+          <LoginForm onLogin={handleLogin} /> {/* onLogin プロパティを渡す */}
+
         </div>
       )}
     </div>
