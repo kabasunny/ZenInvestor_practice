@@ -10,7 +10,8 @@ import LoginForm from './components/LoginForm';
 
 
 const App: React.FC = () => {
-  const { isLoggedIn, login, logout } = useAuth(); // useAuth()を使ってログイン状態を取得 index.tsx内でAppをAuthProviderでラップしているため使用可能
+  // const { isLoggedIn, login, logout } = useAuth(); // useAuth()を使ってログイン状態を取得 index.tsx内でAppをAuthProviderでラップしているため使用可能
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dashboardRef = useRef<HTMLDivElement>(null);
   const marketInsightsRef = useRef<HTMLDivElement>(null);
   const portfolioRef = useRef<HTMLDivElement>(null);
@@ -20,9 +21,13 @@ const App: React.FC = () => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    console.log("isLoggedIn が更新されました:", isLoggedIn);
-  }, [isLoggedIn]);
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -33,7 +38,7 @@ const App: React.FC = () => {
             onMarketInsightsClick={() => scrollToRef(marketInsightsRef)}
             onPortfolioClick={() => scrollToRef(portfolioRef)}
             onEducationClick={() => scrollToRef(educationRef)}
-            onLogout={logout}
+            onLogout={handleLogout}
             isLoggedIn={isLoggedIn}
           />
           <main className="flex-grow container mx-auto px-4 py-8">
