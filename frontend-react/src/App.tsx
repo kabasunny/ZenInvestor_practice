@@ -10,22 +10,33 @@ import LoginForm from './components/LoginForm';
 
 
 const App: React.FC = () => {
-  const { isLoggedIn, login, logout } = useAuth(); // useAuth()を使ってログイン状態を取得 index.tsx内でAppをAuthProviderでラップしているため使用可能
+  // const { isLoggedIn, login, logout } = useAuth(); // useAuth()を使ってログイン状態を取得 index.tsx内でAppをAuthProviderでラップしているため使用可能
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dashboardRef = useRef<HTMLDivElement>(null);
   const marketInsightsRef = useRef<HTMLDivElement>(null);
   const portfolioRef = useRef<HTMLDivElement>(null);
   const educationRef = useRef<HTMLDivElement>(null);
 
   const scrollToRef = (ref: React.RefObject<HTMLDivElement>) => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
+    const offset = 80; // ヘッダーの高さに応じて調整
+    const element = ref.current;
+    if (element) {
+      const topPosition = element.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: topPosition, behavior: "smooth" });
+    }
+  };
+  
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
   };
 
-  useEffect(() => {
-    console.log("isLoggedIn が更新されました:", isLoggedIn);
-  }, [isLoggedIn]);
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-indigo-100">
       {isLoggedIn ? ( // ログイン済みの場合
         <>
           <Header
@@ -33,7 +44,7 @@ const App: React.FC = () => {
             onMarketInsightsClick={() => scrollToRef(marketInsightsRef)}
             onPortfolioClick={() => scrollToRef(portfolioRef)}
             onEducationClick={() => scrollToRef(educationRef)}
-            onLogout={logout}
+            onLogout={handleLogout}
             isLoggedIn={isLoggedIn}
           />
           <main className="flex-grow container mx-auto px-4 py-8">

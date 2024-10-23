@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { AuthProvider } from "./context/AuthContext"; // AuthProvider をインポート
+// import { AuthProvider } from "./context/AuthContext"; // AuthProvider をインポート
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,11 +12,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
+      {/* <AuthProvider> */}
         {" "}
         {/* App コンポーネントを AuthProvider でラップ */}
         <App />
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </BrowserRouter>
   </React.StrictMode>
 );
