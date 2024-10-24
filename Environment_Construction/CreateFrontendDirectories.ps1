@@ -1,7 +1,7 @@
 Function CreateFrontendDirectories {
     Write-Host "Creating directory structure for frontend..."
 
-    $baseFrontendDir = "../frontend-react/vite-project/src"
+    $baseFrontendDir = "../frontend-react/src"
     $frontendSubDirs = @(
         "components",
         "pages",
