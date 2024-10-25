@@ -1,3 +1,4 @@
+# 初期テスト用
 from flask import Flask, send_file
 import yfinance as yf
 import matplotlib.pyplot as plt
@@ -5,9 +6,11 @@ import io
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def hello_world():
     return "Hello, World!"
+
 
 @app.route("/plot")
 def plot():
@@ -25,5 +28,6 @@ def plot():
     plt.close()
     return send_file(img, mimetype="image/png")
 
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5006, debug=True)
