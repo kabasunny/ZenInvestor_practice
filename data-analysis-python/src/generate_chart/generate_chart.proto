@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+service ChartService {
+  rpc GenerateChart(ChartRequest) returns (ChartResponse) {}
+}
+
+message ChartRequest {
+  string ticker = 1;
+}
+
+message ChartResponse {
+  string chart_data = 1;  // Base64エンコードされた画像データ
+}
+
+
+// python -m grpc_tools.protoc -I src/generate_chart --python_out src/generate_chart --grpc_python_out=src/generate_chart src/generate_chart/generate_chart.proto
