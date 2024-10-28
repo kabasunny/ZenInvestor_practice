@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+service IndicatorService {
+  rpc CalculateMovingAverage(IndicatorRequest) returns (IndicatorResponse) {}
+}
+
+message IndicatorRequest {
+  string ticker = 1;
+  int32 window_size = 2; // 移動平均のウィンドウサイズ
+}
+
+message IndicatorResponse {
+  repeated double moving_average = 1; // 移動平均の結果
+}
+
+
+// python -m grpc_tools.protoc -I src/calculate_indicator --python_out src/calculate_indicator --grpc_python_out src/calculate_indicator src/calculate_indicator/calculate_indicator.proto
