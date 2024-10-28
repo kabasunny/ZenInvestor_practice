@@ -32,8 +32,10 @@ go get google.golang.org/protobuf
 ## 以下のコマンドを実行して、Go用のgRPCクライアントコードを生成：
 ## 株価データの取得
 protoc --proto_path=../data-analysis-python/src/get_stock --go_out=./src/service/gateway --go_opt=paths=source_relative --go-grpc_out=./src/service/gateway --go-grpc_opt=paths=source_relative ../data-analysis-python/src/get_stock/get_stock.proto
+
 ## 指標：移動平均データの取得
 protoc --proto_path=../data-analysis-python/src/calculate_indicator/moving_average --go_out=./src/service/gateway/moving_average --go_opt=paths=source_relative --go-grpc_out=./src/service/gateway/moving_average --go-grpc_opt=paths=source_relative ../data-analysis-python/src/calculate_indicator/moving_average/calculate_indicator.proto
+
 ## 可視化データの取得
 protoc --proto_path=../data-analysis-python/src/generate_chart --go_out=./src/service/gateway --go_opt=paths=source_relative --go-grpc_out=./src/service/gateway --go-grpc_opt=paths=source_relative ../data-analysis-python/src/generate_chart/generate_chart.proto
 
@@ -46,3 +48,11 @@ protoc --proto_path=../data-analysis-python/src/generate_chart --go_out=./src/se
 │   │       └── grpc_client.go
 │   └── repository/
 │       └── repository.go
+├── test/
+
+## Testifyパッケージをインストール
+go get github.com/stretchr/testify/assert@v1.9.0
+go get github.com/stretchr/testify/mock@v1.9.0
+
+## テストコマンド
+go test ./...
