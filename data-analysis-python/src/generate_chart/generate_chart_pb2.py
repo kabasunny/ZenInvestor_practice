@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14generate_chart.proto\"\x1e\n\x0c\x43hartRequest\x12\x0e\n\x06ticker\x18\x01 \x01(\t\"#\n\rChartResponse\x12\x12\n\nchart_data\x18\x01 \x01(\t2@\n\x0c\x43hartService\x12\x30\n\rGenerateChart\x12\r.ChartRequest\x1a\x0e.ChartResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14generate_chart.proto\"J\n\x0c\x43hartRequest\x12\x12\n\nstock_data\x18\x01 \x03(\x02\x12\x16\n\x0eindicator_data\x18\x02 \x03(\x02\x12\x0e\n\x06ticker\x18\x03 \x01(\t\"#\n\rChartResponse\x12\x12\n\nchart_data\x18\x01 \x01(\t2@\n\x0c\x43hartService\x12\x30\n\rGenerateChart\x12\r.ChartRequest\x1a\x0e.ChartResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,9 +32,9 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'generate_chart_pb2', _globa
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_CHARTREQUEST']._serialized_start=24
-  _globals['_CHARTREQUEST']._serialized_end=54
-  _globals['_CHARTRESPONSE']._serialized_start=56
-  _globals['_CHARTRESPONSE']._serialized_end=91
-  _globals['_CHARTSERVICE']._serialized_start=93
-  _globals['_CHARTSERVICE']._serialized_end=157
+  _globals['_CHARTREQUEST']._serialized_end=98
+  _globals['_CHARTRESPONSE']._serialized_start=100
+  _globals['_CHARTRESPONSE']._serialized_end=135
+  _globals['_CHARTSERVICE']._serialized_start=137
+  _globals['_CHARTSERVICE']._serialized_end=201
 # @@protoc_insertion_point(module_scope)

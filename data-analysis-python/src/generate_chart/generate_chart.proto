@@ -5,7 +5,9 @@ service ChartService {
 }
 
 message ChartRequest {
-  string ticker = 1;
+  repeated float stock_data = 1;  // 株価データ
+  repeated float indicator_data = 2;  // 指標データ
+  string ticker = 3;  // ティッカーシンボル
 }
 
 message ChartResponse {
