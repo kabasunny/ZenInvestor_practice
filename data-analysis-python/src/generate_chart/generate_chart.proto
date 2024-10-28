@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "api-go/src/service/gateway";  // プロジェクトのルートからの相対パス
+
 service ChartService {
   rpc GenerateChart(ChartRequest) returns (ChartResponse) {}
 }
