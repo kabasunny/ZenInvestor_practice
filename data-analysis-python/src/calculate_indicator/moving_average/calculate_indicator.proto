@@ -1,5 +1,8 @@
 syntax = "proto3";
 
+option go_package = "api-go/src/service/gateway/moving_average";  // プロジェクトのルートからの相対パス
+
+
 service MovingAverageService {
   rpc CalculateMovingAverage(MovingAverageRequest) returns (MovingAverageResponse) {}
 }
