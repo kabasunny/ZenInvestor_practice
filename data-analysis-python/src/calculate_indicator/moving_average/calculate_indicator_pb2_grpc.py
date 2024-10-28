@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class IndicatorServiceStub(object):
+class MovingAverageServiceStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -35,13 +35,13 @@ class IndicatorServiceStub(object):
             channel: A grpc.Channel.
         """
         self.CalculateMovingAverage = channel.unary_unary(
-                '/IndicatorService/CalculateMovingAverage',
-                request_serializer=calculate__indicator__pb2.IndicatorRequest.SerializeToString,
-                response_deserializer=calculate__indicator__pb2.IndicatorResponse.FromString,
+                '/MovingAverageService/CalculateMovingAverage',
+                request_serializer=calculate__indicator__pb2.MovingAverageRequest.SerializeToString,
+                response_deserializer=calculate__indicator__pb2.MovingAverageResponse.FromString,
                 _registered_method=True)
 
 
-class IndicatorServiceServicer(object):
+class MovingAverageServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def CalculateMovingAverage(self, request, context):
@@ -51,22 +51,22 @@ class IndicatorServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_IndicatorServiceServicer_to_server(servicer, server):
+def add_MovingAverageServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'CalculateMovingAverage': grpc.unary_unary_rpc_method_handler(
                     servicer.CalculateMovingAverage,
-                    request_deserializer=calculate__indicator__pb2.IndicatorRequest.FromString,
-                    response_serializer=calculate__indicator__pb2.IndicatorResponse.SerializeToString,
+                    request_deserializer=calculate__indicator__pb2.MovingAverageRequest.FromString,
+                    response_serializer=calculate__indicator__pb2.MovingAverageResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'IndicatorService', rpc_method_handlers)
+            'MovingAverageService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('IndicatorService', rpc_method_handlers)
+    server.add_registered_method_handlers('MovingAverageService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class IndicatorService(object):
+class MovingAverageService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -83,9 +83,9 @@ class IndicatorService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/IndicatorService/CalculateMovingAverage',
-            calculate__indicator__pb2.IndicatorRequest.SerializeToString,
-            calculate__indicator__pb2.IndicatorResponse.FromString,
+            '/MovingAverageService/CalculateMovingAverage',
+            calculate__indicator__pb2.MovingAverageRequest.SerializeToString,
+            calculate__indicator__pb2.MovingAverageResponse.FromString,
             options,
             channel_credentials,
             insecure,
