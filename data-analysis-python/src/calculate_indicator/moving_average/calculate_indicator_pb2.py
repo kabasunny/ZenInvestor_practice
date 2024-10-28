@@ -24,17 +24,17 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19\x63\x61lculate_indicator.proto\"7\n\x10IndicatorRequest\x12\x0e\n\x06ticker\x18\x01 \x01(\t\x12\x13\n\x0bwindow_size\x18\x02 \x01(\x05\"+\n\x11IndicatorResponse\x12\x16\n\x0emoving_average\x18\x01 \x03(\x01\x32U\n\x10IndicatorService\x12\x41\n\x16\x43\x61lculateMovingAverage\x12\x11.IndicatorRequest\x1a\x12.IndicatorResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19\x63\x61lculate_indicator.proto\"?\n\x14MovingAverageRequest\x12\x12\n\nstock_data\x18\x01 \x03(\x02\x12\x13\n\x0bwindow_size\x18\x02 \x01(\x05\"\'\n\x15MovingAverageResponse\x12\x0e\n\x06values\x18\x01 \x03(\x01\x32\x61\n\x14MovingAverageService\x12I\n\x16\x43\x61lculateMovingAverage\x12\x15.MovingAverageRequest\x1a\x16.MovingAverageResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'calculate_indicator_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_INDICATORREQUEST']._serialized_start=29
-  _globals['_INDICATORREQUEST']._serialized_end=84
-  _globals['_INDICATORRESPONSE']._serialized_start=86
-  _globals['_INDICATORRESPONSE']._serialized_end=129
-  _globals['_INDICATORSERVICE']._serialized_start=131
-  _globals['_INDICATORSERVICE']._serialized_end=216
+  _globals['_MOVINGAVERAGEREQUEST']._serialized_start=29
+  _globals['_MOVINGAVERAGEREQUEST']._serialized_end=92
+  _globals['_MOVINGAVERAGERESPONSE']._serialized_start=94
+  _globals['_MOVINGAVERAGERESPONSE']._serialized_end=133
+  _globals['_MOVINGAVERAGESERVICE']._serialized_start=135
+  _globals['_MOVINGAVERAGESERVICE']._serialized_end=232
 # @@protoc_insertion_point(module_scope)
