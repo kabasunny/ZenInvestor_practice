@@ -1,38 +1,71 @@
 package gateway_test
 
 import (
-	"api-go/src/service/gateway" // 生成された gRPC クライアントコードをインポート
-	"context"                    // コンテキストの使用
-	"testing"                    // テストフレームワーク
+	"context"
+	"fmt"
+	"os" // ファイル操作のためのパッケージ
+	"testing"
+	"time"
 
-	"github.com/stretchr/testify/assert" // アサーションライブラリ
-	"github.com/stretchr/testify/mock"   // モックライブラリ
-	"google.golang.org/grpc"             // gRPC フレームワーク
+	"api-go/src/service/gateway"
+
+	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-// Mock クライアントを定義
-type MockGetStockServiceClient struct {
-	mock.Mock // testify/mock を埋め込んでモックを作成
-}
+func TestGetStockDataIntegration(t *testing.T) {
+	// テスト用のコンテキストを10秒のタイムアウトで作成
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel() // テスト終了時にコンテキストをキャンセル
 
-// Mock メソッドを実装
-func (m *MockGetStockServiceClient) GetStockData(ctx context.Context, in *gateway.GetStockRequest, opts ...grpc.CallOption) (*gateway.GetStockResponse, error) {
-	args := m.Called(ctx, in) // モックされたメソッドを呼び出す
-	return args.Get(0).(*gateway.GetStockResponse), args.Error(1)
-}
+	address := "localhost:50051" // gRPCサーバーのアドレスを指定
 
-// TestGetStockData 関数
-func TestGetStockData(t *testing.T) {
-	mockClient := new(MockGetStockServiceClient)                                   // Mock クライアントを作成
-	req := &gateway.GetStockRequest{Ticker: "AAPL"}                                // リクエストを作成
-	res := &gateway.GetStockResponse{StockData: map[string]float64{"AAPL": 150.0}} // レスポンスを作成
+	// gRPCクライアント接続を作成
+	conn, err := grpc.DialContext(ctx, address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		t.Fatalf("grpc.DialContext failed: %v", err) // 接続失敗時にテストを失敗として終了
+	}
+	defer conn.Close() // テスト終了時に接続を閉じる
 
-	mockClient.On("GetStockData", mock.Anything, req).Return(res, nil) // モックの期待値を設定
+	client := gateway.NewGetStockServiceClient(conn) // gRPCクライアントを作成
+	req := &gateway.GetStockRequest{Ticker: "AAPL"}  // リクエストを作成
 
-	ctx := context.Background()                    // コンテキストを作成
-	data, err := mockClient.GetStockData(ctx, req) // Mock メソッドを呼び出す
+	// 呼び出し用のコンテキストを1秒のタイムアウトで作成
+	callCtx, callCancel := context.WithTimeout(context.Background(), time.Second)
+	defer callCancel() // 呼び出し終了時にコンテキストをキャンセル
 
-	assert.NoError(t, err)           // エラーがないことを確認
-	assert.Equal(t, res, data)       // 期待されるデータと一致することを確認
-	mockClient.AssertExpectations(t) // モックの期待値が満たされていることを確認
+	// gRPCメソッドを呼び出し
+	res, err := client.GetStockData(callCtx, req)
+	if err != nil {
+		t.Fatalf("GetStockData failed: %v", err) // 呼び出し失敗時にテストを失敗として終了
+	}
+
+	assert.NoError(t, err)            // エラーがないことを確認
+	assert.NotNil(t, res)             // レスポンスがnilでないことを確認
+	assert.NotEmpty(t, res.StockData) // 株価データが空でないことを確認
+
+	// 取得した株価データと日付を表示
+	fmt.Printf("Stock data for %s on %s:\n", req.Ticker, res.GetDate())
+	file, err := os.Create("get_stock_test_data.txt") // テキストファイルを作成
+	if err != nil {
+		t.Fatalf("Failed to create file: %v", err) // ファイル作成失敗時にテストを失敗として終了
+	}
+	defer file.Close() // テスト終了時にファイルを閉じる
+
+	// 株価データをファイルに書き込み
+	for key, value := range res.StockData {
+		data := fmt.Sprintf("%s: %.2f\n", key, value)
+		fmt.Println(data)                // データをターミナルに表示
+		_, err := file.WriteString(data) // データをファイルに書き込み
+		if err != nil {
+			t.Fatalf("Failed to write to file: %v", err) // 書き込み失敗時にテストを失敗として終了
+		}
+	}
+
+	// 日付をファイルに追加
+	_, err = file.WriteString(fmt.Sprintf("Date: %s\n", res.GetDate()))
+	if err != nil {
+		t.Fatalf("Failed to write date to file: %v", err) // 書き込み失敗時にテストを失敗として終了
+	}
 }
