@@ -15,8 +15,12 @@ message GetStockRequest {
 
 // レスポンスメッセージを定義
 message GetStockResponse {
-  map<string, double> stock_data = 1;  // 株価データを含むフィールド  // キーが文字列で、値が浮動小数点数のリストであるマップ
+  map<string, double> stock_data = 1;  // 株価データを含むフィールド
+  string date = 2;                     // 日付を含むフィールド
 }
 
-
+// python用コンパイルコマンド
 // python -m grpc_tools.protoc -I src/get_stock --python_out src/get_stock --grpc_python_out=src/get_stock src/get_stock/get_stock.proto
+
+// Go用コンパイルコマンド
+// protoc --proto_path=../data-analysis-python/src/get_stock --go_out=./src/service/gateway --go_opt=paths=source_relative --go-grpc_out=./src/service/gateway --go-grpc_opt=paths=source_relative ../data-analysis-python/src/get_stock/get_stock.proto

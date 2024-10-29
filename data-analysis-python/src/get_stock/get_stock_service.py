@@ -13,6 +13,10 @@ def get_stock_data(ticker):
     # JSONシリアライズ可能な形式に変換
     stock_dict = {
         "Open": stock_data["Open"].iloc[-1],
-        "Close": stock_data["Close"].iloc[-1]
+        "Close": stock_data["Close"].iloc[-1],
+        "High": stock_data["High"].iloc[-1],
+        "Low": stock_data["Low"].iloc[-1],
+        "Volume": stock_data["Volume"].iloc[-1],
     }
-    return stock_dict
+    date = stock_data.index[-1].strftime("%Y-%m-%d")  # 日付を分離
+    return stock_dict, date  # 数値データと日付を別々に返す
