@@ -3,20 +3,21 @@ import yfinance as yf
 import pandas as pd
 
 
-def get_stock_data(ticker):
+def get_stock_data(ticker, period):
     stock = yf.Ticker(ticker)
-    stock_data = stock.history(period="1y")  # 直近～のデータを取得
+    stock_data = stock.history(period=period)  # 指定された期間のデータを取得
     # stock_data = stock.history(period="1mo")  # 直近1ヶ月のデータを取得
     # 期間の引数のリスト
     # "1d": 1日, "5d": 5日, "1mo": 1ヶ月, "3mo": 3ヶ月, "6mo": 6ヶ月, "1y": 1年, "2y": 2年, "5y": 5年. "10y": 10年, "ytd": 年初から現在まで, "max": 最大期間（可能な限り最長）
 
-    # JSONシリアライズ可能な形式に変換
-    stock_dict = {
-        "Open": stock_data["Open"].iloc[-1],
-        "Close": stock_data["Close"].iloc[-1],
-        "High": stock_data["High"].iloc[-1],
-        "Low": stock_data["Low"].iloc[-1],
-        "Volume": stock_data["Volume"].iloc[-1],
-    }
-    date = stock_data.index[-1].strftime("%Y-%m-%d")  # 日付を分離
-    return stock_dict, date  # 数値データと日付を別々に返す
+    stock_dict = {}  # 結果を格納する辞書を初期化
+    for date, row in stock_data.iterrows():
+        stock_dict[date.strftime("%Y-%m-%d")] = {
+            "Open": row["Open"],  # 始値
+            "Close": row["Close"],  # 終値
+            "High": row["High"],  # 高値
+            "Low": row["Low"],  # 安値
+            "Volume": row["Volume"],  # 取引量
+        }
+
+    return stock_dict  # すべての日付のデータを返す

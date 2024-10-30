@@ -4,20 +4,30 @@ option go_package = "api-go/src/service/gateway";
 
 // GetStockServiceというサービスを定義
 service GetStockService {
-  // GetStockDataというRPCメソッドを定義
-  rpc GetStockData (GetStockRequest) returns (GetStockResponse) {}
+  rpc GetStockData (GetStockRequest) returns (GetStockResponse);
 }
 
 // リクエストメッセージを定義
 message GetStockRequest {
   string ticker = 1;  // 銘柄コードを格納するフィールド
+  string period = 2;  // 期間を格納するフィールド
+}
+
+// 株価データを持つメッセージを定義
+message StockData {
+  double open = 1;
+  double close = 2;
+  double high = 3;
+  double low = 4;
+  double volume = 5;
 }
 
 // レスポンスメッセージを定義
 message GetStockResponse {
-  map<string, double> stock_data = 1;  // 株価データを含むフィールド
-  string date = 2;                     // 日付を含むフィールド
+  map<string, StockData> stock_data = 1;  // 期間分の株価データを含むフィールド
 }
+
+
 
 // python用コンパイルコマンド
 // python -m grpc_tools.protoc -I src/get_stock --python_out src/get_stock --grpc_python_out=src/get_stock src/get_stock/get_stock.proto

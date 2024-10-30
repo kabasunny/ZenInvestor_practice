@@ -1,4 +1,4 @@
-# MyProject
+# gRPCの導入
 
 ## インストール
 1. protoc のダウンロード
@@ -54,5 +54,9 @@ protoc --proto_path=../data-analysis-python/src/generate_chart --go_out=./src/se
 go get github.com/stretchr/testify/assert@v1.9.0
 go get github.com/stretchr/testify/mock@v1.9.0
 
+## テスト時のMSサーバー立ち上げ get_stock の時
+\ZenInvestor_practice\data-analysis-python> で
+python src/get_stock/get_stock_grpc.py
+
 ## テストコマンド
-go test ./...
+go test -v ./test/...

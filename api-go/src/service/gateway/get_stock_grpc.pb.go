@@ -28,7 +28,6 @@ const (
 //
 // GetStockServiceというサービスを定義
 type GetStockServiceClient interface {
-	// GetStockDataというRPCメソッドを定義
 	GetStockData(ctx context.Context, in *GetStockRequest, opts ...grpc.CallOption) (*GetStockResponse, error)
 }
 
@@ -56,7 +55,6 @@ func (c *getStockServiceClient) GetStockData(ctx context.Context, in *GetStockRe
 //
 // GetStockServiceというサービスを定義
 type GetStockServiceServer interface {
-	// GetStockDataというRPCメソッドを定義
 	GetStockData(context.Context, *GetStockRequest) (*GetStockResponse, error)
 	mustEmbedUnimplementedGetStockServiceServer()
 }

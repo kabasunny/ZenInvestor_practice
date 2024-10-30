@@ -15,8 +15,8 @@ import (
 )
 
 func TestGetStockDataIntegration(t *testing.T) {
-	// テスト用のコンテキストを10秒のタイムアウトで作成
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	// テスト用のコンテキストを15秒のタイムアウトで作成
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel() // テスト終了時にコンテキストをキャンセル
 
 	address := "localhost:50051" // gRPCサーバーのアドレスを指定
@@ -29,7 +29,10 @@ func TestGetStockDataIntegration(t *testing.T) {
 	defer conn.Close() // テスト終了時に接続を閉じる
 
 	client := gateway.NewGetStockServiceClient(conn) // gRPCクライアントを作成
-	req := &gateway.GetStockRequest{Ticker: "AAPL"}  // リクエストを作成
+	req := &gateway.GetStockRequest{
+		Ticker: "AAPL",
+		Period: "5d",
+	} // リクエストを作成
 
 	// 呼び出し用のコンテキストを1秒のタイムアウトで作成
 	callCtx, callCancel := context.WithTimeout(context.Background(), time.Second)
@@ -46,7 +49,7 @@ func TestGetStockDataIntegration(t *testing.T) {
 	assert.NotEmpty(t, res.StockData) // 株価データが空でないことを確認
 
 	// 取得した株価データと日付を表示
-	fmt.Printf("Stock data for %s on %s:\n", req.Ticker, res.GetDate())
+	fmt.Printf("Stock data for %s:\n", req.Ticker)
 	file, err := os.Create("get_stock_test_data.txt") // テキストファイルを作成
 	if err != nil {
 		t.Fatalf("Failed to create file: %v", err) // ファイル作成失敗時にテストを失敗として終了
@@ -55,17 +58,11 @@ func TestGetStockDataIntegration(t *testing.T) {
 
 	// 株価データをファイルに書き込み
 	for key, value := range res.StockData {
-		data := fmt.Sprintf("%s: %.2f\n", key, value)
+		data := fmt.Sprintf("%s: open: %.2f, close: %.2f, high: %.2f, low: %.2f, volume: %.2f\n", key, value.Open, value.Close, value.High, value.Low, value.Volume)
 		fmt.Println(data)                // データをターミナルに表示
 		_, err := file.WriteString(data) // データをファイルに書き込み
 		if err != nil {
 			t.Fatalf("Failed to write to file: %v", err) // 書き込み失敗時にテストを失敗として終了
 		}
-	}
-
-	// 日付をファイルに追加
-	_, err = file.WriteString(fmt.Sprintf("Date: %s\n", res.GetDate()))
-	if err != nil {
-		t.Fatalf("Failed to write date to file: %v", err) // 書き込み失敗時にテストを失敗として終了
 	}
 }
