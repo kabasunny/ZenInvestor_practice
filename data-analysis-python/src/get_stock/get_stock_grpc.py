@@ -1,19 +1,30 @@
-# grpc_servers/get_stock_grpc.py
 import grpc
-from concurrent import futures  # スレッドプールを使用するためのモジュール
-import get_stock_pb2 as get_stock_pb2  #  "." を追加 # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
+from concurrent import futures
+import get_stock_pb2 as get_stock_pb2  # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
 import get_stock_pb2_grpc as get_stock_pb2_grpc  # Protocol Buffersコンパイラによって生成されるgRPCサービスに関連するコードを含むPythonモジュール
-from get_stock_service import get_stock_data
+from get_stock_service import get_stock_data  # 株価データ取得関数をインポート
 
 
 class GetStockService(get_stock_pb2_grpc.GetStockServiceServicer):
     def GetStockData(self, request, context):
-        # request:クライアントが指定した銘柄コードが含まれる
-        # context:RPC呼び出しのコンテキスト情報を含む
         ticker = request.ticker
-        stock_data, date = get_stock_data(ticker)  # 数値データと日付を取得
+        period = request.period  # リクエストから期間を取得
+        stock_data_dict = get_stock_data(ticker, period)  # 数値データを取得
+
+        # StockDataオブジェクトに変換
+        stock_data = {
+            date: get_stock_pb2.StockData(
+                open=values["Open"],
+                close=values["Close"],
+                high=values["High"],
+                low=values["Low"],
+                volume=values["Volume"],
+            )
+            for date, values in stock_data_dict.items()
+        }
+
         print("サーバーが、サービスget_stock_dataメソッドを呼び出し")
-        return get_stock_pb2.GetStockResponse(stock_data=stock_data, date=date)
+        return get_stock_pb2.GetStockResponse(stock_data=stock_data)
 
 
 def serve():
