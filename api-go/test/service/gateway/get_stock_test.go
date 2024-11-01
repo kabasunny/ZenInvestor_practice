@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"api-go/src/service/gateway"
+	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
 
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
@@ -28,8 +28,8 @@ func TestGetStockDataIntegration(t *testing.T) {
 	}
 	defer conn.Close() // テスト終了時に接続を閉じる
 
-	client := gateway.NewGetStockServiceClient(conn) // gRPCクライアントを作成
-	req := &gateway.GetStockRequest{
+	client := ms_gateway.NewGetStockDataServiceClient(conn) // gRPCクライアントを作成
+	req := &ms_gateway.GetStockDataRequest{
 		Ticker: "AAPL",
 		Period: "5d",
 	} // リクエストを作成

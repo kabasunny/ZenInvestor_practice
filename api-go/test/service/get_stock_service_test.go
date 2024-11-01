@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"api-go/src/service"
-	"api-go/src/service/gateway"
+	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -18,9 +18,9 @@ type MockStockClient struct {
 	mock.Mock
 }
 
-func (m *MockStockClient) GetStockData(ctx context.Context, req *gateway.GetStockRequest) (*gateway.GetStockResponse, error) {
+func (m *MockStockClient) GetStockData(ctx context.Context, req *ms_gateway.GetStockDataRequest) (*ms_gateway.GetStockDataResponse, error) {
 	args := m.Called(ctx, req)
-	return args.Get(0).(*gateway.GetStockResponse), args.Error(1)
+	return args.Get(0).(*ms_gateway.GetStockDataResponse), args.Error(1)
 }
 
 func (m *MockStockClient) Close() error {
@@ -33,13 +33,13 @@ func TestGetStockDataSuccess(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	req := &gateway.GetStockRequest{
+	req := &ms_gateway.GetStockDataRequest{
 		Ticker: "AAPL",
 		Period: "5d",
 	}
 
 	// ダミーのレスポンスデータ（データ構造はチェックしないため、StockData を nil に設定）
-	expectedResponse := &gateway.GetStockResponse{
+	expectedResponse := &ms_gateway.GetStockDataResponse{
 		StockData: nil,
 	}
 
@@ -61,13 +61,13 @@ func TestGetStockDataFailure(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	req := &gateway.GetStockRequest{
+	req := &ms_gateway.GetStockDataRequest{
 		Ticker: "AAPL",
 		Period: "5d",
 	}
 
 	// エラーを返すようにモックを設定
-	mockClient.On("GetStockData", ctx, req).Return((*gateway.GetStockResponse)(nil), fmt.Errorf("mock error: stock data not found"))
+	mockClient.On("GetStockData", ctx, req).Return((*ms_gateway.GetStockDataResponse)(nil), fmt.Errorf("mock error: stock data not found"))
 
 	// サービスメソッドの呼び出し
 	res, err := service.GetStockData(ctx, "AAPL", "5d")
