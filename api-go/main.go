@@ -1,6 +1,10 @@
 package main
 
 import (
+	"api-go/src/controller"
+	"api-go/src/service"
+	"api-go/src/service/gateway/client"
+	"context"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -47,6 +51,34 @@ func main() {
 		}
 		log.Println("Database connected and User table migrated successfully. Users added.")
 		c.JSON(200, gin.H{"message": "Migration completed successfully"})
+	})
+
+	// gRPCクライアントを作成
+	stockClient, err := client.NewGetStockClient()
+	if err != nil {
+		log.Fatalf("Failed to create stock client: %v", err)
+	}
+	defer stockClient.Close()
+
+	// サービスを作成
+	stockService := service.NewStockServiceImpl(stockClient)
+
+	// コントローラを作成
+	stockController := controller.NewStockControllerImpl(stockService)
+
+	// 新しいルートを追加
+	router.GET("/getStockData", func(c *gin.Context) {
+		ctx := context.Background()
+		ticker := c.Query("ticker")
+		period := c.Query("period")
+
+		response, err := stockController.GetStockData(ctx, ticker, period)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, gin.H{"stockData": response})
 	})
 
 	router.Run(":8086")
