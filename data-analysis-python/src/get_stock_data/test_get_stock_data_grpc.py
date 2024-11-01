@@ -1,22 +1,22 @@
 import unittest  # 標準的なテストフレームワークをインポート
 import grpc
 from concurrent import futures
-from get_stock_grpc import (
-    GetStockService,
+from get_stock_data_grpc import (
+    GetStockDataService,
     serve,
 )  # サービスとサーバー起動関数をインポート
-import get_stock_pb2 as get_stock_pb2  # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
-import get_stock_pb2_grpc as get_stock_pb2_grpc  # Protocol Buffersコンパイラによって生成されるgRPCサービスに関連するコードを含むPythonモジュール
-from get_stock_service import get_stock_data  # 株価データ取得関数をインポート
+import get_stock_data_pb2 as get_stock_data_pb2  # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
+import get_stock_data_pb2_grpc as get_stock_data_pb2_grpc  # Protocol Buffersコンパイラによって生成されるgRPCサービスに関連するコードを含むPythonモジュール
+from get_stock_data_service import get_stock_data  # 株価データ取得関数をインポート
 
 
-class TestGetStockGRPC(unittest.TestCase):  # テストクラスの定義
+class TestGetStockDataGRPC(unittest.TestCase):  # テストクラスの定義
 
     @classmethod
     def setUpClass(cls):  # クラス全体で一度だけ実行されるセットアップメソッド
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        get_stock_pb2_grpc.add_GetStockServiceServicer_to_server(
-            GetStockService(), cls.server
+        get_stock_data_pb2_grpc.add_GetStockDataServiceServicer_to_server(
+            GetStockDataService(), cls.server
         )
         cls.server.add_insecure_port("[::]:50051")
         cls.server.start()
@@ -25,15 +25,17 @@ class TestGetStockGRPC(unittest.TestCase):  # テストクラスの定義
     def tearDownClass(cls):  # クラス全体で一度だけ実行されるクリーンアップメソッド
         cls.server.stop(None)
 
-    def test_get_stock_grpc(self):  # 実際のテストメソッド
+    def test_get_stock_data_grpc(self):  # 実際のテストメソッド
         print("gRPCサーバーtest")
         with grpc.insecure_channel(
             "localhost:50051"
         ) as channel:  # gRPCチャンネルを作成
-            stub = get_stock_pb2_grpc.GetStockServiceStub(channel)  # スタブを作成
+            stub = get_stock_data_pb2_grpc.GetStockDataServiceStub(
+                channel
+            )  # スタブを作成
             period = "5d"
             response = stub.GetStockData(
-                get_stock_pb2.GetStockRequest(ticker="^GSPC", period=period)
+                get_stock_data_pb2.GetStockDataRequest(ticker="^GSPC", period=period)
                 # 期間の引数のリスト
                 # "1d": 1日, "5d": 5日, "1mo": 1ヶ月, "3mo": 3ヶ月, "6mo": 6ヶ月, "1y": 1年, "2y": 2年, "5y": 5年. "10y": 10年, "ytd": 年初から現在まで, "max": 最大期間（可能な限り最長）
             )  # リクエストを送信
@@ -59,7 +61,7 @@ if __name__ == "__main__":  # スクリプトが直接実行された場合に�
 
 
 # 本ファイル単体テスト
-# python -m unittest discover -s src/get_stock  -p 'test_get_stock_grpc.py'
+# python -m unittest discover -s src/get_stock_data  -p 'test_get_stock_data_grpc.py'
 
 # 一括テスト
-# python -m unittest discover -s src/get_stock  -p 'test*.py'
+# python -m unittest discover -s src/get_stock_data  -p 'test*.py'
