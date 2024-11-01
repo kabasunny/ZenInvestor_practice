@@ -11,19 +11,19 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// StockServiceImpl は StockService インターフェースの実装です。
+// StockServiceImpl は StockService インターフェースの実装
 type StockServiceImpl struct {
 	stockClient client.GetStockClient // gRPCクライアント
 }
 
-// NewStockServiceImpl は StockServiceImpl の新しいインスタンスを作成します。
+// NewStockServiceImpl は StockServiceImpl の新しいインスタンスを作成
 func NewStockServiceImpl(stockClient client.GetStockClient) StockService {
 	return &StockServiceImpl{
 		stockClient: stockClient,
 	}
 }
 
-// GetStockData は指定された銘柄と期間の株価データを取得します。
+// GetStockData は指定された銘柄と期間の株価データを取得
 func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, period string) (*gateway.GetStockResponse, error) {
 	req := &gateway.GetStockRequest{
 		Ticker: ticker,
