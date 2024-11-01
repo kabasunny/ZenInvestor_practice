@@ -1,9 +1,9 @@
-# tests/test_services/test_get_stock_service.py
+# tests/test_services/test_get_stock_data_service.py
 import unittest
-from get_stock_service import get_stock_data
+from get_stock_data_service import get_stock_data
 
 
-class TestGetStockService(unittest.TestCase):
+class TestGetStockDataService(unittest.TestCase):
     def test_get_stock_data(self):
         print("サービスメソッドtest")
         data = get_stock_data("AAPL", "5d")
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     unittest.main()
 
 # 本ファイル単体テスト
-# python -m unittest discover -s src/get_stock  -p 'test_get_stock_service.py'
+# python -m unittest discover -s src/get_stock_data  -p 'test_get_stock_data_service.py'
 
 # 一括テスト
-# python -m unittest discover -s src/get_stock  -p 'test*.py'
+# python -m unittest discover -s src/get_stock_data  -p 'test*.py'
