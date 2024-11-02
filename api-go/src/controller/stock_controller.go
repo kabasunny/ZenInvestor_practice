@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"api-go/src/service/gateway"
+	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
 	"context"
 )
 
 // StockController は株価データを管理するためのインターフェース
 type StockController interface {
-	GetStockData(ctx context.Context, ticker string, period string) (*gateway.GetStockResponse, error)
+	GetStockData(ctx context.Context, ticker string, period string) (*ms_gateway.GetStockDataResponse, error)
 }

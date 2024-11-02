@@ -2,7 +2,7 @@ package controller
 
 import (
 	"api-go/src/service"
-	"api-go/src/service/gateway"
+	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
 	"context"
 )
 
@@ -17,6 +17,6 @@ func NewStockControllerImpl(stockService service.StockService) StockController {
 }
 
 // GetStockData は指定された銘柄と期間の株価データを取得
-func (c *stockControllerImpl) GetStockData(ctx context.Context, ticker string, period string) (*gateway.GetStockResponse, error) {
+func (c *stockControllerImpl) GetStockData(ctx context.Context, ticker string, period string) (*ms_gateway.GetStockDataResponse, error) {
 	return c.stockService.GetStockData(ctx, ticker, period)
 }
