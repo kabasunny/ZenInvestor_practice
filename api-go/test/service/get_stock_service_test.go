@@ -9,6 +9,7 @@ import (
 	"api-go/src/service"
 	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
 
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -28,8 +29,13 @@ func (m *MockStockClient) Close() error {
 }
 
 func TestGetStockDataSuccess(t *testing.T) {
+	godotenv.Load("../../.env")
+
 	mockClient := new(MockStockClient)
-	service := service.NewStockServiceImpl(mockClient)
+	clients := map[string]interface{}{
+		"get_stock_data": mockClient,
+	}
+	service := service.NewStockServiceImpl(clients)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -56,8 +62,13 @@ func TestGetStockDataSuccess(t *testing.T) {
 }
 
 func TestGetStockDataFailure(t *testing.T) {
+	godotenv.Load("../../.env") //テストではパスを指定しないとうまく読み取らない
+	// 上記でgrpcクライアントのポートを読み込む必要がある
 	mockClient := new(MockStockClient)
-	service := service.NewStockServiceImpl(mockClient)
+	clients := map[string]interface{}{
+		"get_stock_data": mockClient,
+	}
+	service := service.NewStockServiceImpl(clients)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 

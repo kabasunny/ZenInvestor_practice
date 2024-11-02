@@ -6,22 +6,30 @@ import (
 	"time"
 
 	"api-go/src/service/ms_gateway/client"
-	"api-go/src/service/ms_gateway/get_stock_data"
+	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
 
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewStockClient(t *testing.T) {
-	client, err := client.NewGetStockDataClient()
+	// クライアントを初期化
+	godotenv.Load("../../../../.env") //テストではパスを指定しないとうまく読み取らない
+	// 上記でgrpcクライアントのポートを読み込む必要がある
+	stockClient, err := client.NewGetStockDataClient()
 	assert.NoError(t, err)
-	assert.NotNil(t, client)
-	defer client.Close() // 接続を閉じる
+	assert.NotNil(t, stockClient)
+	defer stockClient.Close() // 接続を閉じる
 }
 
 func TestGetStockData(t *testing.T) {
-	client, err := client.NewGetStockDataClient()
+	// クライアントを初期化
+	godotenv.Load("../../../../.env") //テストではパスを指定しないとうまく読み取らない
+	// 上記でgrpcクライアントのポートを読み込む必要がある
+	stockClient, err := client.NewGetStockDataClient()
 	assert.NoError(t, err)
-	defer client.Close()
+	assert.NotNil(t, stockClient)
+	defer stockClient.Close()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -32,7 +40,7 @@ func TestGetStockData(t *testing.T) {
 	}
 
 	// 実際の gRPC サーバーが起動していることを前提とした統合テスト
-	res, err := client.GetStockData(ctx, req)
+	res, err := stockClient.GetStockData(ctx, req)
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 	assert.NotEmpty(t, res.StockData)

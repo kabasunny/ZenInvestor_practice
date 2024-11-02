@@ -13,24 +13,25 @@ import (
 
 // StockServiceImpl は StockService インターフェースの実装
 type StockServiceImpl struct {
-	stockDataClient client.GetStockDataClient // gRPCクライアント
+	clients map[string]interface{} // 複数のgRPCクライアントを保持するマップ
 }
 
 // NewStockServiceImpl は StockServiceImpl の新しいインスタンスを作成
-func NewStockServiceImpl(GetStockDataClient client.GetStockDataClient) StockService {
+func NewStockServiceImpl(clients map[string]interface{}) StockService {
 	return &StockServiceImpl{
-		stockDataClient: GetStockDataClient,
+		clients: clients,
 	}
 }
 
 // GetStockData は指定された銘柄と期間の株価データを取得
 func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, period string) (*ms_gateway.GetStockDataResponse, error) {
+	stockClient := s.clients["get_stock_data"].(client.GetStockDataClient)
 	req := &ms_gateway.GetStockDataRequest{
 		Ticker: ticker,
 		Period: period,
 	}
 
-	res, err := s.stockDataClient.GetStockData(ctx, req)
+	res, err := stockClient.GetStockData(ctx, req)
 	if err != nil {
 		// エラー処理。必要に応じてより詳細なエラーハンドリングを行う
 		st, ok := status.FromError(err)

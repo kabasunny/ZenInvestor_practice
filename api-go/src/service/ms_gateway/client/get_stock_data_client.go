@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -25,10 +24,10 @@ type getStockDataClientImpl struct {
 
 // NewGetStockClient は GetStockClient の新しいインスタンスを作成
 func NewGetStockDataClient() (GetStockDataClient, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return nil, fmt.Errorf("failed to load .env file: %w", err)
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failed to load .env file: %w", err)
+	// }
 	port := os.Getenv("GET_STOCK_DATA_MS_PORT")
 	address := fmt.Sprintf("localhost:%s", port) // 環境変数からポート番号を取得
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
