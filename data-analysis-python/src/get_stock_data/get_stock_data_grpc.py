@@ -23,7 +23,7 @@ class GetStockDataService(get_stock_data_pb2_grpc.GetStockDataServiceServicer):
             for date, values in stock_data_dict.items()
         }
 
-        print("サーバーが、サービスget_stock_data_dataメソッドを呼び出し")
+        print("grpcサーバーが、get_stock_dataサービスを呼び出し")
         return get_stock_data_pb2.GetStockDataResponse(stock_data=stock_data)
 
 
