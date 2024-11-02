@@ -2,6 +2,7 @@ package main
 
 import (
 	"api-go/src/controller"
+	"api-go/src/infra"
 	"api-go/src/service"
 	"api-go/src/service/ms_gateway/client"
 	"context"
@@ -10,14 +11,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type User struct {
-	ID       uint   `gorm:"primaryKey"`
-	Name     string `gorm:"size:100"`
-	Email    string `gorm:"uniqueIndex;size:100"`
-	Password string `gorm:"size:255"`
-}
+// type User struct {
+// 	ID       uint   `gorm:"primaryKey"`
+// 	Name     string `gorm:"size:100"`
+// 	Email    string `gorm:"uniqueIndex;size:100"`
+// 	Password string `gorm:"size:255"`
+// }
 
 func main() {
+	infra.Initialize() // .envファイルから環境変数を読み込む
+	// db := infra.SetupDB()
 	router := gin.Default()
 	// dsn := "zeninvestor:zenpass@tcp(localhost:3306)/zeninv?charset=utf8mb4&parseTime=True&loc=Local"
 	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
