@@ -53,7 +53,7 @@ export const getCarSlideImages = (): string[] => {
 
 // スノーボードスライド用の画像をインポート
 const snowboradSlideModules = import.meta.glob('../assets/snowboradSlideImages/*.jpg', { eager: true });
-const snowboradSlideImages = Object.values(carSlideModules).map((mod) => (mod as { default: string }).default);
+const snowboradSlideImages = Object.values(snowboradSlideModules).map((mod) => (mod as { default: string }).default);
 
 export const getSnowboradSlideImages = (): string[] => {
   return snowboradSlideImages;
