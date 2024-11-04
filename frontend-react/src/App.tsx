@@ -1,4 +1,6 @@
+// frontend-react/src/App.tsx
 import React, { useState, useEffect, useRef } from 'react';
+// import axios from 'axios';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
@@ -6,22 +8,22 @@ import MarketInsights from './pages/MarketInsights';
 import Portfolio from './pages/Portfolio';
 import Education from './pages/Education';
 import LoginForm from './components/LoginForm';
-
-// assetsフォルダから画像をインポート
-import img1 from './assets/ZenInvestor_8.jpg';
-import img2 from './assets/ZenInvestor_22.jpg';
-import img3 from './assets/ZenInvestor_26.jpg';
-import img4 from './assets/ZenInvestor_28.jpg';
-import img5 from './assets/ZenInvestor_33.jpg';
-import img10 from './assets/ZenInvestor_70.jpg';
-import img11 from './assets/ZenInvestor_73.jpg';
-import img12 from './assets/ZenInvestor_84.jpg';
-
-const images = [img1, img2, img3, img4, img5, img10, img11, img12];
+import { getRandomImage, getMotoSlideImages, getHumanSlideImages, getMoneySlideImages, getCarSlideImages, getSnowboradSlideImages, getAnimeSlideImages } from './components/ImageImporter';
+import ImageSlider from './components/ImageSlider';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // ログイン前のバックイメージ
   const [backgroundImage, setBackgroundImage] = useState<string>('');
+
+  // スライド用のイメージ 
+  const [motoSlideImages, setMotoSlideImages] = useState<string[]>([]);
+  const [humanSlideImages, setHumanSlideImages] = useState<string[]>([]);
+  const [moneySlideImages, setMoneySlideImages] = useState<string[]>([]);
+  const [carSlideImages, setCarSlideImages] = useState<string[]>([]);
+  const [SnowboradSlideImages, setSnowboradSlideImages] = useState<string[]>([]);
+  const [animeSlideImages, setAnimeSlideImages] = useState<string[]>([]);
+
 
   const dashboardRef = useRef<HTMLDivElement>(null);
   const marketInsightsRef = useRef<HTMLDivElement>(null);
@@ -29,10 +31,39 @@ const App: React.FC = () => {
   const educationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const randomImage = images[Math.floor(Math.random() * images.length)];
+    const randomImage = getRandomImage();
     console.log("Selected background image: ", randomImage); // デバッグ用メッセージ
     setBackgroundImage(randomImage);
   }, []);
+
+  // スライド用画像データの取得
+  // useEffect(() => {
+  //   const fetchImages = async () => {
+  //     try {
+  //       const response = await axios.get<string[]>('/api/images'); // Web API実装後、エンドポイントに置き換える
+  //       setImageData(response.data);
+  //     } catch (error) {
+  //       console.error('スライダー用の画像データの取得に失敗しました:', error);
+  //     }
+  //   };
+  //   // ログインしていない場合に画像データを取得
+  //   if (!isLoggedIn) {
+  //     fetchImages();
+  //   }
+  // }, [isLoggedIn]);
+
+  // API実装までダミーでスライド用画像データの取得
+  useEffect(() => {
+    // Web APIの代わりにローカルの画像を使用
+    setMotoSlideImages(getMotoSlideImages());
+    setHumanSlideImages(getHumanSlideImages());
+    setMoneySlideImages(getMoneySlideImages());
+    setCarSlideImages(getCarSlideImages());
+    setSnowboradSlideImages(getSnowboradSlideImages());
+    setAnimeSlideImages(getAnimeSlideImages());
+  }, []);
+
+
 
   const scrollToRef = (ref: React.RefObject<HTMLDivElement>) => {
     const offset = 80;
@@ -63,20 +94,47 @@ const App: React.FC = () => {
             onLogout={handleLogout}
             isLoggedIn={isLoggedIn}
           />
+
+          {/* 右から左へのスライダーを配置 */}
+          <ImageSlider images={moneySlideImages} direction="left-to-right" />
+
           <main className="flex-grow container mx-auto px-4 py-8">
+
+            {/* 左から右へのスライダーを配置 */}
+            <ImageSlider images={humanSlideImages} direction="right-to-left" />
+
             <div ref={dashboardRef}>
               <Dashboard />
             </div>
+
+            {/* 右から左へのスライダーを配置 */}
+            <ImageSlider images={motoSlideImages} direction="left-to-right" />
+
             <div ref={marketInsightsRef}>
               <MarketInsights />
             </div>
+
+            {/* 左から右へのスライダーを配置 */}
+            <ImageSlider images={carSlideImages} direction="right-to-left" />
+
             <div ref={portfolioRef}>
               <Portfolio />
             </div>
+            {/* 右から左へのスライダーを配置 */}
+            <ImageSlider images={animeSlideImages} direction="left-to-right" />
+
             <div ref={educationRef}>
               <Education />
             </div>
+
+            {/* 左から右へのスライダーを配置 */}
+            <ImageSlider images={SnowboradSlideImages} direction="right-to-left" />
+
           </main>
+
+          {/* 左から右へのスライダーを配置 */}
+          <ImageSlider images={moneySlideImages} direction="right-to-left" />
+
           <Footer />
         </>
       ) : (
