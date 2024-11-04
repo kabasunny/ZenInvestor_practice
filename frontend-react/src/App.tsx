@@ -101,27 +101,27 @@ const App: React.FC = () => {
           <main className="flex-grow container mx-auto px-4 py-8">
 
             {/* 左から右へのスライダーを配置 */}
-            <ImageSlider images={humanSlideImages} direction="right-to-left" />
+            <ImageSlider images={humanSlideImages} direction="right-to-left" /><br />
 
             <div ref={dashboardRef}>
               <Dashboard />
             </div>
 
             {/* 右から左へのスライダーを配置 */}
-            <ImageSlider images={motoSlideImages} direction="left-to-right" />
+            <ImageSlider images={motoSlideImages} direction="left-to-right" /><br />
 
             <div ref={marketInsightsRef}>
               <MarketInsights />
             </div>
 
             {/* 左から右へのスライダーを配置 */}
-            <ImageSlider images={carSlideImages} direction="right-to-left" />
+            <ImageSlider images={carSlideImages} direction="right-to-left" /><br />
 
             <div ref={portfolioRef}>
               <Portfolio />
             </div>
             {/* 右から左へのスライダーを配置 */}
-            <ImageSlider images={animeSlideImages} direction="left-to-right" />
+            <ImageSlider images={animeSlideImages} direction="left-to-right" /><br />
 
             <div ref={educationRef}>
               <Education />
