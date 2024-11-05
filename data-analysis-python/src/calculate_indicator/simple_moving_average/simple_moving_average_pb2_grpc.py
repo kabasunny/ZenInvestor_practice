@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import calculate_indicator_pb2 as calculate__indicator__pb2
+import simple_moving_average_pb2 as simple__moving__average__pb2
 
 GRPC_GENERATED_VERSION = '1.67.0'
 GRPC_VERSION = grpc.__version__
@@ -18,14 +18,14 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in calculate_indicator_pb2_grpc.py depends on'
+        + f' but the generated code in simple_moving_average_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class MovingAverageServiceStub(object):
+class SimpleMovingAverageServiceStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -34,43 +34,43 @@ class MovingAverageServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.CalculateMovingAverage = channel.unary_unary(
-                '/MovingAverageService/CalculateMovingAverage',
-                request_serializer=calculate__indicator__pb2.MovingAverageRequest.SerializeToString,
-                response_deserializer=calculate__indicator__pb2.MovingAverageResponse.FromString,
+        self.CalculateSimpleMovingAverage = channel.unary_unary(
+                '/SimpleMovingAverageService/CalculateSimpleMovingAverage',
+                request_serializer=simple__moving__average__pb2.SimpleMovingAverageRequest.SerializeToString,
+                response_deserializer=simple__moving__average__pb2.SimpleMovingAverageResponse.FromString,
                 _registered_method=True)
 
 
-class MovingAverageServiceServicer(object):
+class SimpleMovingAverageServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def CalculateMovingAverage(self, request, context):
+    def CalculateSimpleMovingAverage(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_MovingAverageServiceServicer_to_server(servicer, server):
+def add_SimpleMovingAverageServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'CalculateMovingAverage': grpc.unary_unary_rpc_method_handler(
-                    servicer.CalculateMovingAverage,
-                    request_deserializer=calculate__indicator__pb2.MovingAverageRequest.FromString,
-                    response_serializer=calculate__indicator__pb2.MovingAverageResponse.SerializeToString,
+            'CalculateSimpleMovingAverage': grpc.unary_unary_rpc_method_handler(
+                    servicer.CalculateSimpleMovingAverage,
+                    request_deserializer=simple__moving__average__pb2.SimpleMovingAverageRequest.FromString,
+                    response_serializer=simple__moving__average__pb2.SimpleMovingAverageResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'MovingAverageService', rpc_method_handlers)
+            'SimpleMovingAverageService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('MovingAverageService', rpc_method_handlers)
+    server.add_registered_method_handlers('SimpleMovingAverageService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class MovingAverageService(object):
+class SimpleMovingAverageService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def CalculateMovingAverage(request,
+    def CalculateSimpleMovingAverage(request,
             target,
             options=(),
             channel_credentials=None,
@@ -83,9 +83,9 @@ class MovingAverageService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/MovingAverageService/CalculateMovingAverage',
-            calculate__indicator__pb2.MovingAverageRequest.SerializeToString,
-            calculate__indicator__pb2.MovingAverageResponse.FromString,
+            '/SimpleMovingAverageService/CalculateSimpleMovingAverage',
+            simple__moving__average__pb2.SimpleMovingAverageRequest.SerializeToString,
+            simple__moving__average__pb2.SimpleMovingAverageResponse.FromString,
             options,
             channel_credentials,
             insecure,

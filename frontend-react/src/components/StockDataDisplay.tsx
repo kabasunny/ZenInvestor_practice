@@ -8,14 +8,20 @@ interface StockDataDisplayProps {
   error: string | null;
 }
 
-const StockDataDisplay: React.FC<StockDataDisplayProps> = ({ date, stockData, loading, error }) => {
+const StockDataDisplay: React.FC<StockDataDisplayProps> = ({
+  date,
+  stockData,
+  loading,
+  error,
+}) => {
   if (loading) return <p>読み込み中...</p>;
   if (error) return <p>{error}</p>;
   if (!stockData) return <p>データがありません。</p>;
 
   return (
     <div>
-      <h3 className="text-lg font-semibold">銘柄データ - {date}</h3>
+      <h3 className="text-lg font-semibold">銘柄データ</h3>
+      <p>日付: - {date}</p>
       <p>始値: ${stockData.open.toFixed(2)}</p>
       <p>終値: ${stockData.close.toFixed(2)}</p>
       <p>高値: ${stockData.high.toFixed(2)}</p>

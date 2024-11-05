@@ -8,7 +8,13 @@ interface StockFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
-const StockForm: React.FC<StockFormProps> = ({ ticker, period, setTicker, setPeriod, onSubmit }) => {
+const StockForm: React.FC<StockFormProps> = ({
+  ticker,
+  period,
+  setTicker,
+  setPeriod,
+  onSubmit,
+}) => {
   return (
     <form onSubmit={onSubmit} className="mb-4">
       <label className="mr-2">
@@ -20,6 +26,7 @@ const StockForm: React.FC<StockFormProps> = ({ ticker, period, setTicker, setPer
           className="ml-2 p-1 border rounded"
         />
       </label>
+      <br />
       <label className="mr-2">
         期間:
         <input
@@ -29,7 +36,10 @@ const StockForm: React.FC<StockFormProps> = ({ ticker, period, setTicker, setPer
           className="ml-2 p-1 border rounded"
         />
       </label>
-      <button type="submit" className="ml-2 px-4 py-1 bg-blue-500 text-white rounded">
+      <button
+        type="submit"
+        className="ml-2 px-4 py-1 bg-blue-500 text-white rounded"
+      >
         Get
       </button>
     </form>
