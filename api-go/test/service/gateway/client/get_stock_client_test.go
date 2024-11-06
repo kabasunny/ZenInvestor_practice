@@ -16,7 +16,9 @@ func TestNewStockClient(t *testing.T) {
 	// クライアントを初期化
 	godotenv.Load("../../../../.env") //テストではパスを指定しないとうまく読み取らない
 	// 上記でgrpcクライアントのポートを読み込む必要がある
-	stockClient, err := client.NewGetStockDataClient()
+
+	ctx := context.Background()
+	stockClient, err := client.NewGetStockDataClient(ctx)
 	assert.NoError(t, err)
 	assert.NotNil(t, stockClient)
 	defer stockClient.Close() // 接続を閉じる
@@ -26,7 +28,9 @@ func TestGetStockData(t *testing.T) {
 	// クライアントを初期化
 	godotenv.Load("../../../../.env") //テストではパスを指定しないとうまく読み取らない
 	// 上記でgrpcクライアントのポートを読み込む必要がある
-	stockClient, err := client.NewGetStockDataClient()
+
+	ctx := context.Background()
+	stockClient, err := client.NewGetStockDataClient(ctx)
 	assert.NoError(t, err)
 	assert.NotNil(t, stockClient)
 	defer stockClient.Close()
