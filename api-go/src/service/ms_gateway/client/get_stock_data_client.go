@@ -24,7 +24,7 @@ type getStockDataClientImpl struct {
 
 // NewGetStockClient は GetStockClient の新しいインスタンスを作成
 func NewGetStockDataClient() (GetStockDataClient, error) {
-	port := os.Getenv("GET_STOCK_DATA_MS_PORT")
+	port := os.Getenv("GET_STOCK_DATA_MS_PORT")  // .envを確認
 	address := fmt.Sprintf("localhost:%s", port) // 環境変数からポート番号を取得
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	// conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))

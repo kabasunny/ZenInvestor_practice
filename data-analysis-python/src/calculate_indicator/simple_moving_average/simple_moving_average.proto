@@ -19,4 +19,4 @@ message SimpleMovingAverageResponse {
 // python -m grpc_tools.protoc -I src/calculate_indicator/simple_moving_average --python_out src/calculate_indicator/simple_moving_average --grpc_python_out src/calculate_indicator/simple_moving_average src/calculate_indicator/simple_moving_average/simple_moving_average.proto
 
 // Go用コンパイルコマンド
-// protoc --proto_path=../data-analysis-python/src/calculate_indicator/simple_moving_average --go_out=./src/service/ms_gateway/calculate_indicator/simple_moving_average --go_opt=paths=source_relative --go-grpc_out=./src/service/ms_gateway/calculate_indicator/simple_moving_average --go-grpc_opt=paths=source_relative ../data-analysis-python/src/calculate_indicator/simple_moving_average/calculate_indicator.proto
+// protoc --proto_path=../data-analysis-python/src/calculate_indicator/simple_moving_average --go_out=./src/service/ms_gateway/calculate_indicator/simple_moving_average --go_opt=paths=source_relative --go-grpc_out=./src/service/ms_gateway/calculate_indicator/simple_moving_average --go-grpc_opt=paths=source_relative ../data-analysis-python/src/calculate_indicator/simple_moving_average/simple_moving_average.proto

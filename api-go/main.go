@@ -3,20 +3,29 @@ package main
 import (
 	"api-go/src/infra"
 	"api-go/src/router"
+	"context"
+	"log" // エラーログ出力用
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func main() {
-	infra.Initialize() // 初期化処理
+	ctx := context.Background() // バックグラウンドコンテキストを作成
+	infra.Initialize()          // 初期化処理
 
 	// db := infra.SetupDB()               // データベース接続の初期化
 	var db *gorm.DB = nil
 
-	msClients := infra.SetupMsClients() // マイクロサービス接続の初期化
+	msClients, err := infra.SetupMsClients(ctx) // マイクロサービス接続の初期化、エラー処理を追加
+	if err != nil {
+		log.Fatalf("Failed to setup microservice clients: %v", err) // エラーが発生したらログ出力して終了
+	}
 
 	ginRouter := gin.Default()                   // Ginのデフォルトルータを作成
 	router.SetupRouter(ginRouter, db, msClients) // ルーティングの設定
-	ginRouter.Run(":8086")                       // サーバーをポート8086で起動
+
+	if err := ginRouter.Run(":8086"); err != nil { // ginRouter.Run()のエラー処理
+		log.Fatalf("Failed to run server: %v", err)
+	}
 }
