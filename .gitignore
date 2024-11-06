@@ -16,4 +16,4 @@ tmp/
 docker/
 
 # .env
-.env
+#.env

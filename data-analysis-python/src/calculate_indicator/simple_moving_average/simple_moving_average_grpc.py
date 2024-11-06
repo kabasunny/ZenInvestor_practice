@@ -14,6 +14,8 @@ class SimpleMovingAverageService(
         # 移動平均を計算する関数を呼び出し、結果を values に格納
         values = calculate_simple_moving_average(stock_data, request.window_size)
         # 計算結果をレスポンスとして返す
+
+        print("grpcサーバーが、calculate_simple_moving_averageサービスを呼び出し")
         return simple_moving_average_pb2.SimpleMovingAverageResponse(values=values)
 
 
@@ -28,6 +30,7 @@ def serve():
     server.add_insecure_port("[::]:50053")
     # サーバーを起動
     server.start()
+    print("Server started, listening on port 50053")
     # サーバー終了まで待機
     server.wait_for_termination()
 

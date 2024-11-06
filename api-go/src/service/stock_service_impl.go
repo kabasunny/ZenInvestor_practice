@@ -1,11 +1,10 @@
 package service
 
 import (
+	"api-go/src/service/ms_gateway/client"
 	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
 	"context"
 	"fmt"
-
-	"api-go/src/service/ms_gateway/client" // stock_client.go のパッケージパス
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -23,15 +22,18 @@ func NewStockServiceImpl(clients map[string]interface{}) StockService {
 	}
 }
 
-// GetStockData は指定された銘柄と期間の株価データを取得
+// GetStockData は指定された銘柄と期間と指標の株価データを取得
 func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, period string) (*ms_gateway.GetStockDataResponse, error) {
-	stockClient := s.clients["get_stock_data"].(client.GetStockDataClient)
+
+	// GetStockDataClientのインスタンスを取得　:銘柄コード,表示期間
+	getStockDataClient := s.clients["get_stock_data"].(client.GetStockDataClient)
 	req := &ms_gateway.GetStockDataRequest{
-		Ticker: ticker,
-		Period: period,
+		Ticker: ticker, // 銘柄コード
+		Period: period, // 表示期間
 	}
 
-	res, err := stockClient.GetStockData(ctx, req)
+	// GetStockDataClientから株価のデータを取得
+	res, err := getStockDataClient.GetStockData(ctx, req)
 	if err != nil {
 		// エラー処理。必要に応じてより詳細なエラーハンドリングを行う
 		st, ok := status.FromError(err)
@@ -40,6 +42,14 @@ func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, peri
 		}
 		return nil, fmt.Errorf("failed to get stock data: %w", err)
 	}
+
+	// GeneratChartClientのインスタンスを取得　:株価のデータ,指標
+
+	// GeneratChartClientからチャート可視化データを取得
+
+	// SimpleMovingAverageClientのインスタンスを取得　:株価のデータ,平均値の計算幅
+
+	// SimpleMovingAverageClientから移動平均線を取得
 
 	return res, nil
 }
