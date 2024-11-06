@@ -59,7 +59,7 @@ func (c *simpleMovingAverageClientImpl) CalculateSimpleMovingAverage(ctx context
 	return c.client.CalculateSimpleMovingAverage(ctx, req)
 }
 
-// Close はgRPC接続を閉じます。
+// Close はgRPC接続を閉じる
 func (c *simpleMovingAverageClientImpl) Close() error {
 	return c.conn.Close()
 }

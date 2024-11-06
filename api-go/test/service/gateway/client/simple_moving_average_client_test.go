@@ -39,6 +39,8 @@ func TestCalculateSimpleMovingAverage(t *testing.T) {
 		WindowSize: 3,
 	}
 
+	// 実際の gRPC サーバーが起動していることを前提とした統合テスト
+
 	res, err := smaClient.CalculateSimpleMovingAverage(ctx, req)
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -46,3 +48,5 @@ func TestCalculateSimpleMovingAverage(t *testing.T) {
 	expectedSMA := []float64{12, 14, 16, 18}      // float64に変更
 	assert.Equal(t, expectedSMA, res.GetValues()) // GetValues() を使用
 }
+
+// go test -v ./test/service/gateway/client/simple_moving_average_test.go

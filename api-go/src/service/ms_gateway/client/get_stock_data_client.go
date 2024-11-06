@@ -5,8 +5,10 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
@@ -23,19 +25,35 @@ type getStockDataClientImpl struct {
 }
 
 // NewGetStockClient は GetStockClient の新しいインスタンスを作成
-func NewGetStockDataClient() (GetStockDataClient, error) {
+func NewGetStockDataClient(ctx context.Context) (GetStockDataClient, error) {
 	port := os.Getenv("GET_STOCK_DATA_MS_PORT")  // .envを確認
 	address := fmt.Sprintf("localhost:%s", port) // 環境変数からポート番号を取得
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	// conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	// NewClient を使用して ClientConn を作成
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		return nil, fmt.Errorf("failed to dial gRPC server: %w", err)
+		return nil, fmt.Errorf("failed to create gRPC client: %w", err)
 	}
+
+	// 接続を開始
+	conn.Connect()
+
+	// タイムアウトを設定 (例: 15秒)  必要に応じて調整
+	connectCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+
+	// 接続が確立されるまで待つ
+	for conn.GetState() != connectivity.Ready { //ここを変更
+		if !conn.WaitForStateChange(connectCtx, conn.GetState()) {
+			return nil, fmt.Errorf("failed to connect to gRPC server: %w", connectCtx.Err())
+		}
+	}
+
 	client := ms_gateway.NewGetStockDataServiceClient(conn)
 	return &getStockDataClientImpl{client: client, conn: conn}, nil
 }
 
-// GetStockData は指定された銘柄と期間の株価データを取得します。
+// GetStockData は指定された銘柄と期間の株価データを取得
 func (c *getStockDataClientImpl) GetStockData(ctx context.Context, req *ms_gateway.GetStockDataRequest) (*ms_gateway.GetStockDataResponse, error) {
 	return c.client.GetStockData(ctx, req)
 }

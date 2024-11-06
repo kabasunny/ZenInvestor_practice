@@ -17,9 +17,9 @@ func SetupMsClients(ctx context.Context) (*MSClients, error) { // 戻り値にer
 	msClients := make(map[string]interface{})
 
 	// 株価データ取得　SMAクライアントがうまくいったら、クライアントを修正
-	getStockDataClient, err := client.NewGetStockDataClient()
+	getStockDataClient, err := client.NewGetStockDataClient(ctx)
 	if err != nil {
-		log.Fatalf("Failed to create stock client: %v", err)
+		log.Fatalf("Failed to create get stock data client: %v", err)
 	}
 	msClients["get_stock_data"] = getStockDataClient
 
