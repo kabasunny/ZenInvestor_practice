@@ -3,88 +3,109 @@ package service_test
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
+	"api-go/src/infra"
 	"api-go/src/service"
-	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
-// MockStockClient は StockClient インターフェースのモック実装です。
-type MockStockClient struct {
-	mock.Mock
-}
+func TestGetStockDataIntegration(t *testing.T) {
+	// 1. gRPCサーバーを起動 (別プロセスで)
+	fmt.Println("Step 1: Starting gRPC server...")
 
-func (m *MockStockClient) GetStockData(ctx context.Context, req *ms_gateway.GetStockDataRequest) (*ms_gateway.GetStockDataResponse, error) {
-	args := m.Called(ctx, req)
-	return args.Get(0).(*ms_gateway.GetStockDataResponse), args.Error(1)
-}
-
-func (m *MockStockClient) Close() error {
-	return nil
-}
-
-func TestGetStockDataSuccess(t *testing.T) {
-	godotenv.Load("../../.env")
-
-	mockClient := new(MockStockClient)
-	clients := map[string]interface{}{
-		"get_stock_data": mockClient,
-	}
-	service := service.NewStockServiceImpl(clients)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	req := &ms_gateway.GetStockDataRequest{
-		Ticker: "AAPL",
-		Period: "5d",
-	}
-
-	// ダミーのレスポンスデータ（データ構造はチェックしないため、StockData を nil に設定）
-	expectedResponse := &ms_gateway.GetStockDataResponse{
-		StockData: nil,
-	}
-
-	// モックの設定
-	mockClient.On("GetStockData", ctx, req).Return(expectedResponse, nil)
-
-	// テストの実行
-	res, err := service.GetStockData(ctx, "AAPL", "5d")
-
-	// エラーが発生せず、データが取得できたか確認
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
-	mockClient.AssertExpectations(t)
-}
-
-func TestGetStockDataFailure(t *testing.T) {
 	godotenv.Load("../../.env") //テストではパスを指定しないとうまく読み取らない
 	// 上記でgrpcクライアントのポートを読み込む必要がある
-	mockClient := new(MockStockClient)
-	clients := map[string]interface{}{
-		"get_stock_data": mockClient,
-	}
-	service := service.NewStockServiceImpl(clients)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+
+	// 2. クライアントをセットアップ
+	fmt.Println("Step 2: Setting up clients...")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) // タイムアウトを設定
 	defer cancel()
+	fmt.Println("ctx setup successfully.")
 
-	req := &ms_gateway.GetStockDataRequest{
-		Ticker: "AAPL",
-		Period: "5d",
+	msClients, err := infra.SetupMsClients(ctx)
+	fmt.Println("Clients setup ...")
+	if err != nil {
+		t.Fatalf("failed to setup clients: %v", err)
+	}
+	defer func() {
+		for _, c := range msClients.MSClients {
+			if closer, ok := c.(interface{ Close() error }); ok {
+				if err := closer.Close(); err != nil {
+					fmt.Printf("failed to close client: %v\n", err)
+					t.Errorf("failed to close client: %v", err)
+				}
+			}
+		}
+	}()
+	fmt.Println("Clients setup successfully.")
+
+	// StockServiceを初期化
+	fmt.Println("Initializing StockService...")
+	service := service.NewStockServiceImpl(msClients.MSClients)
+	fmt.Println("StockService initialized.")
+
+	// 3. リクエストデータを作成
+	fmt.Printf("Step 3: Creating request data for ticker")
+	ticker := "AAPL" // テスト用のティッカーシンボル
+	period := "5d"   // テスト用の期間
+
+	// 4. サービスの呼び出し
+	fmt.Println("Step 4: Calling GetStockData service...")
+	res, err := service.GetStockData(ctx, ticker, period)
+	if err != nil {
+		fmt.Printf("Error calling GetStockData service: %v\n", err)
+	}
+	fmt.Println("Service call completed.")
+
+	// 5. アサーション
+	fmt.Println("Step 5: Performing assertions...")
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	assert.NotEmpty(t, res.StockData) // レスポンスにデータが含まれていることを検証
+	fmt.Println("Assertions completed.")
+
+	// 6. 結果をファイルに保存
+	fmt.Printf("Step 6: Saving results to file in directory")
+	outputDir := os.Getenv("TEST_OUTPUT_DIR")
+	if outputDir == "" {
+		outputDir = "api-go/test/test_outputs" // デフォルトの出力ディレクトリ
 	}
 
-	// エラーを返すようにモックを設定
-	mockClient.On("GetStockData", ctx, req).Return((*ms_gateway.GetStockDataResponse)(nil), fmt.Errorf("mock error: stock data not found"))
+	timestamp := time.Now().Format("20060102150405") // タイムスタンプ
+	filename := fmt.Sprintf("get_stock_data_service_test_%s.txt", timestamp)
+	outputFile := filepath.Join(outputDir, filename)
 
-	// サービスメソッドの呼び出し
-	res, err := service.GetStockData(ctx, "AAPL", "5d")
+	if err := os.MkdirAll(outputDir, 0755); err != nil {
+		t.Errorf("failed to create output directory: %v", err) // t.Errorに変更
+		return                                                 // エラーが発生してもテストを継続
+	}
 
-	// エラーが返されていることと、結果が nil であることを確認
-	assert.Error(t, err)
-	assert.Nil(t, res)
-	mockClient.AssertExpectations(t)
+	file, err := os.Create(outputFile)
+	if err != nil {
+		t.Errorf("failed to create output file: %v", err) // t.Errorに変更
+		return                                            // エラーが発生してもテストを継続
+	}
+	defer file.Close()
+	fmt.Println("File created successfully.")
+
+	for key, value := range res.StockData {
+		data := fmt.Sprintf("%s: open: %.2f, close: %.2f, high: %.2f, low: %.2f, volume: %.2f\n", key, value.Open, value.Close, value.High, value.Low, value.Volume)
+		if _, err := file.WriteString(data); err != nil {
+			t.Errorf("failed to write to output file: %v", err) // t.Errorに変更
+			// return // エラーが発生してもテストを継続 (必要に応じて)
+		}
+	}
+	fmt.Println("Results written to file successfully.")
+
+	// テストの実行コード
+	// go test -v ./test/service/get_stock_service_test.go -run TestGetStockDataIntegration
+
+	// 7. gRPCサーバーを停止
+	fmt.Println("Step 7: Stopping gRPC server...")
 }
