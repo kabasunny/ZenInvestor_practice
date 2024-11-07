@@ -24,7 +24,7 @@ func TestGetStockDataIntegration(t *testing.T) {
 
 	// 2. クライアントをセットアップ
 	fmt.Println("Step 2: Setting up clients...")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) // タイムアウトを設定
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second) // タイムアウトを設定
 	defer cancel()
 	fmt.Println("ctx setup successfully.")
 
@@ -72,7 +72,7 @@ func TestGetStockDataIntegration(t *testing.T) {
 
 	// 6. 結果をファイルに保存
 	fmt.Printf("Step 6: Saving results to file in directory")
-	outputDir := os.Getenv("TEST_OUTPUT_DIR")
+	outputDir := os.Getenv("TEST_SERVICE_OUTPUT_DIR")
 	if outputDir == "" {
 		outputDir = "api-go/test/test_outputs" // デフォルトの出力ディレクトリ
 	}
