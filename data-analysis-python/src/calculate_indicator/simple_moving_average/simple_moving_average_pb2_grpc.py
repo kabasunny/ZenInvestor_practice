@@ -35,7 +35,7 @@ class SimpleMovingAverageServiceStub(object):
             channel: A grpc.Channel.
         """
         self.CalculateSimpleMovingAverage = channel.unary_unary(
-                '/SimpleMovingAverageService/CalculateSimpleMovingAverage',
+                '/simple_moving_average.SimpleMovingAverageService/CalculateSimpleMovingAverage',
                 request_serializer=simple__moving__average__pb2.SimpleMovingAverageRequest.SerializeToString,
                 response_deserializer=simple__moving__average__pb2.SimpleMovingAverageResponse.FromString,
                 _registered_method=True)
@@ -60,9 +60,9 @@ def add_SimpleMovingAverageServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'SimpleMovingAverageService', rpc_method_handlers)
+            'simple_moving_average.SimpleMovingAverageService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('SimpleMovingAverageService', rpc_method_handlers)
+    server.add_registered_method_handlers('simple_moving_average.SimpleMovingAverageService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -83,7 +83,7 @@ class SimpleMovingAverageService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/SimpleMovingAverageService/CalculateSimpleMovingAverage',
+            '/simple_moving_average.SimpleMovingAverageService/CalculateSimpleMovingAverage',
             simple__moving__average__pb2.SimpleMovingAverageRequest.SerializeToString,
             simple__moving__average__pb2.SimpleMovingAverageResponse.FromString,
             options,

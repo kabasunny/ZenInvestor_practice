@@ -1,6 +1,8 @@
+// get_stock_data.proto
 syntax = "proto3";  // プロトコルバッファのバージョンを指定
+package get_stock_data;  // この行を追加
 
-option go_package = "api-go/src/service/ms_gateway";
+option go_package = "api-go/src/service/ms_gateway/get_stock_data";
 
 // GetStockServiceというサービスを定義
 service GetStockDataService {

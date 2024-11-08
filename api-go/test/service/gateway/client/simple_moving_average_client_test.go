@@ -52,25 +52,28 @@ func TestCalculateSimpleMovingAverage(t *testing.T) {
 	assert.Equal(t, expectedSMA, res.GetValues())                    // GetValues() を使用
 
 	// ファイル出力
-	outputDir := os.Getenv("TEST_OUTPUT_DIR")
-	if outputDir != "" {
-		filename := "simple_moving_average_client_test.txt"
-		outputFile := filepath.Join(outputDir, filename)
 
-		file, err := os.Create(outputFile)
-		if err != nil {
-			t.Fatalf("Failed to create file: %v", err)
-		}
-		defer file.Close()
-
-		for i, value := range res.GetValues() {
-			data := fmt.Sprintf("SMA[%d]: %.2f\n", i, value)
-			_, err := file.WriteString(data)
-			if err != nil {
-				t.Fatalf("Failed to write to file: %v", err)
-			}
-		}
+	outputDir := os.Getenv("TEST_CLIENT_OUTPUT_DIR")
+	if outputDir == "" {
+		outputDir = "api-go/test/test_outputs" // デフォルトの出力ディレクトリ
 	}
+
+	timestamp := time.Now().Format("20060102150405") // タイムスタンプ
+	filename := fmt.Sprintf("simple_moving_average_client_test%s.txt", timestamp)
+	outputFile := filepath.Join(outputDir, filename)
+
+	if err := os.MkdirAll(outputDir, 0755); err != nil {
+		t.Errorf("failed to create output directory: %v", err) // t.Errorに変更
+		return                                                 // エラーが発生してもテストを継続
+	}
+
+	file, err := os.Create(outputFile)
+	if err != nil {
+		t.Errorf("failed to create output file: %v", err) // t.Errorに変更
+		return                                            // エラーが発生してもテストを継続
+	}
+	defer file.Close()
+	fmt.Println("File created successfully.")
 }
 
 // go test -v ./test/service/gateway/client/simple_moving_average_client_test.go

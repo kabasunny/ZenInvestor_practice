@@ -1,20 +1,28 @@
+// generate_chart.proto SMAの実装時に、内容変更
 syntax = "proto3";
 
-option go_package = "api-go/src/service/gateway";  // プロジェクトのルートからの相対パス
+package generate_chart;
 
-service ChartService {
-  rpc GenerateChart(ChartRequest) returns (ChartResponse) {}
+option go_package = "api-go/src/service/ms_gateway/generate_chart";
+
+import "data-analysis-python/src/get_stock_data/get_stock_data.proto"; // get_stock_data.protoをインポート
+
+service GenerateChartService {
+  rpc GenerateChart (GenerateChartRequest) returns (GenerateChartResponse) {}
 }
 
-message ChartRequest {
-  repeated float stock_data = 1;  // 株価データ
-  repeated float indicator_data = 2;  // 指標データ
-  string ticker = 3;  // ティッカーシンボル
+message GenerateChartRequest {
+  map<string, get_stock_data.StockData> stock_data = 1; // 完全修飾名で参照
+  repeated IndicatorData indicators = 2;
 }
 
-message ChartResponse {
-  string chart_data = 1;  // Base64エンコードされた画像データ
+message IndicatorData {
+  string name = 1;
+  map<string, double> values = 2;
 }
 
+message GenerateChartResponse {
+  string chart_image_base64 = 1;
+}
 
 // python -m grpc_tools.protoc -I src/generate_chart --python_out src/generate_chart --grpc_python_out=src/generate_chart src/generate_chart/generate_chart.proto

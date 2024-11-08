@@ -1,13 +1,16 @@
 package service
 
 import (
-	"api-go/src/service/ms_gateway/client"
-	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
+	indicator "api-go/src/service/ms_gateway/calculate_indicator" // IndicatorParamsのimport元
+	// smaパッケージをインポート
+	client "api-go/src/service/ms_gateway/client"
+	getstockdata "api-go/src/service/ms_gateway/get_stock_data"
 	"context"
 	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	// anypbを使う場合に必要
 )
 
 // StockServiceImpl は StockService インターフェースの実装
@@ -23,11 +26,11 @@ func NewStockServiceImpl(clients map[string]interface{}) StockService {
 }
 
 // GetStockData は指定された銘柄と期間と指標の株価データを取得
-func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, period string) (*ms_gateway.GetStockDataResponse, error) {
+func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, period string, indicators []*indicator.IndicatorParams) (*getstockdata.GetStockDataResponse, error) {
 
 	// GetStockDataClientのインスタンスを取得　:銘柄コード,表示期間
 	getStockDataClient := s.clients["get_stock_data"].(client.GetStockDataClient)
-	req := &ms_gateway.GetStockDataRequest{
+	req := &getstockdata.GetStockDataRequest{
 		Ticker: ticker, // 銘柄コード
 		Period: period, // 表示期間
 	}
@@ -43,13 +46,24 @@ func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, peri
 		return nil, fmt.Errorf("failed to get stock data: %w", err)
 	}
 
-	// GeneratChartClientのインスタンスを取得　:株価のデータ,指標
+	// indicatorsがnilまたは空の場合、指標の計算はスキップ
+	if indicators != nil || len(indicators) != 0 {
+		// indicatorsが有効な値の場合、指標の計算を実行
+		// for _, indicator := range indicators {
+		//指標は最大3個まで付加し、チャートを生成する
+
+		// もし、SimpleMovingAverageClientのインスタンスを取得　:株価のデータ,平均値の計算幅
+		// SimpleMovingAverageClientから移動平均線作画用データを取得
+		// もし、他の指標計算Clientのインスタンスを取得　:株価のデータ,平均値の計算幅
+		// 他の指標1計算Clientから他の指標1データを取得
+		// もし、他の指標計算Clientのインスタンスを取得　:株価のデータ,平均値の計算幅
+		// 他の指標2計算Clientから他の指標2データを取得
+		// }
+	}
+
+	// GeneratChartClientのインスタンスを取得　:株価のデータ,指標データ0～3個
 
 	// GeneratChartClientからチャート可視化データを取得
-
-	// SimpleMovingAverageClientのインスタンスを取得　:株価のデータ,平均値の計算幅
-
-	// SimpleMovingAverageClientから移動平均線を取得
 
 	return res, nil
 }

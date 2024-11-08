@@ -10,6 +10,7 @@ import (
 
 	"api-go/src/infra"
 	"api-go/src/service"
+	indicator "api-go/src/service/ms_gateway/calculate_indicator"
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +25,7 @@ func TestGetStockDataIntegration(t *testing.T) {
 
 	// 2. クライアントをセットアップ
 	fmt.Println("Step 2: Setting up clients...")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) // タイムアウトを設定
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second) // タイムアウトを設定
 	defer cancel()
 	fmt.Println("ctx setup successfully.")
 
@@ -52,12 +53,13 @@ func TestGetStockDataIntegration(t *testing.T) {
 
 	// 3. リクエストデータを作成
 	fmt.Printf("Step 3: Creating request data for ticker")
-	ticker := "AAPL" // テスト用のティッカーシンボル
-	period := "5d"   // テスト用の期間
+	ticker := "AAPL"                                // テスト用のティッカーシンボル
+	period := "5d"                                  // テスト用の期間
+	indicators := []*indicator.IndicatorParams(nil) // ここのテストではnilを渡す
 
 	// 4. サービスの呼び出し
 	fmt.Println("Step 4: Calling GetStockData service...")
-	res, err := service.GetStockData(ctx, ticker, period)
+	res, err := service.GetStockData(ctx, ticker, period, indicators)
 	if err != nil {
 		fmt.Printf("Error calling GetStockData service: %v\n", err)
 	}
@@ -72,7 +74,7 @@ func TestGetStockDataIntegration(t *testing.T) {
 
 	// 6. 結果をファイルに保存
 	fmt.Printf("Step 6: Saving results to file in directory")
-	outputDir := os.Getenv("TEST_OUTPUT_DIR")
+	outputDir := os.Getenv("TEST_SERVICE_OUTPUT_DIR")
 	if outputDir == "" {
 		outputDir = "api-go/test/test_outputs" // デフォルトの出力ディレクトリ
 	}
