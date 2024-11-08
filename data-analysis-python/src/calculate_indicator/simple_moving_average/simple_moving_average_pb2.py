@@ -22,10 +22,9 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-from data_analysis_python.src.get_stock_data import get_stock_data_pb2 as data__analysis__python_dot_src_dot_get__stock__data_dot_get__stock__data__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bsimple_moving_average.proto\x12\x15simple_moving_average\x1a<data-analysis-python/src/get_stock_data/get_stock_data.proto\"\xcf\x01\n\x1aSimpleMovingAverageRequest\x12T\n\nstock_data\x18\x01 \x03(\x0b\x32@.simple_moving_average.SimpleMovingAverageRequest.StockDataEntry\x12\x0e\n\x06period\x18\x02 \x01(\x05\x1aK\n\x0eStockDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.get_stock_data.StockData:\x02\x38\x01\"\xb2\x01\n\x1bSimpleMovingAverageResponse\x12]\n\x0emoving_average\x18\x01 \x03(\x0b\x32\x45.simple_moving_average.SimpleMovingAverageResponse.MovingAverageEntry\x1a\x34\n\x12MovingAverageEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x32\xa6\x01\n\x1aSimpleMovingAverageService\x12\x87\x01\n\x1c\x43\x61lculateSimpleMovingAverage\x12\x31.simple_moving_average.SimpleMovingAverageRequest\x1a\x32.simple_moving_average.SimpleMovingAverageResponse\"\x00\x42IZGapi-go/src/service/ms_gateway/calculate_indicator/simple_moving_averageb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bsimple_moving_average.proto\x12\x15simple_moving_average\"S\n\tStockData\x12\x0c\n\x04open\x18\x01 \x01(\x01\x12\r\n\x05\x63lose\x18\x02 \x01(\x01\x12\x0c\n\x04high\x18\x03 \x01(\x01\x12\x0b\n\x03low\x18\x04 \x01(\x01\x12\x0e\n\x06volume\x18\x05 \x01(\x01\"\xeb\x01\n\x1aSimpleMovingAverageRequest\x12T\n\nstock_data\x18\x01 \x03(\x0b\x32@.simple_moving_average.SimpleMovingAverageRequest.StockDataEntry\x12\x0e\n\x06period\x18\x02 \x01(\x05\x12\x13\n\x0bwindow_size\x18\x03 \x01(\x05\x1aR\n\x0eStockDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12/\n\x05value\x18\x02 \x01(\x0b\x32 .simple_moving_average.StockData:\x02\x38\x01\"\xb2\x01\n\x1bSimpleMovingAverageResponse\x12]\n\x0emoving_average\x18\x01 \x03(\x0b\x32\x45.simple_moving_average.SimpleMovingAverageResponse.MovingAverageEntry\x1a\x34\n\x12MovingAverageEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x32\xa6\x01\n\x1aSimpleMovingAverageService\x12\x87\x01\n\x1c\x43\x61lculateSimpleMovingAverage\x12\x31.simple_moving_average.SimpleMovingAverageRequest\x1a\x32.simple_moving_average.SimpleMovingAverageResponse\"\x00\x42IZGapi-go/src/service/ms_gateway/calculate_indicator/simple_moving_averageb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -37,14 +36,16 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_SIMPLEMOVINGAVERAGEREQUEST_STOCKDATAENTRY']._serialized_options = b'8\001'
   _globals['_SIMPLEMOVINGAVERAGERESPONSE_MOVINGAVERAGEENTRY']._loaded_options = None
   _globals['_SIMPLEMOVINGAVERAGERESPONSE_MOVINGAVERAGEENTRY']._serialized_options = b'8\001'
-  _globals['_SIMPLEMOVINGAVERAGEREQUEST']._serialized_start=117
-  _globals['_SIMPLEMOVINGAVERAGEREQUEST']._serialized_end=324
-  _globals['_SIMPLEMOVINGAVERAGEREQUEST_STOCKDATAENTRY']._serialized_start=249
-  _globals['_SIMPLEMOVINGAVERAGEREQUEST_STOCKDATAENTRY']._serialized_end=324
-  _globals['_SIMPLEMOVINGAVERAGERESPONSE']._serialized_start=327
-  _globals['_SIMPLEMOVINGAVERAGERESPONSE']._serialized_end=505
-  _globals['_SIMPLEMOVINGAVERAGERESPONSE_MOVINGAVERAGEENTRY']._serialized_start=453
-  _globals['_SIMPLEMOVINGAVERAGERESPONSE_MOVINGAVERAGEENTRY']._serialized_end=505
-  _globals['_SIMPLEMOVINGAVERAGESERVICE']._serialized_start=508
-  _globals['_SIMPLEMOVINGAVERAGESERVICE']._serialized_end=674
+  _globals['_STOCKDATA']._serialized_start=54
+  _globals['_STOCKDATA']._serialized_end=137
+  _globals['_SIMPLEMOVINGAVERAGEREQUEST']._serialized_start=140
+  _globals['_SIMPLEMOVINGAVERAGEREQUEST']._serialized_end=375
+  _globals['_SIMPLEMOVINGAVERAGEREQUEST_STOCKDATAENTRY']._serialized_start=293
+  _globals['_SIMPLEMOVINGAVERAGEREQUEST_STOCKDATAENTRY']._serialized_end=375
+  _globals['_SIMPLEMOVINGAVERAGERESPONSE']._serialized_start=378
+  _globals['_SIMPLEMOVINGAVERAGERESPONSE']._serialized_end=556
+  _globals['_SIMPLEMOVINGAVERAGERESPONSE_MOVINGAVERAGEENTRY']._serialized_start=504
+  _globals['_SIMPLEMOVINGAVERAGERESPONSE_MOVINGAVERAGEENTRY']._serialized_end=556
+  _globals['_SIMPLEMOVINGAVERAGESERVICE']._serialized_start=559
+  _globals['_SIMPLEMOVINGAVERAGESERVICE']._serialized_end=725
 # @@protoc_insertion_point(module_scope)
