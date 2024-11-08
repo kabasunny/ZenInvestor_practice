@@ -19,7 +19,6 @@ func SetupMsClients(ctx context.Context) (*MSClients, error) { // 戻り値にer
 	msClients := make(map[string]interface{})
 	fmt.Println("Clients setup...")
 
-	// 株価データ取得　SMAクライアントがうまくいったら、クライアントを修正
 	getStockDataClient, err := client.NewGetStockDataClient(ctx)
 	fmt.Println("in NewGetStockDataClient.")
 	if err != nil {

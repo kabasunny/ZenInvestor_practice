@@ -10,6 +10,7 @@ import (
 
 	"api-go/src/infra"
 	"api-go/src/service"
+	indicator "api-go/src/service/ms_gateway/calculate_indicator"
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -52,12 +53,13 @@ func TestGetStockDataIntegration(t *testing.T) {
 
 	// 3. リクエストデータを作成
 	fmt.Printf("Step 3: Creating request data for ticker")
-	ticker := "AAPL" // テスト用のティッカーシンボル
-	period := "5d"   // テスト用の期間
+	ticker := "AAPL"                                // テスト用のティッカーシンボル
+	period := "5d"                                  // テスト用の期間
+	indicators := []*indicator.IndicatorParams(nil) // ここのテストではnilを渡す
 
 	// 4. サービスの呼び出し
 	fmt.Println("Step 4: Calling GetStockData service...")
-	res, err := service.GetStockData(ctx, ticker, period)
+	res, err := service.GetStockData(ctx, ticker, period, indicators)
 	if err != nil {
 		fmt.Printf("Error calling GetStockData service: %v\n", err)
 	}
