@@ -1,7 +1,7 @@
 package client
 
 import (
-	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
+	get_stock_data "api-go/src/service/ms_gateway/get_stock_data"
 	"context"
 	"fmt"
 	"os"
@@ -14,13 +14,13 @@ import (
 
 // GetStockDataClient は株価データ取得サービスのgRPCクライアント
 type GetStockDataClient interface {
-	GetStockData(ctx context.Context, req *ms_gateway.GetStockDataRequest) (*ms_gateway.GetStockDataResponse, error)
+	GetStockData(ctx context.Context, req *get_stock_data.GetStockDataRequest) (*get_stock_data.GetStockDataResponse, error)
 	Close() error
 }
 
 // getStockClientImpl は GetStockClient インターフェースの実装
 type getStockDataClientImpl struct {
-	client ms_gateway.GetStockDataServiceClient
+	client get_stock_data.GetStockDataServiceClient
 	conn   *grpc.ClientConn
 }
 
@@ -49,12 +49,12 @@ func NewGetStockDataClient(ctx context.Context) (GetStockDataClient, error) {
 		}
 	}
 
-	client := ms_gateway.NewGetStockDataServiceClient(conn)
+	client := get_stock_data.NewGetStockDataServiceClient(conn)
 	return &getStockDataClientImpl{client: client, conn: conn}, nil
 }
 
 // GetStockData は指定された銘柄と期間の株価データを取得
-func (c *getStockDataClientImpl) GetStockData(ctx context.Context, req *ms_gateway.GetStockDataRequest) (*ms_gateway.GetStockDataResponse, error) {
+func (c *getStockDataClientImpl) GetStockData(ctx context.Context, req *get_stock_data.GetStockDataRequest) (*get_stock_data.GetStockDataResponse, error) {
 	return c.client.GetStockData(ctx, req)
 }
 

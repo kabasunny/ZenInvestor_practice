@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 import os
 
 # 株価データを取得する関数
-def fetch_stock_data(ticker):
+def fetch_stock_data(ticker, period):
     stock = yf.Ticker(ticker)
-    stock_data = stock.history(period="1y")
+    stock_data = stock.history(period)
     # StockDataメッセージに適合するデータ形式に変換
     return {
         str(index.date()): simple_moving_average_pb2.StockData(
@@ -43,7 +43,7 @@ class TestCalculateIndicatorGRPC(unittest.TestCase):
         cls.server.stop(None)
 
     def test_calculate_simple_moving_average(self):
-        stock_data = fetch_stock_data("^GSPC")
+        stock_data = fetch_stock_data("^GSPC","1y")
         with grpc.insecure_channel("localhost:50053") as channel:
             stub = simple_moving_average_pb2_grpc.SimpleMovingAverageServiceStub(channel)
             # gRPCリクエストの送信
