@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"api-go/src/service/ms_gateway/client"
-	ms_gateway "api-go/src/service/ms_gateway/get_stock_data"
+	get_stock_data "api-go/src/service/ms_gateway/get_stock_data"
 	"api-go/test/service/gateway/client_test_helper" // ヘルパー関数のパッケージをインポート
 
 	"github.com/stretchr/testify/assert"
@@ -36,7 +36,7 @@ func TestGetStockData(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second) // 初回タイムアウトで失敗するため15秒
 	defer cancel()
 
-	req := &ms_gateway.GetStockDataRequest{
+	req := &get_stock_data.GetStockDataRequest{
 		Ticker: "AAPL",
 		Period: "5d",
 	}
@@ -78,3 +78,5 @@ func TestGetStockData(t *testing.T) {
 		}
 	}
 }
+
+// go test -v ./test/service/gateway/client/get_stock_data_client_test.go
