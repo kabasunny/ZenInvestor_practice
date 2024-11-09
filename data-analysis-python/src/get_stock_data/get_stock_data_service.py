@@ -1,4 +1,4 @@
-# services/get_stock_service.py
+# get_stock_service.py
 import yfinance as yf
 import pandas as pd
 

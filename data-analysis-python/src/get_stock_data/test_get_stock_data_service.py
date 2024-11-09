@@ -1,4 +1,4 @@
-# tests/test_services/test_get_stock_data_service.py
+# test_get_stock_data_service.py
 import unittest
 from get_stock_data_service import get_stock_data
 

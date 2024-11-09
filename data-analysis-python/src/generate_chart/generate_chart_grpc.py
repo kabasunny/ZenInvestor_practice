@@ -1,29 +1,28 @@
-from concurrent import futures
+# generate_chart_grpc.py
 import grpc
+from concurrent import futures
 import generate_chart_pb2
 import generate_chart_pb2_grpc
-from generate_chart_service import generate_chart
+from generate_chart_service import handle_generate_chart_request
 
-class ChartService(generate_chart_pb2_grpc.ChartServiceServicer):
+class ChartGenerationService(generate_chart_pb2_grpc.ChartGenerationServiceServicer):
     def GenerateChart(self, request, context):
-        # リクエストから株価データと指標データを取得
-        stock_data = [float(price) for price in request.stock_data]
-        indicator_data = [float(value) for value in request.indicator_data]
-        # チャートを生成
-        chart_data = generate_chart(stock_data, indicator_data, request.ticker)
-        # チャートデータをレスポンスとして返す
-        return generate_chart_pb2.ChartResponse(chart_data=chart_data)
+        # サービスのハンドラ関数を呼び出す
+        chart_data = handle_generate_chart_request(request)
+
+        # レスポンスを作成
+        response = generate_chart_pb2.GenerateChartResponse(chart_data=chart_data)
+
+        print("gRPCサーバーが、generate_chartサービスを呼び出し")
+        return response
 
 def serve():
-    # 最大10スレッドのスレッドプールを持つ gRPC サーバーを作成
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    # サーバーに ChartService を追加
-    generate_chart_pb2_grpc.add_ChartServiceServicer_to_server(ChartService(), server)
-    # サーバーにポート 50052 を追加
+    generate_chart_pb2_grpc.add_ChartGenerationServiceServicer_to_server(
+        ChartGenerationService(), server)
     server.add_insecure_port('[::]:50052')
-    # サーバーを起動
     server.start()
-    # サーバー終了まで待機
+    print('Server started, listening on port 50052')
     server.wait_for_termination()
 
 if __name__ == '__main__':

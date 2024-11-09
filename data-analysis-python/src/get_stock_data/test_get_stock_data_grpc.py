@@ -1,3 +1,4 @@
+# test_get_stock_data_grpc.py
 import unittest  # 標準的なテストフレームワークをインポート
 import grpc
 from concurrent import futures
@@ -5,8 +6,8 @@ from get_stock_data_grpc import (
     GetStockDataService,
     serve,
 )  # サービスとサーバー起動関数をインポート
-import get_stock_data_pb2 as get_stock_data_pb2  # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
-import get_stock_data_pb2_grpc as get_stock_data_pb2_grpc  # Protocol Buffersコンパイラによって生成されるgRPCサービスに関連するコードを含むPythonモジュール
+import get_stock_data_pb2 # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
+import get_stock_data_pb2_grpc # Protocol Buffersコンパイラによって生成されるgRPCサービスに関連するコードを含むPythonモジュール
 from get_stock_data_service import get_stock_data  # 株価データ取得関数をインポート
 
 

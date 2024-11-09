@@ -1,3 +1,4 @@
+# get_stock_data_grpc.py
 import grpc
 from concurrent import futures
 import get_stock_data_pb2 as get_stock_data_pb2  # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
