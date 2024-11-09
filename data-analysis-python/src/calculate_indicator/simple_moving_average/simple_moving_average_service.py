@@ -1,3 +1,4 @@
+# simple_moving_average_service.py
 import numpy as np
 
 def calculate_simple_moving_average(stock_data, window_size):

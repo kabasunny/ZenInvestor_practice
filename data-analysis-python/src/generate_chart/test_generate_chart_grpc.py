@@ -1,65 +1,67 @@
+# test_generate_chart_grpc.py
 import unittest
 import grpc
 from concurrent import futures
 import generate_chart_pb2
 import generate_chart_pb2_grpc
-from generate_chart_grpc import ChartService
-import yfinance as yf
-import base64
-import matplotlib.pyplot as plt
-import os
-import matplotlib
-matplotlib.use('Agg')# GUIバックエンドを使用せず、ファイル出力専用のバックエンドに変更
+from generate_chart_grpc import ChartGenerationService
 
-
-# 株価データを取得する関数
-def fetch_stock_data(ticker):
-    stock = yf.Ticker(ticker)  # Yahoo Finance から指定されたティッカーシンボルのデータを取得
-    stock_data = stock.history(period="1y")  # 過去1年分の株価データを取得
-    return stock_data["Close"].tolist()  # 終値のリストを返す
-
-# gRPC テストクラス
 class TestGenerateChartGRPC(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # 最大10スレッドのスレッドプールを持つ gRPC サーバーを作成
+        # gRPCサーバーのセットアップ
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        # サーバーに ChartService を追加
-        generate_chart_pb2_grpc.add_ChartServiceServicer_to_server(ChartService(), cls.server)
-        # サーバーにポート 50052 を追加
+        generate_chart_pb2_grpc.add_ChartGenerationServiceServicer_to_server(ChartGenerationService(), cls.server)
         cls.server.add_insecure_port('[::]:50052')
-        # サーバーを起動
         cls.server.start()
+        print("gRPCサーバー起動")
 
     @classmethod
     def tearDownClass(cls):
-        # サーバーを停止
+        # gRPCサーバーの停止
         cls.server.stop(None)
+        print("gRPCサーバー停止")
 
     def test_generate_chart(self):
-        stock_data = fetch_stock_data("^GSPC")  # 株価データを取得
-        indicator_data = fetch_stock_data("^GSPC")  # 仮に同じデータを指標データとする
+        # テストデータを作成
+        stock_data = {
+            "2023-01-01": generate_chart_pb2.StockDataForChart(
+                open=100, close=110, high=115, low=95, volume=1000
+            ),
+            "2023-01-02": generate_chart_pb2.StockDataForChart(
+                open=110, close=120, high=125, low=105, volume=1100
+            )
+        }
 
-        with grpc.insecure_channel('localhost:50052') as channel:  # gRPC チャンネルを作成
-            stub = generate_chart_pb2_grpc.ChartServiceStub(channel)  # スタブを作成
-            # gRPC リクエストを送信し、チャートを生成
-            response = stub.GenerateChart(generate_chart_pb2.ChartRequest(stock_data=stock_data, indicator_data=indicator_data, ticker="^GSPC"))
-            chart_data = base64.b64decode(response.chart_data)  # BASE64デコード
+        indicators = [
+            generate_chart_pb2.IndicatorData(
+                type="Test Indicator",
+                values={
+                    "2023-01-01": 105,
+                    "2023-01-02": 115
+                }
+            )
+        ]
 
-            output_dir = "src/generate_chart/test_output"
-            if not os.path.exists(output_dir):  # 出力ディレクトリが存在しない場合は作成
-                os.makedirs(output_dir)
+        with grpc.insecure_channel('localhost:50052') as channel:
+            stub = generate_chart_pb2_grpc.ChartGenerationServiceStub(channel)
+            request = generate_chart_pb2.GenerateChartRequest(
+                stock_data=stock_data,
+                indicators=indicators
+            )
+            response = stub.GenerateChart(request)
+            chart_data = response.chart_data
 
-            # チャートデータをファイルに書き込む
-            with open(f"{output_dir}/grpc_test_chart.png", "wb") as f:
-                f.write(chart_data)
-            print(f"Chart saved as {output_dir}/grpc_test_chart.png")
+            print("生成されたチャートデータ:", chart_data)
 
             self.assertTrue(chart_data)  # チャートデータが存在することを確認
 
-if __name__ == "__main__":
-    unittest.main()  # テストを実行
+if __name__ == '__main__':
+    unittest.main()
 
 
-# サーバーを起動し、クライアントとして gRPC チャンネルを作成してリクエストを送信し、レスポンスとして返された BASE64 エンコードされたチャートデータをデコードしてファイルに保存
+# 本ファイル単体テスト
+# python -m unittest discover -s src/generate_chart  -p 'test_generate_chart_grpc.py'
+
+# 一括テスト
 # python -m unittest discover -s src/generate_chart  -p 'test*.py'
