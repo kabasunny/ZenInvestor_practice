@@ -11,6 +11,7 @@ venv/
 
 # Go
 tmp/
+test_outputs/
 
 # Docker
 docker/

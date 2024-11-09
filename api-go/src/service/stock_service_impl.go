@@ -1,12 +1,14 @@
 package service
 
 import (
-	indicator "api-go/src/service/ms_gateway/calculate_indicator" // IndicatorParamsのimport元
-	// smaパッケージをインポート
+	indicator "api-go/src/service/ms_gateway/calculate_indicator"                 // IndicatorParamsのimport元
+	sma "api-go/src/service/ms_gateway/calculate_indicator/simple_moving_average" // smaパッケージをインポート
 	client "api-go/src/service/ms_gateway/client"
 	getstockdata "api-go/src/service/ms_gateway/get_stock_data"
 	"context"
 	"fmt"
+	"log"
+	"strconv"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -47,18 +49,47 @@ func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, peri
 	}
 
 	// indicatorsがnilまたは空の場合、指標の計算はスキップ
-	if indicators != nil || len(indicators) != 0 {
-		// indicatorsが有効な値の場合、指標の計算を実行
-		// for _, indicator := range indicators {
-		//指標は最大3個まで付加し、チャートを生成する
+	if len(indicators) > 0 {
+		// if indicators != nil && len(indicators) > 0 { // len()関数を使用すると、nilスライスでも長さはゼロとして返される
+		for _, indicator := range indicators {
+			switch indicator.Type {
+			case "SMA":
+				// SimpleMovingAverageClientのインスタンスを取得
+				smaClient := s.clients["simple_moving_average"].(client.SimpleMovingAverageClient)
 
-		// もし、SimpleMovingAverageClientのインスタンスを取得　:株価のデータ,平均値の計算幅
-		// SimpleMovingAverageClientから移動平均線作画用データを取得
-		// もし、他の指標計算Clientのインスタンスを取得　:株価のデータ,平均値の計算幅
-		// 他の指標1計算Clientから他の指標1データを取得
-		// もし、他の指標計算Clientのインスタンスを取得　:株価のデータ,平均値の計算幅
-		// 他の指標2計算Clientから他の指標2データを取得
-		// }
+				// getstockdata.StockDataをsma.StockDataForSMAにデータを変換...めんどくせーぞ
+				convertedStockData := convertStockDataForSMA(res.StockData)
+
+				// WindowSizeを文字列からint32に変換
+				windowSizeStr := indicator.Params["window_size"]           // パラメータからウィンドウサイズを取得
+				windowSize, err := strconv.ParseInt(windowSizeStr, 10, 32) // 文字列をint32に変換...めんどくせーぞ
+				if err != nil {
+					log.Fatalf("window_sizeをint32に変換できませんでした: %v", err)
+				}
+
+				smaReq := &sma.SimpleMovingAverageRequest{
+					StockData:  convertedStockData, // 株価データを取得
+					WindowSize: int32(windowSize),  // 変換したウィンドウサイズを設定
+				}
+				smaRes, err := smaClient.CalculateSimpleMovingAverage(ctx, smaReq)
+				if err != nil {
+					return nil, fmt.Errorf("failed to calculate SMA: %w", err)
+				}
+				// 必要に応じて SMA 結果を格納・処理
+				fmt.Printf("SMA result: %v\n", smaRes.MovingAverage)
+
+			case "OtherIndicator1":
+				// 他の指標1計算のクライアントを取得・実行
+				// 他の指標クライアントに合わせた処理をここで実装
+
+			case "OtherIndicator2":
+				// 他の指標2計算のクライアントを取得・実行
+				// 他の指標クライアントに合わせた処理をここで実装
+
+			default:
+				fmt.Printf("Unsupported indicator: %s\n", indicator.Type)
+			}
+		}
 	}
 
 	// GeneratChartClientのインスタンスを取得　:株価のデータ,指標データ0～3個
