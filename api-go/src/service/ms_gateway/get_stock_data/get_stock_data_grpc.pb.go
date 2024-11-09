@@ -21,7 +21,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GetStockDataService_GetStockData_FullMethodName = "/get_stock_data.GetStockDataService/GetStockData"
+	GetStockDataService_GetStockData_FullMethodName = "/GetStockDataService/GetStockData"
 )
 
 // GetStockDataServiceClient is the client API for GetStockDataService service.
@@ -114,7 +114,7 @@ func _GetStockDataService_GetStockData_Handler(srv interface{}, ctx context.Cont
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var GetStockDataService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "get_stock_data.GetStockDataService",
+	ServiceName: "GetStockDataService",
 	HandlerType: (*GetStockDataServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

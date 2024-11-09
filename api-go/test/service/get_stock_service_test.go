@@ -3,14 +3,15 @@ package service_test
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
-	"api-go/src/infra"
 	"api-go/src/service"
 	indicator "api-go/src/service/ms_gateway/calculate_indicator"
+	"api-go/src/service/ms_gateway/client"
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -29,26 +30,20 @@ func TestGetStockDataIntegration(t *testing.T) {
 	defer cancel()
 	fmt.Println("ctx setup successfully.")
 
-	msClients, err := infra.SetupMsClients(ctx)
-	fmt.Println("Clients setup ...")
+	msClients := make(map[string]interface{})
+	fmt.Println("Clients setup...")
+
+	getStockDataClient, err := client.NewGetStockDataClient(ctx)
+	fmt.Println("in NewGetStockDataClient.")
 	if err != nil {
-		t.Fatalf("failed to setup clients: %v", err)
+		log.Fatalf("Failed to create get stock data client: %v", err)
 	}
-	defer func() {
-		for _, c := range msClients.MSClients {
-			if closer, ok := c.(interface{ Close() error }); ok {
-				if err := closer.Close(); err != nil {
-					fmt.Printf("failed to close client: %v\n", err)
-					t.Errorf("failed to close client: %v", err)
-				}
-			}
-		}
-	}()
-	fmt.Println("Clients setup successfully.")
+	msClients["get_stock_data"] = getStockDataClient
+	fmt.Println("getStockDataClient setup successfully.")
 
 	// StockServiceを初期化
 	fmt.Println("Initializing StockService...")
-	service := service.NewStockServiceImpl(msClients.MSClients)
+	service := service.NewStockServiceImpl(msClients)
 	fmt.Println("StockService initialized.")
 
 	// 3. リクエストデータを作成

@@ -1,8 +1,6 @@
 // simple_moving_average.proto
 syntax = "proto3";
 
-package simple_moving_average;
-
 option go_package = "api-go/src/service/ms_gateway/calculate_indicator/simple_moving_average";
 
 service SimpleMovingAverageService {
