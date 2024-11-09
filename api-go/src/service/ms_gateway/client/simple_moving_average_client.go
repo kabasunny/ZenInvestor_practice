@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	ms_gateway "api-go/src/service/ms_gateway/calculate_indicator/simple_moving_average"
+	sma "api-go/src/service/ms_gateway/calculate_indicator/simple_moving_average"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
@@ -15,13 +15,13 @@ import (
 
 // SimpleMovingAverageClient は単純移動平均計算サービスのgRPCクライアント
 type SimpleMovingAverageClient interface {
-	CalculateSimpleMovingAverage(ctx context.Context, req *ms_gateway.SimpleMovingAverageRequest) (*ms_gateway.SimpleMovingAverageResponse, error)
+	CalculateSimpleMovingAverage(ctx context.Context, req *sma.SimpleMovingAverageRequest) (*sma.SimpleMovingAverageResponse, error)
 	Close() error
 }
 
 // simpleMovingAverageClientImpl は SimpleMovingAverageClient インターフェースの実装
 type simpleMovingAverageClientImpl struct {
-	client ms_gateway.SimpleMovingAverageServiceClient
+	client sma.SimpleMovingAverageServiceClient
 	conn   *grpc.ClientConn
 }
 
@@ -50,12 +50,12 @@ func NewSimpleMovingAverageClient(ctx context.Context) (SimpleMovingAverageClien
 		}
 	}
 
-	client := ms_gateway.NewSimpleMovingAverageServiceClient(conn)
+	client := sma.NewSimpleMovingAverageServiceClient(conn)
 	return &simpleMovingAverageClientImpl{client: client, conn: conn}, nil
 }
 
 // CalculateSimpleMovingAverage は指定された株価データと期間の単純移動平均を計算
-func (c *simpleMovingAverageClientImpl) CalculateSimpleMovingAverage(ctx context.Context, req *ms_gateway.SimpleMovingAverageRequest) (*ms_gateway.SimpleMovingAverageResponse, error) {
+func (c *simpleMovingAverageClientImpl) CalculateSimpleMovingAverage(ctx context.Context, req *sma.SimpleMovingAverageRequest) (*sma.SimpleMovingAverageResponse, error) {
 	return c.client.CalculateSimpleMovingAverage(ctx, req)
 }
 

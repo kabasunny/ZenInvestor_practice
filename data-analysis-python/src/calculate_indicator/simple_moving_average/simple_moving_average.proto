@@ -8,7 +8,7 @@ service SimpleMovingAverageService {
 }
 
 // 株価データを持つメッセージを定義
-message StockData {
+message StockDataForSMA {
   double open = 1;
   double close = 2;
   double high = 3;
@@ -17,7 +17,7 @@ message StockData {
 }
 
 message SimpleMovingAverageRequest {
-  map<string, StockData> stock_data = 1;
+  map<string, StockDataForSMA> stock_data = 1;
   int32 period = 2;
   int32 window_size = 3; // WindowSizeフィールドを追加
 }

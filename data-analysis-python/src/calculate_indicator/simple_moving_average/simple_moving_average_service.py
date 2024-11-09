@@ -9,6 +9,9 @@ def calculate_simple_moving_average(stock_data, window_size):
     close_prices = np.array(close_prices)
 
     # 移動平均を計算
+    if len(close_prices) < window_size:  # データ数がwindow_sizeよりも小さい場合の処理を追加
+        return {} # 空の辞書を返す
+
     simple_moving_average = np.convolve(
         close_prices, np.ones(window_size) / window_size, mode="valid"
     )

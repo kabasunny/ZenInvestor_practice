@@ -21,7 +21,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SimpleMovingAverageService_CalculateSimpleMovingAverage_FullMethodName = "/simple_moving_average.SimpleMovingAverageService/CalculateSimpleMovingAverage"
+	SimpleMovingAverageService_CalculateSimpleMovingAverage_FullMethodName = "/SimpleMovingAverageService/CalculateSimpleMovingAverage"
 )
 
 // SimpleMovingAverageServiceClient is the client API for SimpleMovingAverageService service.
@@ -111,7 +111,7 @@ func _SimpleMovingAverageService_CalculateSimpleMovingAverage_Handler(srv interf
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var SimpleMovingAverageService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "simple_moving_average.SimpleMovingAverageService",
+	ServiceName: "SimpleMovingAverageService",
 	HandlerType: (*SimpleMovingAverageServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
