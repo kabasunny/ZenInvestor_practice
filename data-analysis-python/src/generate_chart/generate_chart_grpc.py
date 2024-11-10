@@ -7,13 +7,13 @@ from generate_chart_service import handle_generate_chart_request
 
 class ChartGenerationService(generate_chart_pb2_grpc.ChartGenerationServiceServicer):
     def GenerateChart(self, request, context):
-        # サービスのハンドラ関数を呼び出す
+        # Call the service handler function
         chart_data = handle_generate_chart_request(request)
 
-        # レスポンスを作成
+        # Create response
         response = generate_chart_pb2.GenerateChartResponse(chart_data=chart_data)
 
-        print("gRPCサーバーが、generate_chartサービスを呼び出し")
+        print("gRPCサーバーが、generate_chartサービスを呼び出しました。")
         return response
 
 def serve():
@@ -22,7 +22,7 @@ def serve():
         ChartGenerationService(), server)
     server.add_insecure_port('[::]:50052')
     server.start()
-    print('Server started, listening on port 50052')
+    print('チャート生成サーバーが起動しました。ポート:50052')
     server.wait_for_termination()
 
 if __name__ == '__main__':
