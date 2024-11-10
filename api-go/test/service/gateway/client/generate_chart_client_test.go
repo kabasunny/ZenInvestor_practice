@@ -59,6 +59,11 @@ func TestGenerateChart(t *testing.T) {
 		},
 	}
 
+	// 追加: 指標データの内容を表示
+	for _, indicator := range req.Indicators {
+		fmt.Printf("Indicator Type: %s, Values: %v\n", indicator.Type, indicator.Values)
+	}
+
 	res, err := gcClient.GenerateChart(ctx, req)
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -94,3 +99,5 @@ func TestGenerateChart(t *testing.T) {
 
 	fmt.Printf("Chart image saved successfully: %s\n", outputFile)
 }
+
+// go test -v ./test/service/gateway/client/generate_chart_client_test.go
