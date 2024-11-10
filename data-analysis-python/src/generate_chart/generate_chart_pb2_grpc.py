@@ -25,8 +25,8 @@ if _version_not_supported:
     )
 
 
-class ChartGenerationServiceStub(object):
-    """ChartGenerationServiceというサービスを定義
+class GenerateChartServiceStub(object):
+    """GenerateChartServiceというサービスを定義
     """
 
     def __init__(self, channel):
@@ -36,14 +36,14 @@ class ChartGenerationServiceStub(object):
             channel: A grpc.Channel.
         """
         self.GenerateChart = channel.unary_unary(
-                '/ChartGenerationService/GenerateChart',
+                '/GenerateChartService/GenerateChart',
                 request_serializer=generate__chart__pb2.GenerateChartRequest.SerializeToString,
                 response_deserializer=generate__chart__pb2.GenerateChartResponse.FromString,
                 _registered_method=True)
 
 
-class ChartGenerationServiceServicer(object):
-    """ChartGenerationServiceというサービスを定義
+class GenerateChartServiceServicer(object):
+    """GenerateChartServiceというサービスを定義
     """
 
     def GenerateChart(self, request, context):
@@ -53,7 +53,7 @@ class ChartGenerationServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_ChartGenerationServiceServicer_to_server(servicer, server):
+def add_GenerateChartServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GenerateChart': grpc.unary_unary_rpc_method_handler(
                     servicer.GenerateChart,
@@ -62,14 +62,14 @@ def add_ChartGenerationServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'ChartGenerationService', rpc_method_handlers)
+            'GenerateChartService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('ChartGenerationService', rpc_method_handlers)
+    server.add_registered_method_handlers('GenerateChartService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class ChartGenerationService(object):
-    """ChartGenerationServiceというサービスを定義
+class GenerateChartService(object):
+    """GenerateChartServiceというサービスを定義
     """
 
     @staticmethod
@@ -86,7 +86,7 @@ class ChartGenerationService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ChartGenerationService/GenerateChart',
+            '/GenerateChartService/GenerateChart',
             generate__chart__pb2.GenerateChartRequest.SerializeToString,
             generate__chart__pb2.GenerateChartResponse.FromString,
             options,
