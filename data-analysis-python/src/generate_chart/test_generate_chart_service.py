@@ -1,7 +1,6 @@
 import unittest
 import os
 import base64
-from datetime import datetime, timedelta
 from generate_chart_service import handle_generate_chart_request
 import generate_chart_pb2
 import yfinance as yf
@@ -56,11 +55,11 @@ class TestGenerateChartService(unittest.TestCase):
             os.makedirs(output_dir)
 
         # チャートデータをファイルに書き込む
-        with open(f"{output_dir}/handle_service_test_chart.png", "wb") as f:  # ファイル名を変更
+        with open(f"{output_dir}/service_grpc_genarate_chart.png", "wb") as f:  # ファイル名を変更
             f.write(chart_data)
 
         self.assertTrue(chart_data)  # チャートデータが存在することを確認
-        print(f"Chart saved as {output_dir}/handle_service_test_chart.png")
+        print(f"Chart saved as {output_dir}/service_grpc_genarate_chart.png")
 
 if __name__ == '__main__':
     unittest.main()

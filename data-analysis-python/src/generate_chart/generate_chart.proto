@@ -1,10 +1,10 @@
 // generate_chart.proto
 syntax = "proto3"; // プロトコルバッファのバージョンを指定
 
-option go_package = "api-go/src/service/ms_gateway/chart_generation";
+option go_package = "api-go/src/service/ms_gateway/generate_chart";
 
-// ChartGenerationServiceというサービスを定義
-service ChartGenerationService {
+// GenerateChartServiceというサービスを定義
+service GenerateChartService {
   rpc GenerateChart (GenerateChartRequest) returns (GenerateChartResponse);
 }
 

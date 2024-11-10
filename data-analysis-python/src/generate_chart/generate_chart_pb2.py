@@ -24,14 +24,14 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14generate_chart.proto\"\xba\x01\n\x14GenerateChartRequest\x12\x38\n\nstock_data\x18\x01 \x03(\x0b\x32$.GenerateChartRequest.StockDataEntry\x12\"\n\nindicators\x18\x02 \x03(\x0b\x32\x0e.IndicatorData\x1a\x44\n\x0eStockDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12!\n\x05value\x18\x02 \x01(\x0b\x32\x12.StockDataForChart:\x02\x38\x01\"[\n\x11StockDataForChart\x12\x0c\n\x04open\x18\x01 \x01(\x01\x12\r\n\x05\x63lose\x18\x02 \x01(\x01\x12\x0c\n\x04high\x18\x03 \x01(\x01\x12\x0b\n\x03low\x18\x04 \x01(\x01\x12\x0e\n\x06volume\x18\x05 \x01(\x01\"x\n\rIndicatorData\x12\x0c\n\x04type\x18\x01 \x01(\t\x12*\n\x06values\x18\x02 \x03(\x0b\x32\x1a.IndicatorData.ValuesEntry\x1a-\n\x0bValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"+\n\x15GenerateChartResponse\x12\x12\n\nchart_data\x18\x01 \x01(\t2X\n\x16\x43hartGenerationService\x12>\n\rGenerateChart\x12\x15.GenerateChartRequest\x1a\x16.GenerateChartResponseB0Z.api-go/src/service/ms_gateway/chart_generationb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14generate_chart.proto\"\xba\x01\n\x14GenerateChartRequest\x12\x38\n\nstock_data\x18\x01 \x03(\x0b\x32$.GenerateChartRequest.StockDataEntry\x12\"\n\nindicators\x18\x02 \x03(\x0b\x32\x0e.IndicatorData\x1a\x44\n\x0eStockDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12!\n\x05value\x18\x02 \x01(\x0b\x32\x12.StockDataForChart:\x02\x38\x01\"[\n\x11StockDataForChart\x12\x0c\n\x04open\x18\x01 \x01(\x01\x12\r\n\x05\x63lose\x18\x02 \x01(\x01\x12\x0c\n\x04high\x18\x03 \x01(\x01\x12\x0b\n\x03low\x18\x04 \x01(\x01\x12\x0e\n\x06volume\x18\x05 \x01(\x01\"x\n\rIndicatorData\x12\x0c\n\x04type\x18\x01 \x01(\t\x12*\n\x06values\x18\x02 \x03(\x0b\x32\x1a.IndicatorData.ValuesEntry\x1a-\n\x0bValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"+\n\x15GenerateChartResponse\x12\x12\n\nchart_data\x18\x01 \x01(\t2V\n\x14GenerateChartService\x12>\n\rGenerateChart\x12\x15.GenerateChartRequest\x1a\x16.GenerateChartResponseB.Z,api-go/src/service/ms_gateway/generate_chartb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'generate_chart_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'Z.api-go/src/service/ms_gateway/chart_generation'
+  _globals['DESCRIPTOR']._serialized_options = b'Z,api-go/src/service/ms_gateway/generate_chart'
   _globals['_GENERATECHARTREQUEST_STOCKDATAENTRY']._loaded_options = None
   _globals['_GENERATECHARTREQUEST_STOCKDATAENTRY']._serialized_options = b'8\001'
   _globals['_INDICATORDATA_VALUESENTRY']._loaded_options = None
@@ -48,6 +48,6 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_INDICATORDATA_VALUESENTRY']._serialized_end=426
   _globals['_GENERATECHARTRESPONSE']._serialized_start=428
   _globals['_GENERATECHARTRESPONSE']._serialized_end=471
-  _globals['_CHARTGENERATIONSERVICE']._serialized_start=473
-  _globals['_CHARTGENERATIONSERVICE']._serialized_end=561
+  _globals['_GENERATECHARTSERVICE']._serialized_start=473
+  _globals['_GENERATECHARTSERVICE']._serialized_end=559
 # @@protoc_insertion_point(module_scope)

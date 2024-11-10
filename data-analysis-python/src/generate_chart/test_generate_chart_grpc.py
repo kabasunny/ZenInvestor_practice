@@ -2,14 +2,14 @@
 import unittest
 import os
 import base64
-from datetime import datetime, timedelta
 import grpc
 import threading
 import time
+import yfinance as yf
 
 import generate_chart_pb2
 import generate_chart_pb2_grpc
-from generate_chart_grpc import ChartGenerationService
+from generate_chart_grpc import GenerateChartService
 from concurrent import futures
 
 class TestGenerateChartGrpc(unittest.TestCase):
@@ -17,8 +17,8 @@ class TestGenerateChartGrpc(unittest.TestCase):
     def setUpClass(cls):
         # サーバーを別スレッドで起動
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        generate_chart_pb2_grpc.add_ChartGenerationServiceServicer_to_server(
-            ChartGenerationService(), cls.server)
+        generate_chart_pb2_grpc.add_GenerateChartServiceServicer_to_server(
+            GenerateChartService(), cls.server)
         cls.port = '50052'
         cls.server.add_insecure_port(f'[::]:{cls.port}')
         cls.server.start()
@@ -33,7 +33,7 @@ class TestGenerateChartGrpc(unittest.TestCase):
     def test_generate_chart_via_grpc(self):
         # gRPCクライアントを作成
         channel = grpc.insecure_channel(f'localhost:{self.port}')
-        stub = generate_chart_pb2_grpc.ChartGenerationServiceStub(channel)
+        stub = generate_chart_pb2_grpc.GenerateChartServiceStub(channel)
 
         # 仮の株価データをyfinanceから取得
         ticker = "^GSPC"  # S&P 500のティッカーシンボル
@@ -51,7 +51,7 @@ class TestGenerateChartGrpc(unittest.TestCase):
                 low=row['Low'],
                 volume=row['Volume']
             )
-            
+
         # 指標データを作成
         indicators = []
         percentages = [-10, -20, 15]
@@ -84,11 +84,11 @@ class TestGenerateChartGrpc(unittest.TestCase):
             os.makedirs(output_dir)
 
         # チャートデータをファイルに書き込む
-        with open(f"{output_dir}/grpc_test_chart.png", "wb") as f:
+        with open(f"{output_dir}/grpc_genarate_chart.png", "wb") as f:
             f.write(chart_data)
 
         self.assertTrue(chart_data)  # チャートデータが存在することを確認
-        print(f"Chart saved as {output_dir}/grpc_test_chart.png")
+        print(f"Chart saved as {output_dir}/grpc_genarate_chart.png")
 
 if __name__ == '__main__':
     unittest.main()
