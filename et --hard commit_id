@@ -1,0 +1,75 @@
+[33mcd404e8e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mUItoAPI4[m[33m, [m[1;31morigin/UItoAPI4[m[33m)[m クライアント実装、テスト
+[33maf5aaa5a[m チャート生成パイソン
+[33m1f6743c9[m いいのかわからん
+[33m18a8e273[m ようやくSMAのサービス層のテストが完了
+[33ma961c8f4[m[33m ([m[1;31morigin/UItoAPI3[m[33m, [m[1;32mUItoAPI3[m[33m)[m しゃー！
+[33m48890625[m protoファイルのパッケージ宣言にやられた
+[33m7eede124[m わからない
+[33m24364215[m Python側のテスト終了
+[33m672d31a9[m 修正修正修正、進まん、またテストから
+[33mba4cda5e[m[33m ([m[1;32mUItoAPI[m[33m)[m パスがわけわからんーん
+[33m2cd46ebe[m[33m ([m[1;31morigin/UItoAPI2[m[33m)[m testのアウトプット統一
+[33m9927b812[m test修正… .envのパスに何度やられたことか
+[33me75317d2[m 株価取得grpcクライアントもコンテキストを受け取る形に修正
+[33m98012307[m 単純移動平均用のgrpcクライアントOK
+[33m61dd802a[m 移動平均MS修正
+[33mf5ec9df2[m[33m ([m[1;31morigin/UItoAPI[m[33m)[m フロント実装中2
+[33m4d1ef67b[m フロント実装中
+[33mb9fdd38b[m 画像追加
+[33md80c7ff5[m テスト類も修正
+[33m23f58eea[m[33m ([m[1;31morigin/GoToMS2[m[33m, [m[1;32mGoToMS2[m[33m)[m MS用.env読み出しOK
+[33m31b1f640[m[33m ([m[1;31morigin/GoToMS[m[33m, [m[1;32mGoToMS[m[33m)[m ルーティング確認
+[33m1d21e6f7[m 名称修正
+[33m23a1e596[m 名称統一、大変や～
+[33m22e16bfa[m APIエンドポイント経由でデータ取得確認
+[33m200253b9[m gRPCクライアント、サービスのテスト
+[33m80fc9e99[m Goとの通信テストOK
+[33m61c72f9d[m マイクロサービス修正
+[33me42b878a[m Goで一つのテストクリア
+[33m5176902e[m Go側MSクライアント実装中2
+[33m6ac626a2[m Go側MSクライアント実装中
+[33mbba1e91d[m[33m ([m[1;31morigin/MS_python4[m[33m, [m[1;32mMS_python4[m[33m)[m チャート生成
+[33ma3f68dca[m 移動平均のチャート2
+[33m24cef2db[m[33m ([m[1;31morigin/MS_python3[m[33m, [m[1;32mMS_python3[m[33m)[m 移動平均のチャート
+[33m79a66a24[m MSを二つ作成
+[33meb12c92f[m[33m ([m[1;32mLoginLogout2[m[33m)[m マイクロサービス充実中
+[33md276b4bf[m[33m ([m[1;31morigin/MS_python[m[33m)[m MS_python2
+[33mc1344730[m MS_python
+[33m5f4c50cd[m Merge pull request #17 from kabasunny/LoginLogout2
+[33m04df204d[m[33m ([m[1;31morigin/LoginLogout2[m[33m)[m ディレクトリ階層追加
+[33m53305531[m Merge pull request #16 from kabasunny/LoginLogout2
+[33mb9848ba4[m css編集
+[33m74a45d38[m コンフリクト解消
+[33ma2d5e529[m Merge pull request #15 from kabasunny/LoginLogout2
+[33md054a633[m Resolved merge conflicts in Header.tsx and LoginForm.tsx
+[33m8293365b[m ちょい修正
+[33mc22ddb56[m Merge pull request #14 from kabasunny/LoginLogout2
+[33mee547185[m Merge branch 'main' into LoginLogout2
+[33mb9b98774[m LoginLogout2
+[33m51e05126[m[33m ([m[1;32mmain[m[33m)[m Merge pull request #13 from kabasunny/LoginLogout
+[33mf6ba7751[m[33m ([m[1;31morigin/LoginLogout[m[33m)[m LoginLogout
+[33m87380ba0[m Merge pull request #12 from kabasunny/GoPythonCodeAdd
+[33mc879290a[m[33m ([m[1;31morigin/GoPythonCodeAdd[m[33m, [m[1;32mGoPythonCodeAdd[m[33m)[m GoPythonCodeAdd
+[33ma1084752[m[33m ([m[1;31morigin/API[m[33m, [m[1;32mAPI[m[33m)[m Merge pull request #11 from kabasunny/AddNewEnv
+[33mead77816[m[33m ([m[1;31morigin/AddNewEnv[m[33m)[m add
+[33m215a6583[m test
+[33m717fc2f4[m Merge pull request #10 from kabasunny/AddNewEnv
+[33m5bc17c40[m 'AddNewEnv'
+[33mcf0df094[m Merge pull request #9 from kabasunny/FrontEndMok3
+[33m1c7f12ec[m[33m ([m[1;31morigin/FrontEndMok3[m[33m, [m[1;32mFrontEndMok3[m[33m)[m FrontEndMok3
+[33mec37713b[m Merge pull request #8 from kabasunny/FrontEndMok2
+[33me5665d23[m[33m ([m[1;31morigin/FrontEndMok2[m[33m, [m[1;32mFrontEndMok2[m[33m)[m Reactの起動をViteに変更
+[33m985ded7c[m Merge pull request #7 from kabasunny/FrontEndMok
+[33m1bf720a5[m[33m ([m[1;31morigin/FrontEndMok[m[33m, [m[1;32mFrontEndMok[m[33m)[m フロントエンドのモックを作成
+[33m2bbe7384[m[33m ([m[1;32mAfterSetUp[m[33m)[m Merge pull request #6 from kabasunny/AfterSetUp
+[33mb6110ad4[m[33m ([m[1;31morigin/AfterSetUp[m[33m)[m AfterSetUp
+[33mecac2d32[m Delete docker-compose.yml
+[33m597de610[m Delete create_project_structure.ps1
+[33m59449c21[m Delete api directory
+[33m1a04dbc6[m Merge pull request #2 from kabasunny/setUp
+[33m195afbc6[m GoとMYSQLのみ起動
+[33m14ede739[m Update .gitignore and clear cache
+[33mc3a3c1f5[m Update .gitignore and clear cache
+[33m8159f834[m Merge pull request #1 from kabasunny/EnvironmentSetup
+[33m97176c7e[m 環境構築を実施中
+[33m88030a01[m first commit
