@@ -1,3 +1,4 @@
+// types/stockTypes.ts
 export interface StockData {
     open: number;
     close: number;
@@ -13,3 +14,8 @@ export interface StockDataResponse {
         };
     };
 }
+
+export interface StockDataWithDate {
+    date: string;
+    stockData: StockData;
+  }
