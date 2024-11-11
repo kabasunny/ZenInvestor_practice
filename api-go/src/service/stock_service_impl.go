@@ -29,7 +29,28 @@ func NewStockServiceImpl(clients map[string]interface{}) StockService {
 }
 
 // GetStockData は指定された銘柄と期間と指標の株価データを取得
-func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, period string, indicators []*indicator.IndicatorParams) (*gc.GenerateChartResponse, error) {
+func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, period string) (*getstockdata.GetStockDataResponse, error) {
+	stockClient := s.clients["get_stock_data"].(client.GetStockDataClient)
+	req := &getstockdata.GetStockDataRequest{
+		Ticker: ticker,
+		Period: period,
+	}
+
+	res, err := stockClient.GetStockData(ctx, req)
+	if err != nil {
+		// エラー処理。必要に応じてより詳細なエラーハンドリングを行う
+		st, ok := status.FromError(err)
+		if ok && st.Code() == codes.NotFound {
+			return nil, fmt.Errorf("stock data not found: %w", err)
+		}
+		return nil, fmt.Errorf("failed to get stock data: %w", err)
+	}
+
+	return res, nil
+}
+
+// GetStockChart は指定された銘柄と期間と指標の株価データを取得
+func (s *StockServiceImpl) GetStockChart(ctx context.Context, ticker string, period string, indicators []*indicator.IndicatorParams) (*gc.GenerateChartResponse, error) {
 
 	getStockDataClient := s.clients["get_stock_data"].(client.GetStockDataClient)
 	req := &getstockdata.GetStockDataRequest{
