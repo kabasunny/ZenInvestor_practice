@@ -31,7 +31,7 @@ def serve():
     server.add_insecure_port("[::]:50053")
     # サーバーを起動
     server.start()
-    print("Server started, listening on port 50053")
+    print("CalculateIndicater_SMA gRPCServer started, listening on port:50053")
     # サーバー終了まで待機
     server.wait_for_termination()
 

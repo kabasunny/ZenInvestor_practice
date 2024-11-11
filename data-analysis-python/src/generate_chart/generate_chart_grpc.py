@@ -12,7 +12,7 @@ class GenerateChartService(generate_chart_pb2_grpc.GenerateChartServiceServicer)
         # レスポンスを作成
         response = generate_chart_pb2.GenerateChartResponse(chart_data=chart_data)
 
-        print("gRPCサーバーが、generate_chartサービスを呼び出しました。")
+        print("gRPCサーバーが、generate_chartサービスを呼び出し")
         return response
 
 def serve():
@@ -22,7 +22,7 @@ def serve():
         GenerateChartService(), server)
     server.add_insecure_port('[::]:50052')
     server.start()
-    print('チャート生成サーバーが起動しました。ポート:50052')
+    print('GenerateChart gRPCServer started, listening on port:50052')
     server.wait_for_termination()
 
 if __name__ == '__main__':

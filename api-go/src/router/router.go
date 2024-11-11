@@ -30,7 +30,19 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 	// ストックデータ取得用
 	stockService := service.NewStockServiceImpl(msClients.MSClients)
 	stockController := controller.NewStockControllerImpl(stockService)
+	// 株価データ
 	router.GET("/getStockData", stockController.GetStockData)
+
+	// 株価チャート
+	router.POST("/getStockChart", stockController.GetStockChart)
+	// http://localhost:8086/getStockChart
+	// {
+	// 	"ticker": "AAPL",
+	// 	"period": "1y",
+	// 	"indicators": [
+	// 	  { "type": "SMA", "params": { "window_size": "20" } }
+	// 	]
+	//   }
 
 	// // ユーザーログイン用　後で
 	// loginRepository := repository.NewLoginRepository(db)

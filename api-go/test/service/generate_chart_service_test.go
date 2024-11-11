@@ -74,7 +74,7 @@ func TestGetStockDataWithIndicators(t *testing.T) {
 
 	// 4. サービスの呼び出し
 	fmt.Println("Step 4: Calling GetStockData service...")
-	res, err := service.GetStockData(ctx, ticker, period, indicators)
+	res, err := service.GetStockChart(ctx, ticker, period, indicators)
 	if err != nil {
 		fmt.Printf("Error calling GetStockData service: %v\n", err)
 	}
