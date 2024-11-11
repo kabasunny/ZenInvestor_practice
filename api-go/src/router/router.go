@@ -30,7 +30,8 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 	// ストックデータ取得用
 	stockService := service.NewStockServiceImpl(msClients.MSClients)
 	stockController := controller.NewStockControllerImpl(stockService)
-	router.GET("/getStockData", stockController.GetStockData)
+	// router.GET("/getStockData", stockController.GetStockData)
+	router.POST("/getStockData", stockController.GetStockData)
 
 	// // ユーザーログイン用　後で
 	// loginRepository := repository.NewLoginRepository(db)

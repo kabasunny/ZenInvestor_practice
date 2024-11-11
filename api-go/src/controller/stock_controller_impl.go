@@ -22,7 +22,16 @@ func NewStockControllerImpl(stockService service.StockService) StockController {
 func (c *stockControllerImpl) GetStockData(ctx *gin.Context) {
 	var req dto.GetStockServiceRequest // DTOを使用
 
-	if err := ctx.ShouldBindQuery(&req); err != nil { // クエリパラメータをバインド
+	// GET
+	// if err := ctx.ShouldBindQuery(&req); err != nil { // URLクエリパラメータをバインド
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// package routerのSetupRouterメソッド内でGETメソッドに変更して、以下でテスト可能
+	// http://localhost:8086/getStockData?ticker=AAPL&period=1y&indicators[0][type]=SMA&indicators[0][params][window_size]=20
+
+	// POST
+	if err := ctx.ShouldBindJSON(&req); err != nil { // リクエストボディからJSONをバインド
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
