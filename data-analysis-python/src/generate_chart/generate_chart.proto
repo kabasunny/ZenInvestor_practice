@@ -26,6 +26,7 @@ message StockDataForChart {
 // 指標データを持つメッセージを定義
 message IndicatorData {
   string type = 1; // 指標の種類 (SMA, EMA, RSIなど)
+  // windowsizeを追加したい
   map<string, double> values = 2; // 指標の値を含むフィールド
 }
 
