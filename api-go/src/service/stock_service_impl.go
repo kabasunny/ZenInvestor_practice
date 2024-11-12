@@ -102,9 +102,13 @@ func (s *StockServiceImpl) GetStockChart(ctx context.Context, ticker string, per
 				}
 				// log.Printf("SMA Indicator, valuesMap: %v\n", valuesMap) // 格納した段階でログ表示
 
+				legendName := fmt.Sprintf("%s%s", indicator.Type, windowSizeStr)
+				fmt.Println(legendName)
+
 				indicatorDataList = append(indicatorDataList, &gc.IndicatorData{
-					Type:   indicator.Type,
-					Values: valuesMap,
+					Type:       indicator.Type,
+					Values:     valuesMap,
+					LegendName: legendName, // 凡例の名称を設定
 				})
 
 			// ここに別の指標の計算ロジックを追加
