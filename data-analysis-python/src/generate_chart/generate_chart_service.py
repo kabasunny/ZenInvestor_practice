@@ -23,22 +23,24 @@ def generate_chart(stock_data, indicators_data):
 
     plt.figure(figsize=(16, 9), facecolor="#ADD8E6")  # 図全体の背景色を水色に設定
     ax = plt.gca()
-    ax.set_facecolor("#EAEAEA")  # 背景色を灰色に設定
+    ax.set_facecolor("#EAEAEA")  # プロット部分の背景色を灰色に設定
     plt.plot(sorted_dates, close_prices, label="終値")
 
     for indicator_data in indicators_data:
-        indicator_type = indicator_data["type"]
+        legend_name = indicator_data.get(
+            "legend_name", indicator_data["type"]
+        )  # 凡例の名称を取得
+
         indicator_values = indicator_data["values"]
 
         # 日付をソートすることを確認
         sorted_indicator_dates = sorted(indicator_values.keys())
         values = [indicator_values[date] for date in sorted_indicator_dates]
 
-        plt.plot(sorted_indicator_dates, values, label=indicator_type)
+        plt.plot(sorted_indicator_dates, values, label=legend_name)
 
     plt.xlabel("日付", fontproperties=jp_font)
     plt.ylabel("$ or \\", fontproperties=jp_font)
-    # plt.title("株価と指標", fontproperties=jp_font)
     plt.legend(
         loc="upper left", frameon=True, facecolor="#ADD8E6", prop=jp_font
     )  # 凡例を左上に表示し、背景色を水色に設定
@@ -78,7 +80,8 @@ def handle_generate_chart_request(request):
     # リクエストから指標データを処理
     indicators_data = []
     for indicator_pb in request.indicators:
-        indicator_type = indicator_pb.type  # Windowsizeを増やして、凡例に表示させたい
+        indicator_type = indicator_pb.type
+        legend_name = f"{indicator_pb.legend_name}"  # WindowSizeを凡例に含める
         indicator_values_pb = indicator_pb.values
 
         # 日付文字列をdatetimeオブジェクトに変換
@@ -87,6 +90,12 @@ def handle_generate_chart_request(request):
             date = datetime.strptime(date_str, "%Y-%m-%d")
             indicator_values[date] = value
 
-        indicators_data.append({"type": indicator_type, "values": indicator_values})
+        indicators_data.append(
+            {
+                "type": indicator_type,
+                "legend_name": legend_name,  # 新しいフィールドを追加
+                "values": indicator_values,
+            }
+        )
 
     return generate_chart(stock_data, indicators_data)
