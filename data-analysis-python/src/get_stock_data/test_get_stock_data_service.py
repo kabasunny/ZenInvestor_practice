@@ -6,7 +6,9 @@ from get_stock_data_service import get_stock_data
 class TestGetStockDataService(unittest.TestCase):
     def test_get_stock_data(self):
         print("サービスメソッドtest")
-        data = get_stock_data("AAPL", "5d")
+        stock_name, data = get_stock_data("6752.T", "5d")
+        print(f"Stock Name: {stock_name}")  # 銘柄名を表示
+        
         # 期間の引数のリスト
         # "1d": 1日, "5d": 5日, "1mo": 1ヶ月, "3mo": 3ヶ月, "6mo": 6ヶ月, "1y": 1年, "2y": 2年, "5y": 5年. "10y": 10年, "ytd": 年初から現在まで, "max": 最大期間（可能な限り最長）
         print("取得データはPython の辞書形式:")

@@ -38,12 +38,12 @@ func NewGetStockDataClient(ctx context.Context) (GetStockDataClient, error) {
 	// 接続を開始
 	conn.Connect()
 
-	// タイムアウトを設定 (例: 15秒)  必要に応じて調整
+	// タイムアウトを設定 (15秒)  必要に応じて調整
 	connectCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
 	// 接続が確立されるまで待つ
-	for conn.GetState() != connectivity.Ready { //ここを変更
+	for conn.GetState() != connectivity.Ready {
 		if !conn.WaitForStateChange(connectCtx, conn.GetState()) {
 			return nil, fmt.Errorf("failed to connect to gRPC server: %w", connectCtx.Err())
 		}

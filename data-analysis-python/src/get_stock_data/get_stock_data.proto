@@ -26,6 +26,7 @@ message StockData {
 // レスポンスメッセージを定義
 message GetStockDataResponse {
   map<string, StockData> stock_data = 1;  // 期間分の株価データを含むフィールド
+  string stock_name = 2; // 銘柄名を含むフィールド（追加）
 }
 
 

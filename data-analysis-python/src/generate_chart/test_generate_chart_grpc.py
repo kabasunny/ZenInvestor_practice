@@ -19,7 +19,7 @@ class TestGenerateChartGrpc(unittest.TestCase):
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         generate_chart_pb2_grpc.add_GenerateChartServiceServicer_to_server(
             GenerateChartService(), cls.server)
-        cls.port = '50052'
+        cls.port = '51052' # test時は常時ポート+1000
         cls.server.add_insecure_port(f'[::]:{cls.port}')
         cls.server.start()
         print(f'Server started on port {cls.port}')
@@ -30,21 +30,21 @@ class TestGenerateChartGrpc(unittest.TestCase):
         cls.server.stop(0)
         print('Server stopped')
 
-    def test_generate_chart_via_grpc(self):
+    def setUp(self):
         # gRPCクライアントを作成
-        channel = grpc.insecure_channel(f'localhost:{self.port}')
-        stub = generate_chart_pb2_grpc.GenerateChartServiceStub(channel)
+        self.channel = grpc.insecure_channel(f'localhost:{self.port}')
+        self.stub = generate_chart_pb2_grpc.GenerateChartServiceStub(self.channel)
 
         # 仮の株価データをyfinanceから取得
         ticker = "^GSPC"  # S&P 500のティッカーシンボル
-        period = "1y"  # 30日分のデータを取得
+        period = "1y"  # 1年分のデータを取得
         data = yf.download(ticker, period=period)
 
         # 株価データをプロトコルバッファの形式に変換
-        stock_data = {}
+        self.stock_data = {}
         for date, row in data.iterrows():
             date_str = date.strftime("%Y-%m-%d")
-            stock_data[date_str] = generate_chart_pb2.StockDataForChart(
+            self.stock_data[date_str] = generate_chart_pb2.StockDataForChart(
                 open=row['Open'],
                 close=row['Close'],
                 high=row['High'],
@@ -53,27 +53,29 @@ class TestGenerateChartGrpc(unittest.TestCase):
             )
 
         # 指標データを作成
-        indicators = []
+        self.indicators = []
         percentages = [-10, -20, 15]
         for percent in percentages:
             indicator_values = {}
-            for date_str, stock_data_pb in stock_data.items():
+            for date_str, stock_data_pb in self.stock_data.items():
                 adjusted_value = stock_data_pb.close * (1 + percent / 100)
                 indicator_values[date_str] = adjusted_value
             indicator = generate_chart_pb2.IndicatorData(
                 type=f"Indicator_{percent}",
                 values=indicator_values
             )
-            indicators.append(indicator)
+            self.indicators.append(indicator)
 
-        # リクエストオブジェクトを作成
+    def test_generate_chart_with_volume(self):
+        # リクエストオブジェクトを作成（出来高を含める）
         request = generate_chart_pb2.GenerateChartRequest(
-            stock_data=stock_data,
-            indicators=indicators
+            stock_data=self.stock_data,
+            indicators=self.indicators,
+            include_volume=True
         )
 
         # サービスを呼び出し
-        response = stub.GenerateChart(request)
+        response = self.stub.GenerateChart(request)
 
         # チャートデータをデコードして画像として保存
         chart_data_base64 = response.chart_data
@@ -84,11 +86,37 @@ class TestGenerateChartGrpc(unittest.TestCase):
             os.makedirs(output_dir)
 
         # チャートデータをファイルに書き込む
-        with open(f"{output_dir}/grpc_genarate_chart.png", "wb") as f:
+        with open(f"{output_dir}/grpc_generate_chart_with_volume.png", "wb") as f:
             f.write(chart_data)
 
         self.assertTrue(chart_data)  # チャートデータが存在することを確認
-        print(f"Chart saved as {output_dir}/grpc_genarate_chart.png")
+        print(f"Chart saved as {output_dir}/grpc_generate_chart_with_volume.png")
+
+    def test_generate_chart_without_volume(self):
+        # リクエストオブジェクトを作成（出来高を含めない）
+        request = generate_chart_pb2.GenerateChartRequest(
+            stock_data=self.stock_data,
+            indicators=self.indicators,
+            include_volume=False
+        )
+
+        # サービスを呼び出し
+        response = self.stub.GenerateChart(request)
+
+        # チャートデータをデコードして画像として保存
+        chart_data_base64 = response.chart_data
+        chart_data = base64.b64decode(chart_data_base64)
+
+        output_dir = "src/generate_chart/test_output"  # 出力ディレクトリを指定
+        if not os.path.exists(output_dir):  # ディレクトリが存在しない場合は作成
+            os.makedirs(output_dir)
+
+        # チャートデータをファイルに書き込む
+        with open(f"{output_dir}/grpc_generate_chart_without_volume.png", "wb") as f:
+            f.write(chart_data)
+
+        self.assertTrue(chart_data)  # チャートデータが存在することを確認
+        print(f"Chart saved as {output_dir}/grpc_generate_chart_without_volume.png")
 
 if __name__ == '__main__':
     unittest.main()

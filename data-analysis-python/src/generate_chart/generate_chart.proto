@@ -1,5 +1,5 @@
 // generate_chart.proto
-syntax = "proto3"; // プロトコルバッファのバージョンを指定
+syntax = "proto3";
 
 option go_package = "api-go/src/service/ms_gateway/generate_chart";
 
@@ -12,6 +12,7 @@ service GenerateChartService {
 message GenerateChartRequest {
   map<string, StockDataForChart> stock_data = 1; // 株価データを含むフィールド
   repeated IndicatorData indicators = 2; // 複数の指標データを含むフィールド
+  bool include_volume = 3; // 出来高を含むかどうかを示すフィールドを追加
 }
 
 // 株価データを持つメッセージを定義
@@ -26,8 +27,7 @@ message StockDataForChart {
 // 指標データを持つメッセージを定義
 message IndicatorData {
   string type = 1; // 指標の種類 (SMA, EMA, RSIなど)
-  // 生成されるチャートに表示される、凡例の名称を追加したい、例えばSMA20やSMA30等
-  string legend_name = 3; // 凡例名 (SMA20, SMA30など)  // 新しいフィールド
+  string legend_name = 3; // 凡例名 (SMA20, SMA30など) // 新しいフィールド
   map<string, double> values = 2; // 指標の値を含むフィールド
 }
 

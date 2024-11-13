@@ -6,9 +6,10 @@ import (
 
 // GetStockServiceRequest は株価データ取得リクエストのDTO
 type GetStockServiceRequest struct {
-	Ticker     string                       `form:"ticker" binding:"required"`
-	Period     string                       `form:"period" binding:"required"`
-	Indicators []*indicator.IndicatorParams `form:"indicators"`
+	Ticker        string                       `form:"ticker" binding:"required"`
+	Period        string                       `form:"period" binding:"required"`
+	Indicators    []*indicator.IndicatorParams `form:"indicators"`
+	IncludeVolume bool                         `form:"includeVolune"`
 }
 
 // Validate は GetStockDataRequest のバリデーションを行う
