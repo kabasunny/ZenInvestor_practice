@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react';
 import { StockData, StockDataWithDate } from '../types/stockTypes';
 
-const useStockData = (ticker: string, period: string) => {
+const useStockData = (ticker: string, period: string, updateFlag: boolean) => {
   const [stockDataWithDate, setStockDataWithDate] = useState<StockDataWithDate | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // 初回レンダリング時にデータを取得するため true に設定
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -16,9 +16,13 @@ const useStockData = (ticker: string, period: string) => {
           `http://localhost:8086/getStockData?ticker=${ticker}&period=${period}`
         );
         const data = await response.json();
-        const date = Object.keys(data.stock_data)[0];
-        const stockData = data.stock_data[date];
-        setStockDataWithDate({ date, stockData });
+
+        // 日付の配列を取得し、降順にソートして最新の日付を取得
+        const dates = Object.keys(data.stock_data).sort((a, b) => (a > b ? 1 : -1));
+        const latestDate = dates[dates.length - 1];  // 最新の日付
+        const stockData = data.stock_data[latestDate];  // 最新の日付のデータ
+
+        setStockDataWithDate({ date: latestDate, stockData });
       } catch (err) {
         setError("データの取得に失敗しました");
       } finally {
@@ -27,7 +31,7 @@ const useStockData = (ticker: string, period: string) => {
     };
 
     fetchStockData();
-  }, [ticker, period]);
+  }, [ticker, period, updateFlag]);
 
   return { stockDataWithDate, loading, error };
 };

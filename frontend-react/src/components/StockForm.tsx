@@ -37,10 +37,16 @@ const StockForm: React.FC<StockFormProps> = ({
   };
 
   const addIndicator = () => {
-    if (indicators.length < 3) { // 指標の数を3に制限
-      setIndicators([...indicators, { type: 'SMA', params: { window_size: '20' } }]);
+    const windowSizes = ["20", "50", "100"];
+
+    if (indicators.length < 3) {
+      setIndicators([
+        ...indicators,
+        { type: 'SMA', params: { window_size: windowSizes[indicators.length] } }
+      ]);
     }
   };
+
 
   const removeIndicator = (index: number) => {
     const newIndicators = [...indicators];
@@ -107,48 +113,53 @@ const StockForm: React.FC<StockFormProps> = ({
               value={ticker}
               onChange={(e) => setTicker(e.target.value)}
               placeholder="例: AAPL"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
+              className="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
             />
+            <button type="submit" // フォームを送信するためのボタン 
+            className="ml-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300" 
+            >
+              更新
+            </button>
           </div>
 
-          <div>
-            <label htmlFor="period" className="block text-sm font-medium text-gray-700">期間:</label>
-            <select
-              id="period"
-              value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
-            >
-              <option value="1d">1日</option>
-              <option value="5d">5日</option>
-              <option value="1mo">1ヶ月</option>
-              <option value="3mo">3ヶ月</option>
-              <option value="6mo">6ヶ月</option>
-              <option value="1y">1年</option>
-              <option value="2y">2年</option>
-              <option value="5y">5年</option>
-              <option value="10y">10年</option>
-              <option value="ytd">年初～現在</option>
-              <option value="max">最大期間</option>
-            </select>
-          </div>
+        <div>
+          <label htmlFor="period" className="block text-sm font-medium text-gray-700">期間:</label>
+          <select
+            id="period"
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
+          >
+            <option value="1d">1日</option>
+            <option value="5d">5日</option>
+            <option value="1mo">1ヶ月</option>
+            <option value="3mo">3ヶ月</option>
+            <option value="6mo">6ヶ月</option>
+            <option value="1y">1年</option>
+            <option value="2y">2年</option>
+            <option value="5y">5年</option>
+            <option value="10y">10年</option>
+            <option value="ytd">年初～現在</option>
+            <option value="max">最大期間</option>
+          </select>
         </div>
       </div>
+    </div>
 
-      {/* 指標を追加ボタンをフォームの下に移動 */}
-      <div className="flex justify-start mt-4">
-        <button
-          type="button"
-          onClick={addIndicator}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-        >
-          指標を追加
-        </button>
-        {indicators.length >= 3 && (
-          <p className="text-red-500 mt-1 ml-4">指標は最大3つまで追加できます。</p>
-        )}
-      </div>
-    </form>
+      {/* 指標を追加ボタンをフォームの下に移動 */ }
+  <div className="flex justify-start mt-4">
+    <button
+      type="button"
+      onClick={addIndicator}
+      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+    >
+      指標を追加
+    </button>
+    {indicators.length >= 3 && (
+      <p className="text-red-500 mt-1 ml-4">指標は最大3つまで追加できます。</p>
+    )}
+  </div>
+    </form >
   );
 };
 

@@ -9,33 +9,39 @@ import useStockData from "../hooks/useStockData";
 import useStockChart from "../hooks/useStockChart";
 
 const Dashboard: React.FC = () => {
-  const [ticker, setTicker] = useState<string>("AAPL");
+  const [ticker, setTicker] = useState<string>("6752.T");
   const [period, setPeriod] = useState<string>("1y");
   const [indicators, setIndicators] = useState<any[]>([
     { type: 'SMA', params: { window_size: '20' } }
   ]);
+
+  const [updateFlag, setUpdateFlag] = useState(false);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('handleSubmit function called'); // この行を追加
+    // フラグを更新して、カスタムフックを再実行させる
+    setUpdateFlag(prevFlag => !prevFlag);
+  };
 
   // カスタムフックを使用してデータを取得
   const {
     stockDataWithDate,
     loading: stockLoading,
     error: stockError
-  } = useStockData(ticker, period);
+  } = useStockData(ticker, period, updateFlag);
 
   const {
     chartData,
     loading: chartLoading,
     error: chartError
-  } = useStockChart(ticker, period, indicators);
+  } = useStockChart(ticker, period, indicators, updateFlag);
 
   // ローディングとエラーステートを統合
   const loading = stockLoading || chartLoading;
   const error = stockError || chartError;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // フォームの送信時に状態が更新されるため、カスタムフックが再呼び出しされデータが再取得されます
-  };
+  
+  
 
   return (
     <div className="space-y-6 mb-32">
