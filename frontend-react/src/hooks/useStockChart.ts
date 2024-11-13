@@ -1,7 +1,7 @@
 // hooks/useStockChart.ts
 import { useState, useEffect } from 'react';
 
-const useStockChart = (ticker: string, period: string, indicators: any[]) => {
+const useStockChart = (ticker: string, period: string, indicators: any[], updateFlag:boolean) => {
   const [chartData, setChartData] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // 初回レンダリング時にデータを取得するため true に設定
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +37,7 @@ const useStockChart = (ticker: string, period: string, indicators: any[]) => {
     };
 
     fetchStockChartData();
-  }, [ticker, period, indicators]);
+  }, [period, indicators, updateFlag]);
 
   return { chartData, loading, error };
 };
