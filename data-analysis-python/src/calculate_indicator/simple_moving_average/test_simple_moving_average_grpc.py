@@ -36,7 +36,7 @@ class TestCalculateIndicatorGRPC(unittest.TestCase):
         simple_moving_average_pb2_grpc.add_SimpleMovingAverageServiceServicer_to_server(
             SimpleMovingAverageServiceForTest(), cls.server
         )
-        cls.server.add_insecure_port("[::]:50053")
+        cls.server.add_insecure_port("[::]:51053")  # test時は常時ポート+1000
         cls.server.start()
 
     @classmethod
@@ -45,7 +45,7 @@ class TestCalculateIndicatorGRPC(unittest.TestCase):
 
     def test_calculate_simple_moving_average(self):
         stock_data = fetch_stock_data("^GSPC","1y")
-        with grpc.insecure_channel("localhost:50053") as channel:
+        with grpc.insecure_channel("localhost:51053") as channel:
             stub = simple_moving_average_pb2_grpc.SimpleMovingAverageServiceStub(channel)
             # gRPCリクエストの送信
             response = stub.CalculateSimpleMovingAverage(

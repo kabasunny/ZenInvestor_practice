@@ -4,6 +4,7 @@ import { StockData, StockDataWithDate } from '../types/stockTypes';
 
 const useStockData = (ticker: string, period: string, updateFlag: boolean) => {
   const [stockDataWithDate, setStockDataWithDate] = useState<StockDataWithDate | null>(null);
+  const [stockName, setStockName] = useState<string | null>(null); // 銘柄名の状態を追加
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,6 +24,9 @@ const useStockData = (ticker: string, period: string, updateFlag: boolean) => {
         const stockData = data.stock_data[latestDate];  // 最新の日付のデータ
 
         setStockDataWithDate({ date: latestDate, stockData });
+
+        setStockName(data.stock_name); // 銘柄名を設定
+        
       } catch (err) {
         setError("データの取得に失敗しました");
       } finally {
@@ -33,7 +37,7 @@ const useStockData = (ticker: string, period: string, updateFlag: boolean) => {
     fetchStockData();
   }, [ticker, period, updateFlag]);
 
-  return { stockDataWithDate, loading, error };
+  return { stockDataWithDate, stockName, loading, error };
 };
 
 export default useStockData;

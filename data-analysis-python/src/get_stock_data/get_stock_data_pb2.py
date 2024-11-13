@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14get_stock_data.proto\"5\n\x13GetStockDataRequest\x12\x0e\n\x06ticker\x18\x01 \x01(\t\x12\x0e\n\x06period\x18\x02 \x01(\t\"S\n\tStockData\x12\x0c\n\x04open\x18\x01 \x01(\x01\x12\r\n\x05\x63lose\x18\x02 \x01(\x01\x12\x0c\n\x04high\x18\x03 \x01(\x01\x12\x0b\n\x03low\x18\x04 \x01(\x01\x12\x0e\n\x06volume\x18\x05 \x01(\x01\"\x8e\x01\n\x14GetStockDataResponse\x12\x38\n\nstock_data\x18\x01 \x03(\x0b\x32$.GetStockDataResponse.StockDataEntry\x1a<\n\x0eStockDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x05value\x18\x02 \x01(\x0b\x32\n.StockData:\x02\x38\x01\x32R\n\x13GetStockDataService\x12;\n\x0cGetStockData\x12\x14.GetStockDataRequest\x1a\x15.GetStockDataResponseB.Z,api-go/src/service/ms_gateway/get_stock_datab\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14get_stock_data.proto\"5\n\x13GetStockDataRequest\x12\x0e\n\x06ticker\x18\x01 \x01(\t\x12\x0e\n\x06period\x18\x02 \x01(\t\"S\n\tStockData\x12\x0c\n\x04open\x18\x01 \x01(\x01\x12\r\n\x05\x63lose\x18\x02 \x01(\x01\x12\x0c\n\x04high\x18\x03 \x01(\x01\x12\x0b\n\x03low\x18\x04 \x01(\x01\x12\x0e\n\x06volume\x18\x05 \x01(\x01\"\xa2\x01\n\x14GetStockDataResponse\x12\x38\n\nstock_data\x18\x01 \x03(\x0b\x32$.GetStockDataResponse.StockDataEntry\x12\x12\n\nstock_name\x18\x02 \x01(\t\x1a<\n\x0eStockDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x05value\x18\x02 \x01(\x0b\x32\n.StockData:\x02\x38\x01\x32R\n\x13GetStockDataService\x12;\n\x0cGetStockData\x12\x14.GetStockDataRequest\x1a\x15.GetStockDataResponseB.Z,api-go/src/service/ms_gateway/get_stock_datab\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -39,9 +39,9 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_STOCKDATA']._serialized_start=79
   _globals['_STOCKDATA']._serialized_end=162
   _globals['_GETSTOCKDATARESPONSE']._serialized_start=165
-  _globals['_GETSTOCKDATARESPONSE']._serialized_end=307
-  _globals['_GETSTOCKDATARESPONSE_STOCKDATAENTRY']._serialized_start=247
-  _globals['_GETSTOCKDATARESPONSE_STOCKDATAENTRY']._serialized_end=307
-  _globals['_GETSTOCKDATASERVICE']._serialized_start=309
-  _globals['_GETSTOCKDATASERVICE']._serialized_end=391
+  _globals['_GETSTOCKDATARESPONSE']._serialized_end=327
+  _globals['_GETSTOCKDATARESPONSE_STOCKDATAENTRY']._serialized_start=267
+  _globals['_GETSTOCKDATARESPONSE_STOCKDATAENTRY']._serialized_end=327
+  _globals['_GETSTOCKDATASERVICE']._serialized_start=329
+  _globals['_GETSTOCKDATASERVICE']._serialized_end=411
 # @@protoc_insertion_point(module_scope)

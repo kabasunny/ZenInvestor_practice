@@ -3,7 +3,6 @@ package controller
 import (
 	"api-go/src/dto" // DTOのパッケージ
 	"api-go/src/service"
-	getstockdata "api-go/src/service/ms_gateway/get_stock_data"
 	"context"
 	"net/http"
 
@@ -32,21 +31,11 @@ func (c *stockControllerImpl) GetStockData(ctx *gin.Context) {
 		return
 	}
 
-	// レスポンスデータの変換
-	transformedResponse := transformStockDataResponse(response)
-
-	ctx.JSON(http.StatusOK, gin.H{"stock_data": transformedResponse}) // ラベル名はフロントとの兼ね合いに注意
-}
-
-// transformStockDataResponse は stock_data を直接 stockData に格納するための変換関数
-func transformStockDataResponse(response *getstockdata.GetStockDataResponse) map[string]interface{} {
-	transformed := make(map[string]interface{})
-
-	for date, data := range response.StockData {
-		transformed[date] = data
-	}
-
-	return transformed
+	// フロントエンド向けにStockNameも返す
+	ctx.JSON(http.StatusOK, gin.H{
+		"stock_data": response.StockData, // 変換不要
+		"stock_name": response.StockName, // 銘柄名を追加
+	})
 }
 
 // 株価チャート可視化データを取得する
@@ -73,7 +62,7 @@ func (c *stockControllerImpl) GetStockChart(ctx *gin.Context) {
 		return
 	}
 
-	res, err := c.stockService.GetStockChart(ctx, req.Ticker, req.Period, req.Indicators) // DTOを渡す
+	res, err := c.stockService.GetStockChart(ctx, req.Ticker, req.Period, req.Indicators, req.IncludeVolume) // DTOを渡す
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

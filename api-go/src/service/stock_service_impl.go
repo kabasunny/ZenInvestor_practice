@@ -1,3 +1,4 @@
+// api-go\src\service\stock_service_impl.go
 package service
 
 import (
@@ -50,7 +51,7 @@ func (s *StockServiceImpl) GetStockData(ctx context.Context, ticker string, peri
 }
 
 // GetStockChart は指定された銘柄と期間と指標の株価データを取得
-func (s *StockServiceImpl) GetStockChart(ctx context.Context, ticker string, period string, indicators []*indicator.IndicatorParams) (*gc.GenerateChartResponse, error) {
+func (s *StockServiceImpl) GetStockChart(ctx context.Context, ticker string, period string, indicators []*indicator.IndicatorParams, includeVolume bool) (*gc.GenerateChartResponse, error) {
 
 	getStockDataClient := s.clients["get_stock_data"].(client.GetStockDataClient)
 	req := &getstockdata.GetStockDataRequest{
@@ -153,8 +154,9 @@ func (s *StockServiceImpl) GetStockChart(ctx context.Context, ticker string, per
 	}
 
 	generateChartReq := &gc.GenerateChartRequest{
-		StockData:  stockDataMap,
-		Indicators: indicatorDataList,
+		StockData:     stockDataMap,
+		Indicators:    indicatorDataList,
+		IncludeVolume: includeVolume, // 出来高の要否を含める
 	}
 
 	generateChartRes, err := generateChartClient.GenerateChart(ctx, generateChartReq)
