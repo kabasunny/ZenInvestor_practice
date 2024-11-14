@@ -76,15 +76,15 @@ const StockForm: React.FC<StockFormProps> = ({
                   onChange={(e) => handleIndicatorTypeChange(index, e)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500 mb-2"
                 >
-                  <option value="SMA">SMA : Simple Moving Average</option>
-                  <option value="EMA">EMA : Exponential Moving Average</option>
-                  <option value="WMA">WMA : Weighted Moving Average</option>
-                  <option value="RSI">RSI : Relative Strength Index</option>
-                  <option value="BB">BB : Bollinger Bands</option>
-                  <option value="MACD">MACD : MA Convergence Divergence</option>
-                  <option value="SO">SO : Stochastic Oscillator</option>
-                  <option value="ADX">ADX : Average Directional Index</option>
-                  <option value="FR">FR : Fibonacci Retracement</option>
+                  <option value="SMA">Simple Moving Average</option>
+                  <option value="EMA">Exponential Moving Average</option>
+                  <option value="WMA">Weighted Moving Average</option>
+                  <option value="RSI">Relative Strength Index</option>
+                  <option value="BB">Bollinger Bands</option>
+                  <option value="MACD">MACD</option> {/* MA Convergence Divergence */}
+                  <option value="SO">Stochastic Oscillator</option>
+                  <option value="ADX">Average Directional Index</option>
+                  <option value="FR">Fibonacci Retracement</option>
                 </select>
               </div>
               {indicator.type === 'SMA' && (

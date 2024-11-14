@@ -1,6 +1,6 @@
 // pages/Dashboard.tsx
 import React, { useState, useEffect } from "react";
-import StockForm from "../components/StockForm";
+import ChartForm from "../components/ChartForm";
 import StockDataDisplay from "../components/StockDataDisplay";
 import PortfolioOverview from "../components/PortfolioOverview";
 import ZenAdvice from "../components/ZenAdvice";
@@ -57,7 +57,7 @@ const Dashboard: React.FC = () => {
 
           <div className="flex space-x-4">
             {/* StockForm コンポーネント */}
-            <StockForm
+            <ChartForm
               ticker={ticker}
               period={period}
               indicators={indicators}
