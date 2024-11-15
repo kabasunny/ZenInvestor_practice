@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // import axios from 'axios';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Dashboard from './pages/ChartVew';
+import Dashboard from './pages/ChartView';
 import MarketInsights from './pages/MarketInsights';
 import Portfolio from './pages/Portfolio';
 import Education from './pages/Education';
