@@ -1,3 +1,4 @@
+# data-analysis-python\src\generate_chart\generate_chart_grpc.py
 import grpc
 from concurrent import futures
 import generate_chart_pb2

@@ -4,19 +4,19 @@ import pandas as pd
 from datetime import datetime
 
 def load_japanese_tickers():
-    # For demonstration purposes, a small list of Japanese ticker symbols
+    # デモ用に、日本のティッカーシンボルの小リストを用意
     tickers = ['6758.T', '7203.T', '9984.T', '9432.T']  # Sony, Toyota, SoftBank, NTT
     return tickers
 
 def get_stock_data_for_date(ticker, date_str):
-    # Convert the date string to a datetime object
+    # 日付文字列をdatetimeオブジェクトに変換
     date = datetime.strptime(date_str, '%Y-%m-%d')
-    # Define the start and end dates for the data retrieval
+    # データ取得の開始日と終了日を定義
     start_date = date.strftime('%Y-%m-%d')
     end_date = (date + pd.Timedelta(days=1)).strftime('%Y-%m-%d')
 
     try:
-        # Fetch data for the specified date
+        # 指定した日付のデータを取得
         df = yf.download(ticker, start=start_date, end=end_date)
         if not df.empty:
             data = df.iloc[0]
@@ -29,10 +29,10 @@ def get_stock_data_for_date(ticker, date_str):
             }
             return stock_data
         else:
-            # No data available for this date
+            # 指定した日付にデータがない場合
             return None
     except Exception as e:
-        print(f"Error fetching data for {ticker} on {date_str}: {e}")
+        print(f"{date_str}の{ticker}のデータ取得エラー: {e}")
         return None
 
 def get_oneday_alldata(date_str):
@@ -44,13 +44,13 @@ def get_oneday_alldata(date_str):
     end_date = (date + pd.Timedelta(days=1)).strftime('%Y-%m-%d')
     
     try:
-        # Download data for all tickers in a single request
+        # すべてのティッカーのデータを一度にダウンロード
         df = yf.download(tickers, start=start_date, end=end_date, group_by='ticker')
         if df.empty:
-            print(f"No data available for any tickers on {date_str}")
-            return stock_data  # Return an empty dictionary
+            print(f"{date_str}にはどのティッカーにもデータがありません")
+            return stock_data  # 空の辞書を返す
         
-        # Check if there's only one ticker (different DataFrame structure)
+        # ティッカーが1つだけの場合（異なるDataFrame構造）
         if len(tickers) == 1:
             ticker = tickers[0]
             data = df.iloc[0]
@@ -62,7 +62,7 @@ def get_oneday_alldata(date_str):
                 'volume': data['Volume']
             }
         else:
-            # Multiple tickers; iterate over each ticker's data
+            # 複数のティッカー; 各ティッカーのデータを反復処理
             for ticker in tickers:
                 if ticker in df.columns.levels[0]:
                     ticker_df = df[ticker]
@@ -76,10 +76,10 @@ def get_oneday_alldata(date_str):
                             'volume': data['Volume']
                         }
                     else:
-                        print(f"No data for {ticker} on {date_str}")
+                        print(f"{date_str}には{ticker}のデータがありません")
                 else:
-                    print(f"No data for {ticker} on {date_str}")
+                    print(f"{date_str}には{ticker}のデータがありません")
     except Exception as e:
-        print(f"Error downloading data: {e}")
+        print(f"データダウンロードエラー: {e}")
     
     return stock_data
