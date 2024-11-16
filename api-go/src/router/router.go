@@ -44,18 +44,15 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 	// 	]
 	//   }
 
+	// // ランキングデータ取得用
+	// stockRankingRepository := repository.NewStockRankingRepository(db)
+	// stockRankingService := service.NewStockRankingService(stockRankingRepository)
+	// stockRankingController := controller.NewStockRankingController(stockRankingService)
+	// router.GET("/", stockRankingController.GetStockRankingData)
+
 	// // ユーザーログイン用　後で
 	// loginRepository := repository.NewLoginRepository(db)
 	// loginService := service.NewLoginService(loginRepository)
 	// loginController := controller.NewLoginController(loginService)
 	// router.POST("/login", loginController.Login)
-
-	// // スペシャルランキングデータ取得用（認証が必要）後で
-	// stockRankingRepository := repository.NewStockRankingRepository(db)
-	// stockRankingService := service.NewStockRankingService(stockRankingRepository)
-	// stockRankingController := controller.NewStockRankingController(stockRankingService)
-	// authRouter := router.Group("/auth")
-	// authRouter.Use(middleware.AuthMiddleware()) // ミドルウェアを適用
-	// stockRankingRouter := authRouter.Group("/stockRanking")
-	// stockRankingRouter.GET("/", stockRankingController.GetStockRankingData)
 }
