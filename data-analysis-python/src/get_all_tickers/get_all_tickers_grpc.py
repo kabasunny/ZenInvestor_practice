@@ -16,9 +16,9 @@ class GetAllTickersService(get_all_tickers_pb2_grpc.GetAllTickersServiceServicer
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     get_all_tickers_pb2_grpc.add_GetAllTickersServiceServicer_to_server(GetAllTickersService(), server)
-    server.add_insecure_port('[::]:50054')
+    server.add_insecure_port('[::]:50301')
     server.start()
-    print("GetAllTickers gRPCServer started, listening on port 50054")
+    print("GetAllTickers gRPCServer started, listening on port 50301")
     server.wait_for_termination()
 
 if __name__ == '__main__':

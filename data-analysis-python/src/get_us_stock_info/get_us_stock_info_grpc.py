@@ -28,9 +28,9 @@ class GetUsStockInfoService(get_us_stock_info_pb2_grpc.GetUsStockInfoServiceServ
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     get_us_stock_info_pb2_grpc.add_GetUsStockInfoServiceServicer_to_server(GetUsStockInfoService(), server)
-    server.add_insecure_port('[::]:50063')
+    server.add_insecure_port('[::]:50403')
     server.start()
-    print("GetUsStockInfo gRPCServer started, listening on port 50063")
+    print("GetUsStockInfo gRPCServer started, listening on port 50403")
     server.wait_for_termination()
 
 if __name__ == '__main__':

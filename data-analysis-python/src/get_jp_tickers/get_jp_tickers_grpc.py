@@ -16,9 +16,9 @@ class GetJpTickersService(get_jp_tickers_pb2_grpc.GetJpTickersServiceServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     get_jp_tickers_pb2_grpc.add_GetJpTickersServiceServicer_to_server(GetJpTickersService(), server)
-    server.add_insecure_port('[::]:50055')
+    server.add_insecure_port('[::]:50302')
     server.start()
-    print("GetJpTickers gRPCServer started, listening on port 50055")
+    print("GetJpTickers gRPCServer started, listening on port 50302")
     server.wait_for_termination()
 
 if __name__ == '__main__':

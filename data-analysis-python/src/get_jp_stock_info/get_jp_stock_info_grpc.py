@@ -28,9 +28,9 @@ class GetJpStockInfoService(get_jp_stock_info_pb2_grpc.GetJpStockInfoServiceServ
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     get_jp_stock_info_pb2_grpc.add_GetJpStockInfoServiceServicer_to_server(GetJpStockInfoService(), server)
-    server.add_insecure_port('[::]:50062')
+    server.add_insecure_port('[::]:50402')
     server.start()
-    print("GetJpStockInfo gRPCServer started, listening on port 50062")
+    print("GetJpStockInfo gRPCServer started, listening on port 50402")
     server.wait_for_termination()
 
 if __name__ == '__main__':
