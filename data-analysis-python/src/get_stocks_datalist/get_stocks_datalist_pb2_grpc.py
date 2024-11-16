@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import get_oneday_alldata_pb2 as get__oneday__alldata__pb2
+import get_stocks_datalist_pb2 as get__stocks__datalist__pb2
 
 GRPC_GENERATED_VERSION = '1.67.0'
 GRPC_VERSION = grpc.__version__
@@ -18,15 +18,15 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in get_oneday_alldata_pb2_grpc.py depends on'
+        + f' but the generated code in get_stocks_datalist_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class GetOneDayAllDataServiceStub(object):
-    """Define the service for getting all stock data on a specific date
+class GetStocksDatalistServiceStub(object):
+    """株価情報を取得するためのサービスを定義
     """
 
     def __init__(self, channel):
@@ -35,45 +35,45 @@ class GetOneDayAllDataServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetOneDayAllData = channel.unary_unary(
-                '/GetOneDayAllDataService/GetOneDayAllData',
-                request_serializer=get__oneday__alldata__pb2.GetOneDayAllDataRequest.SerializeToString,
-                response_deserializer=get__oneday__alldata__pb2.GetOneDayAllDataResponse.FromString,
+        self.GetStocksDatalist = channel.unary_unary(
+                '/GetStocksDatalistService/GetStocksDatalist',
+                request_serializer=get__stocks__datalist__pb2.GetStocksDatalistRequest.SerializeToString,
+                response_deserializer=get__stocks__datalist__pb2.GetStocksDatalistResponse.FromString,
                 _registered_method=True)
 
 
-class GetOneDayAllDataServiceServicer(object):
-    """Define the service for getting all stock data on a specific date
+class GetStocksDatalistServiceServicer(object):
+    """株価情報を取得するためのサービスを定義
     """
 
-    def GetOneDayAllData(self, request, context):
+    def GetStocksDatalist(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_GetOneDayAllDataServiceServicer_to_server(servicer, server):
+def add_GetStocksDatalistServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetOneDayAllData': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetOneDayAllData,
-                    request_deserializer=get__oneday__alldata__pb2.GetOneDayAllDataRequest.FromString,
-                    response_serializer=get__oneday__alldata__pb2.GetOneDayAllDataResponse.SerializeToString,
+            'GetStocksDatalist': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetStocksDatalist,
+                    request_deserializer=get__stocks__datalist__pb2.GetStocksDatalistRequest.FromString,
+                    response_serializer=get__stocks__datalist__pb2.GetStocksDatalistResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'GetOneDayAllDataService', rpc_method_handlers)
+            'GetStocksDatalistService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('GetOneDayAllDataService', rpc_method_handlers)
+    server.add_registered_method_handlers('GetStocksDatalistService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class GetOneDayAllDataService(object):
-    """Define the service for getting all stock data on a specific date
+class GetStocksDatalistService(object):
+    """株価情報を取得するためのサービスを定義
     """
 
     @staticmethod
-    def GetOneDayAllData(request,
+    def GetStocksDatalist(request,
             target,
             options=(),
             channel_credentials=None,
@@ -86,9 +86,9 @@ class GetOneDayAllDataService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/GetOneDayAllDataService/GetOneDayAllData',
-            get__oneday__alldata__pb2.GetOneDayAllDataRequest.SerializeToString,
-            get__oneday__alldata__pb2.GetOneDayAllDataResponse.FromString,
+            '/GetStocksDatalistService/GetStocksDatalist',
+            get__stocks__datalist__pb2.GetStocksDatalistRequest.SerializeToString,
+            get__stocks__datalist__pb2.GetStocksDatalistResponse.FromString,
             options,
             channel_credentials,
             insecure,
