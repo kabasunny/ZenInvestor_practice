@@ -1,19 +1,19 @@
 // get_oneday_alldata.proto
-syntax = "proto3";
+syntax = "proto3";  // プロトコルバッファのバージョンを指定
 
 option go_package = "api-go/src/service/ms_gateway/get_oneday_alldata";
 
-// Define the service for getting all stock data on a specific date
+// 特定の日付の全株式データを取得するためのサービスを定義
 service GetOneDayAllDataService {
   rpc GetOneDayAllData (GetOneDayAllDataRequest) returns (GetOneDayAllDataResponse);
 }
 
-// Request message contains the date
+// リクエストメッセージには日付が含まれる
 message GetOneDayAllDataRequest {
-  string date = 1;  // The date for which to retrieve stock data (format: YYYY-MM-DD)
+  string date = 1;  // 株価データを取得する日付（フォーマット: YYYY-MM-DD）
 }
 
-// Message to hold individual stock data
+// 個々の株データを保持するメッセージ
 message StockData {
   double open = 1;
   double close = 2;
@@ -22,9 +22,9 @@ message StockData {
   double volume = 5;
 }
 
-// Response message contains a map of ticker symbols to StockData
+// レスポンスメッセージにはティッカーシンボルから株データへのマップが含まれる
 message GetOneDayAllDataResponse {
-  map<string, StockData> stock_data = 1;  // Key: ticker symbol, Value: StockData
+  map<string, StockData> stock_data = 1;  // キー: ティッカーシンボル, 値: 株データ
 }
 
 

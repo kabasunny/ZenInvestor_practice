@@ -8,6 +8,7 @@ __pycache__/
 *.py[cod]
 venv/
 .venv/
+test_output/
 
 # Go
 tmp/

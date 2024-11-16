@@ -28,10 +28,10 @@ def serve():
         SimpleMovingAverageService(), server
     )
     # サーバーにポート 50053 を追加
-    server.add_insecure_port("[::]:50053")
+    server.add_insecure_port("[::]:50101")
     # サーバーを起動
     server.start()
-    print("CalculateIndicater_SMA gRPCServer started, listening on port:50053")
+    print("CalculateIndicater_SMA gRPCServer started, listening on port:50101")
     # サーバー終了まで待機
     server.wait_for_termination()
 
