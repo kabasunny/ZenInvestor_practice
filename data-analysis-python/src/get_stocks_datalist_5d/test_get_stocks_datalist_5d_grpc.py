@@ -1,5 +1,4 @@
 # data-analysis-python\src\get_stocks_datalist_5d\test_get_stocks_datalist_5d_grpc.py
-
 import unittest
 import grpc
 import time
@@ -17,7 +16,7 @@ class TestGetStocksDatalist5dGrpc(unittest.TestCase):
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         get_stocks_datalist_5d_pb2_grpc.add_GetStocksDatalist5dServiceServicer_to_server(
             GetStocksDatalist5dService(), cls.server)
-        cls.port = '51066' # テスト時にはポートを50066から51066に変更
+        cls.port = '51066'  # テスト時にはポートを50066から51066に変更
         cls.server.add_insecure_port(f'[::]:{cls.port}')
         cls.server.start()
         print(f'Server started on port {cls.port}')
@@ -57,7 +56,8 @@ class TestGetStocksDatalist5dGrpc(unittest.TestCase):
                 'close': stock_price.close,
                 'high': stock_price.high,
                 'low': stock_price.low,
-                'volume': stock_price.volume
+                'volume': stock_price.volume,
+                'turnover': stock_price.turnover      # 売買代金（取引金額）を追加
             })
         
         df = pd.DataFrame(stock_prices_list)
@@ -76,7 +76,6 @@ if __name__ == '__main__':
 
 # 本ファイル単体テスト
 # python -m unittest discover -s src/get_stocks_datalist_5d -p 'test_get_stocks_datalist_5d_grpc.py'
-
 
 # 一括テスト
 # python -m unittest discover -s src/get_stocks_datalist_5d -p 'test*.py'

@@ -1,5 +1,4 @@
 // data-analysis-python\src\get_stocks_datalist_with_dates\get_stocks_datalist_with_dates.proto
-
 syntax = "proto3";
 
 option go_package = "api-go/src/service/ms_gateway/get_stocks_datalist_with_dates";
@@ -11,25 +10,26 @@ service GetStocksDatalistWithDatesService {
 
 // リクエストメッセージ（銘柄コードの一覧と日付を指定）
 message GetStocksDatalistWithDatesRequest {
-  repeated string symbols = 1;
-  string start_date = 2;
-  string end_date = 3;
+  repeated string symbols = 1; // 銘柄コードのリスト
+  string start_date = 2;       // 取得開始日
+  string end_date = 3;         // 取得終了日
 }
 
 // 株価情報を格納するメッセージ
 message StockPrice {
-  string symbol = 1;
-  string date = 2;
-  double open = 3;
-  double close = 4;
-  double high = 5;
-  double low = 6;
-  int64 volume = 7;
+  string symbol = 1;        // 銘柄コード
+  string date = 2;          // 日付
+  double open = 3;          // 始値
+  double close = 4;         // 終値
+  double high = 5;          // 高値
+  double low = 6;           // 安値
+  int64 volume = 7;         // 出来高
+  double turnover = 8;      // 売買代金（取引金額）
 }
 
 // 株価情報を格納するレスポンスメッセージ
 message GetStocksDatalistWithDatesResponse {
-  repeated StockPrice stock_prices = 1;
+  repeated StockPrice stock_prices = 1; // 複数の株価情報
 }
 
 

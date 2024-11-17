@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cget_stocks_datalist_5d.proto\"-\n\x1aGetStocksDatalist5dRequest\x12\x0f\n\x07symbols\x18\x01 \x03(\t\"r\n\nStockPrice\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x0c\n\x04open\x18\x03 \x01(\x01\x12\r\n\x05\x63lose\x18\x04 \x01(\x01\x12\x0c\n\x04high\x18\x05 \x01(\x01\x12\x0b\n\x03low\x18\x06 \x01(\x01\x12\x0e\n\x06volume\x18\x07 \x01(\x03\"@\n\x1bGetStocksDatalist5dResponse\x12!\n\x0cstock_prices\x18\x01 \x03(\x0b\x32\x0b.StockPrice2l\n\x1aGetStocksDatalist5dService\x12N\n\x11GetStocksDatalist\x12\x1b.GetStocksDatalist5dRequest\x1a\x1c.GetStocksDatalist5dResponseB6Z4api-go/src/service/ms_gateway/get_stocks_datalist_5db\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cget_stocks_datalist_5d.proto\"-\n\x1aGetStocksDatalist5dRequest\x12\x0f\n\x07symbols\x18\x01 \x03(\t\"\x84\x01\n\nStockPrice\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x0c\n\x04open\x18\x03 \x01(\x01\x12\r\n\x05\x63lose\x18\x04 \x01(\x01\x12\x0c\n\x04high\x18\x05 \x01(\x01\x12\x0b\n\x03low\x18\x06 \x01(\x01\x12\x0e\n\x06volume\x18\x07 \x01(\x03\x12\x10\n\x08turnover\x18\x08 \x01(\x01\"@\n\x1bGetStocksDatalist5dResponse\x12!\n\x0cstock_prices\x18\x01 \x03(\x0b\x32\x0b.StockPrice2l\n\x1aGetStocksDatalist5dService\x12N\n\x11GetStocksDatalist\x12\x1b.GetStocksDatalist5dRequest\x1a\x1c.GetStocksDatalist5dResponseB6Z4api-go/src/service/ms_gateway/get_stocks_datalist_5db\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,10 +34,10 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._serialized_options = b'Z4api-go/src/service/ms_gateway/get_stocks_datalist_5d'
   _globals['_GETSTOCKSDATALIST5DREQUEST']._serialized_start=32
   _globals['_GETSTOCKSDATALIST5DREQUEST']._serialized_end=77
-  _globals['_STOCKPRICE']._serialized_start=79
-  _globals['_STOCKPRICE']._serialized_end=193
-  _globals['_GETSTOCKSDATALIST5DRESPONSE']._serialized_start=195
-  _globals['_GETSTOCKSDATALIST5DRESPONSE']._serialized_end=259
-  _globals['_GETSTOCKSDATALIST5DSERVICE']._serialized_start=261
-  _globals['_GETSTOCKSDATALIST5DSERVICE']._serialized_end=369
+  _globals['_STOCKPRICE']._serialized_start=80
+  _globals['_STOCKPRICE']._serialized_end=212
+  _globals['_GETSTOCKSDATALIST5DRESPONSE']._serialized_start=214
+  _globals['_GETSTOCKSDATALIST5DRESPONSE']._serialized_end=278
+  _globals['_GETSTOCKSDATALIST5DSERVICE']._serialized_start=280
+  _globals['_GETSTOCKSDATALIST5DSERVICE']._serialized_end=388
 # @@protoc_insertion_point(module_scope)

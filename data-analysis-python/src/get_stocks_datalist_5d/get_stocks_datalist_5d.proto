@@ -1,5 +1,4 @@
 // data-analysis-python\src\get_stocks_datalist_5d\get_stocks_datalist_5d.proto
-
 syntax = "proto3";
 
 option go_package = "api-go/src/service/ms_gateway/get_stocks_datalist_5d";
@@ -11,29 +10,28 @@ service GetStocksDatalist5dService {
 
 // リクエストメッセージ（銘柄コードの一覧を指定）
 message GetStocksDatalist5dRequest {
-  repeated string symbols = 1;
+  repeated string symbols = 1; // 銘柄コードのリスト
 }
 
 // 株価情報を格納するメッセージ
 message StockPrice {
-  string symbol = 1;
-  string date = 2;
-  double open = 3;
-  double close = 4;
-  double high = 5;
-  double low = 6;
-  int64 volume = 7;
+  string symbol = 1;        // 銘柄コード
+  string date = 2;          // 日付
+  double open = 3;          // 始値
+  double close = 4;         // 終値
+  double high = 5;          // 高値
+  double low = 6;           // 安値
+  int64 volume = 7;         // 出来高
+  double turnover = 8;      // 売買代金（取引金額）
 }
 
 // 株価情報を格納するレスポンスメッセージ
 message GetStocksDatalist5dResponse {
-  repeated StockPrice stock_prices = 1;
+  repeated StockPrice stock_prices = 1; // 複数の株価情報
 }
-
 
 // python用コンパイルコマンド /data-analysis-pythonにて
 // python -m grpc_tools.protoc -I src/get_stocks_datalist_5d --python_out=src/get_stocks_datalist_5d --grpc_python_out=src/get_stocks_datalist_5d src/get_stocks_datalist_5d/get_stocks_datalist_5d.proto
 
 // Go用コンパイルコマンド /api-goにて
 // protoc --proto_path=../data-analysis-python/src/get_stocks_datalist_5d --go_out=./src/service/ms_gateway/get_stocks_datalist_5d --go_opt=paths=source_relative --go-grpc_out=./src/service/ms_gateway/get_stocks_datalist_5d --go-grpc_opt=paths=source_relative ../data-analysis-python/src/get_stocks_datalist_5d/get_stocks_datalist_5d.proto
-

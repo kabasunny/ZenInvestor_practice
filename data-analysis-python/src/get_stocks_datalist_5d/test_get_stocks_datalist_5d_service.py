@@ -1,5 +1,4 @@
 # data-analysis-python\src\get_stocks_datalist_5d\test_get_stocks_datalist_5d_service.py
-
 import unittest
 import pandas as pd
 import os

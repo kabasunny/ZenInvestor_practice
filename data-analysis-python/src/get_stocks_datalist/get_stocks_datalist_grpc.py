@@ -13,11 +13,13 @@ class GetStocksDatalistService(get_stocks_datalist_pb2_grpc.GetStocksDatalistSer
         for stock_price in stock_prices_list:
             stock_price_pb = get_stocks_datalist_pb2.StockPrice(
                 symbol=stock_price['symbol'],
+                date=stock_price['date'],             # 日付を追加
                 open=stock_price['open'],
                 close=stock_price['close'],
                 high=stock_price['high'],
                 low=stock_price['low'],
-                volume=stock_price['volume']
+                volume=stock_price['volume'],
+                turnover=stock_price['turnover']      # 売買代金（取引金額）を追加
             )
             response.stock_prices.append(stock_price_pb)
         return response
