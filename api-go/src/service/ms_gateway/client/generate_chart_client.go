@@ -1,3 +1,4 @@
+// api-go\src\service\ms_gateway\client\generate_chart_client.go
 package client
 
 import (

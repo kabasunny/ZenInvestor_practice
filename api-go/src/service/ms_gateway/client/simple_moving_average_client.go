@@ -1,3 +1,4 @@
+// api-go\src\service\ms_gateway\client\simple_moving_average_client.go
 package client
 
 import (

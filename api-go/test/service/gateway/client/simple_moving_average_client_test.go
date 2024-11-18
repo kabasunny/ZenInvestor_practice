@@ -1,3 +1,4 @@
+// api-go\test\service\gateway\client\simple_moving_average_client_test.go
 package client_test
 
 import (
