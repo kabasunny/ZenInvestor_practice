@@ -25,9 +25,9 @@ class GetStockInfoJqService(get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceServ
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     get_stock_info_jq_pb2_grpc.add_GetStockInfoJqServiceServicer_to_server(GetStockInfoJqService(), server)
-    server.add_insecure_port('[::]:50404')
+    server.add_insecure_port('[::]:50405')
     server.start()
-    print("GetStockInfoJq gRPC Server started, listening on port 50404")
+    print("GetStockInfoJq gRPC Server started, listening on port 50405")
     server.wait_for_termination()
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+// api-go\src\service\ms_gateway\client\get_stock_data_client.go
 package client
 
 import (

@@ -1,3 +1,4 @@
+// api-go\test\service\gateway\client\generate_chart_client_test.go
 package client_test
 
 import (

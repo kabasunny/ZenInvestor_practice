@@ -1,3 +1,4 @@
+// api-go\src\dto\get_stock_service_request.go
 package dto
 
 import (
