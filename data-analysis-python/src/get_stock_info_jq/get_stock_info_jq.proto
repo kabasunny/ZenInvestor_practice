@@ -1,0 +1,34 @@
+// data-analysis-python\src\get_stock_info_jq\get_stock_info_jq.proto
+syntax = "proto3";
+
+option go_package = "api-go/src/service/ms_gateway/get_stock_info_jq";
+
+// 株式ティッカー情報を取得するためのサービスを定義
+service GetStockInfoJqService {
+  rpc GetStockInfoJq (GetStockInfoJqRequest) returns (GetStockInfoJqResponse);
+}
+
+// リクエストメッセージに国を指定するフィールドを追加
+message GetStockInfoJqRequest {
+  string country = 1;  // 国を指定するフィールド
+}
+
+// 株式ティッカー情報を格納するレスポンスメッセージ
+message GetStockInfoJqResponse {
+  repeated StockInfo stocks = 1;  // 株式情報のリスト
+}
+
+// 株式情報を表すメッセージ
+message StockInfo {
+  string ticker = 1;  // ティッカーシンボル
+  string name = 2;    // 銘柄名
+  string sector = 3;  // 業種
+  string industry = 4; // 業界
+}
+
+
+// python用コンパイルコマンド /data-analysis-pythonにて
+// python -m grpc_tools.protoc -I src/get_stock_info_jq --python_out=src/get_stock_info_jq --grpc_python_out=src/get_stock_info_jq src/get_stock_info_jq/get_stock_info_jq.proto
+
+// Go用コンパイルコマンド /api-goにて
+// protoc --proto_path=../data-analysis-python/src/get_stock_info_jq --go_out=./src/service/ms_gateway/get_stock_info_jq --go_opt=paths=source_relative --go-grpc_out=./src/service/ms_gateway/get_stock_info_jq --go-grpc_opt=paths=source_relative ../data-analysis-python/src/get_stock_info_jq/get_stock_info_jq.proto

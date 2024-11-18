@@ -11,20 +11,20 @@ service GetStockInfoService {
 
 // リクエストメッセージ（国名を指定）
 message GetStockInfoRequest {
-  string country = 1;
+  string country = 1;  // 国名
 }
 
 // 株式情報を格納するメッセージ
 message StockInfo {
-  string country = 1;
-  string symbol = 2;
-  string name = 3;
-  string full_name = 4;
-  string isin = 5;
-  string currency = 6;
-  string stock_exchange = 7;
-  string sector = 8;
-  string industry = 9;
+  string country = 1;          // 国名
+  string symbol = 2;           // 証券コード
+  string name = 3;             // 銘柄名
+  string full_name = 4;        // 正式名称
+  string isin = 5;             // ISINコード
+  string currency = 6;         // 通貨
+  string stock_exchange = 7;   // 証券取引所
+  string sector = 8;           // セクター
+  string industry = 9;         // 業界
 }
 
 // 株式情報を格納するレスポンスメッセージ

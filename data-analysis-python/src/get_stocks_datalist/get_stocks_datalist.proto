@@ -11,22 +11,24 @@ service GetStocksDatalistService {
 
 // リクエストメッセージ（銘柄コードの一覧を指定）
 message GetStocksDatalistRequest {
-  repeated string symbols = 1;
+  repeated string symbols = 1; // 銘柄コードのリスト
 }
 
 // 株価情報を格納するメッセージ
 message StockPrice {
-  string symbol = 1;
-  double open = 2;
-  double close = 3;
-  double high = 4;
-  double low = 5;
-  int64 volume = 6;
+  string symbol = 1;         // 銘柄コード
+  string date = 2;           // 日付
+  double open = 3;           // 始値
+  double close = 4;          // 終値
+  double high = 5;           // 高値
+  double low = 6;            // 安値
+  int64 volume = 7;          // 出来高
+  double turnover = 8;       // 売買代金（取引金額）
 }
 
 // 株価情報を格納するレスポンスメッセージ
 message GetStocksDatalistResponse {
-  repeated StockPrice stock_prices = 1;
+  repeated StockPrice stock_prices = 1; // 複数の株価情報
 }
 
 // python用コンパイルコマンド /data-analysis-pythonにて

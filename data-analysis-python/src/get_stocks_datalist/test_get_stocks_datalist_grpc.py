@@ -1,5 +1,4 @@
 # data-analysis-python\src\get_stocks_datalist\test_get_stocks_datalist_grpc.py
-
 import unittest
 import grpc
 import time
@@ -17,7 +16,7 @@ class TestGetStocksDatalistGrpc(unittest.TestCase):
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         get_stocks_datalist_pb2_grpc.add_GetStocksDatalistServiceServicer_to_server(
             GetStocksDatalistService(), cls.server)
-        cls.port = '51065' # テスト時にはポートを50065から51065に変更
+        cls.port = '51065'  # テスト時にはポートを50065から51065に変更
         cls.server.add_insecure_port(f'[::]:{cls.port}')
         cls.server.start()
         print(f'Server started on port {cls.port}')
@@ -56,11 +55,13 @@ class TestGetStocksDatalistGrpc(unittest.TestCase):
         for stock_price in response.stock_prices:
             stock_prices_list.append({
                 'symbol': stock_price.symbol,
+                'date': stock_price.date,             # 日付を追加
                 'open': stock_price.open,
                 'close': stock_price.close,
                 'high': stock_price.high,
                 'low': stock_price.low,
-                'volume': stock_price.volume
+                'volume': stock_price.volume,
+                'turnover': stock_price.turnover      # 売買代金（取引金額）を追加
             })
         
         df = pd.DataFrame(stock_prices_list)

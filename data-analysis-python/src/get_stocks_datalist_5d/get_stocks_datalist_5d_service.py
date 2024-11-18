@@ -16,7 +16,8 @@ def get_stocks_datalist_5d(symbols):
                         'close': row['Close'],
                         'high': row['High'],
                         'low': row['Low'],
-                        'volume': int(row['Volume'])  # ここでintに変換
+                        'volume': int(row['Volume']),              # ここでintに変換
+                        'turnover': row['Close'] * int(row['Volume'])  # 売買代金（取引金額）を追加
                     }
                     stock_prices_list.append(stock_price)
         return stock_prices_list

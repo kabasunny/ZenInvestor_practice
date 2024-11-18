@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n$get_stocks_datalist_with_dates.proto\"Z\n!GetStocksDatalistWithDatesRequest\x12\x0f\n\x07symbols\x18\x01 \x03(\t\x12\x12\n\nstart_date\x18\x02 \x01(\t\x12\x10\n\x08\x65nd_date\x18\x03 \x01(\t\"r\n\nStockPrice\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x0c\n\x04open\x18\x03 \x01(\x01\x12\r\n\x05\x63lose\x18\x04 \x01(\x01\x12\x0c\n\x04high\x18\x05 \x01(\x01\x12\x0b\n\x03low\x18\x06 \x01(\x01\x12\x0e\n\x06volume\x18\x07 \x01(\x03\"G\n\"GetStocksDatalistWithDatesResponse\x12!\n\x0cstock_prices\x18\x01 \x03(\x0b\x32\x0b.StockPrice2\x81\x01\n!GetStocksDatalistWithDatesService\x12\\\n\x11GetStocksDatalist\x12\".GetStocksDatalistWithDatesRequest\x1a#.GetStocksDatalistWithDatesResponseB>Z<api-go/src/service/ms_gateway/get_stocks_datalist_with_datesb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n$get_stocks_datalist_with_dates.proto\"Z\n!GetStocksDatalistWithDatesRequest\x12\x0f\n\x07symbols\x18\x01 \x03(\t\x12\x12\n\nstart_date\x18\x02 \x01(\t\x12\x10\n\x08\x65nd_date\x18\x03 \x01(\t\"\x84\x01\n\nStockPrice\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x0c\n\x04open\x18\x03 \x01(\x01\x12\r\n\x05\x63lose\x18\x04 \x01(\x01\x12\x0c\n\x04high\x18\x05 \x01(\x01\x12\x0b\n\x03low\x18\x06 \x01(\x01\x12\x0e\n\x06volume\x18\x07 \x01(\x03\x12\x10\n\x08turnover\x18\x08 \x01(\x01\"G\n\"GetStocksDatalistWithDatesResponse\x12!\n\x0cstock_prices\x18\x01 \x03(\x0b\x32\x0b.StockPrice2\x81\x01\n!GetStocksDatalistWithDatesService\x12\\\n\x11GetStocksDatalist\x12\".GetStocksDatalistWithDatesRequest\x1a#.GetStocksDatalistWithDatesResponseB>Z<api-go/src/service/ms_gateway/get_stocks_datalist_with_datesb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,10 +34,10 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._serialized_options = b'Z<api-go/src/service/ms_gateway/get_stocks_datalist_with_dates'
   _globals['_GETSTOCKSDATALISTWITHDATESREQUEST']._serialized_start=40
   _globals['_GETSTOCKSDATALISTWITHDATESREQUEST']._serialized_end=130
-  _globals['_STOCKPRICE']._serialized_start=132
-  _globals['_STOCKPRICE']._serialized_end=246
-  _globals['_GETSTOCKSDATALISTWITHDATESRESPONSE']._serialized_start=248
-  _globals['_GETSTOCKSDATALISTWITHDATESRESPONSE']._serialized_end=319
-  _globals['_GETSTOCKSDATALISTWITHDATESSERVICE']._serialized_start=322
-  _globals['_GETSTOCKSDATALISTWITHDATESSERVICE']._serialized_end=451
+  _globals['_STOCKPRICE']._serialized_start=133
+  _globals['_STOCKPRICE']._serialized_end=265
+  _globals['_GETSTOCKSDATALISTWITHDATESRESPONSE']._serialized_start=267
+  _globals['_GETSTOCKSDATALISTWITHDATESRESPONSE']._serialized_end=338
+  _globals['_GETSTOCKSDATALISTWITHDATESSERVICE']._serialized_start=341
+  _globals['_GETSTOCKSDATALISTWITHDATESSERVICE']._serialized_end=470
 # @@protoc_insertion_point(module_scope)

@@ -16,7 +16,7 @@ class TestGetStocksDatalistWithDatesGrpc(unittest.TestCase):
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         get_stocks_datalist_with_dates_pb2_grpc.add_GetStocksDatalistWithDatesServiceServicer_to_server(
             GetStocksDatalistWithDatesService(), cls.server)
-        cls.port = '51066' # テスト時にはポートを50066から51066に変更
+        cls.port = '51066'  # テスト時にはポートを50066から51066に変更
         cls.server.add_insecure_port(f'[::]:{cls.port}')
         cls.server.start()
         print(f'Server started on port {cls.port}')
@@ -59,7 +59,8 @@ class TestGetStocksDatalistWithDatesGrpc(unittest.TestCase):
                 'close': stock_price.close,
                 'high': stock_price.high,
                 'low': stock_price.low,
-                'volume': stock_price.volume
+                'volume': stock_price.volume,
+                'turnover': stock_price.turnover      # 売買代金（取引金額）を追加
             })
         
         df = pd.DataFrame(stock_prices_list)

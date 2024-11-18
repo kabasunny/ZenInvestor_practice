@@ -1,5 +1,4 @@
 # data-analysis-python\src\get_stocks_datalist_with_dates\get_stocks_datalist_with_dates_grpc.py
-
 from concurrent import futures
 import grpc
 import get_stocks_datalist_with_dates_pb2
@@ -18,7 +17,8 @@ class GetStocksDatalistWithDatesService(get_stocks_datalist_with_dates_pb2_grpc.
                 close=stock_price['close'],
                 high=stock_price['high'],
                 low=stock_price['low'],
-                volume=stock_price['volume']
+                volume=stock_price['volume'],
+                turnover=stock_price['turnover']      # 売買代金（取引金額）を追加
             )
             response.stock_prices.append(stock_price_pb)
         return response
