@@ -1,3 +1,4 @@
+# data-analysis-python\src\get_all_tickers\test_get_all_tickers_service.py
 import unittest
 import pandas as pd
 import os
