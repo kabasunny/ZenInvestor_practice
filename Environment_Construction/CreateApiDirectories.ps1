@@ -9,7 +9,7 @@ Function CreateApiDirectories {
         "util",
         "dto",
         "model",
-        "migrate",
+        "migration",
         "infra",
         "middleware",
         "router"
