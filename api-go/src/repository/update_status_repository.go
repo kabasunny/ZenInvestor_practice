@@ -1,11 +1,14 @@
 // api-go\src\repository\update_status_repository.go
-
 package repository
 
-type UpdateStatusRepository interface {
-	// 更新状態をチェックする:データ取得時(毎回)
-	CheckUpdateStatus()
+import (
+	"api-go/src/model"
+)
 
-	// 更新状態を更新する:テーブル更新時(毎回)
-	UpdateStatus()
+type UpdateStatusRepository interface {
+	// 全ての更新状態をチェックする: データ取得時(毎回)
+	GetAllUpdateStatuses() ([]model.UpdateStatus, error)
+
+	// 更新状態を更新する: テーブル更新時(毎回)
+	UpdateStatus(updateStatus *model.UpdateStatus) error
 }
