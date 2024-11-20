@@ -10,5 +10,5 @@ type UpdateStatusRepository interface {
 	GetAllUpdateStatuses() ([]model.UpdateStatus, error)
 
 	// 更新状態を更新する: テーブル更新時(毎回)
-	UpdateStatus(updateStatus *model.UpdateStatus) error
+	UpdateStatus(tbName string) error
 }
