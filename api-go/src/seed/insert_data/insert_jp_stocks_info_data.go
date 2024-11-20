@@ -3,6 +3,7 @@ package seed
 
 import (
 	"api-go/src/model"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -19,6 +20,14 @@ func InsertJPStocksInfoData(db *gorm.DB) error {
 	}
 
 	for _, stock := range stocksInfo {
+		var existing model.JpStockInfo
+		if err := db.Where("ticker = ?", stock.Ticker).First(&existing).Error; err == nil {
+			// エントリが既に存在する場合はスキップ
+			log.Printf("Skipping insert for existing ticker: %v", stock.Ticker)
+			continue
+		}
+
+		// エントリが存在しない場合のみ挿入
 		if err := db.Create(&stock).Error; err != nil {
 			return err
 		}
