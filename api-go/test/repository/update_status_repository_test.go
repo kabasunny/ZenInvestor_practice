@@ -2,52 +2,18 @@
 package repository
 
 import (
-	"api-go/src/infra"
 	"api-go/src/model"
 	"api-go/src/repository"
+	"api-go/test/repository/repository_test_helper"
 	"fmt"
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-func setupTestDB() *gorm.DB {
-	godotenv.Load("../../.env") // 以前、テストではパスを指定しないとうまく読み取らなかった
-	db := infra.SetupDB()
-	return db
-}
-
-func cleanupTestData(db *gorm.DB) {
-	// テストデータの削除
-	db.Where("tb_name LIKE ?", "test_table%").Delete(&model.UpdateStatus{})
-}
-
-func backupAndClearTestData(db *gorm.DB) ([]model.UpdateStatus, error) {
-	var backup []model.UpdateStatus
-	// 既存のデータをバックアップ
-	if err := db.Find(&backup).Error; err != nil {
-		return nil, err
-	}
-	// テストデータをクリア
-	if err := db.Exec("DELETE FROM update_status").Error; err != nil {
-		return nil, err
-	}
-	return backup, nil
-}
-
-func restoreTestData(db *gorm.DB, backup []model.UpdateStatus) {
-	// バックアップしたデータを復元
-	for _, data := range backup {
-		db.Create(&data)
-	}
-}
-
-// バックアップとクリアを除去した TestGetAllUpdateStatuses
 func TestGetAllUpdateStatuses(t *testing.T) {
-	db := setupTestDB()
+	db := repository_test_helper.SetupTestDB()
 
 	repo := repository.NewUpdateStatusRepository(db)
 	statuses, err := repo.GetAllUpdateStatuses()
@@ -65,14 +31,14 @@ func TestGetAllUpdateStatuses(t *testing.T) {
 }
 
 func TestUpdateStatus(t *testing.T) {
-	db := setupTestDB()
+	db := repository_test_helper.SetupTestDB()
 
 	fmt.Println("TestUpdateStatus")
 
 	// 既存のデータをバックアップしてクリア
-	backup, err := backupAndClearTestData(db)
+	backup, err := repository_test_helper.BackupAndClearTestData(db)
 	assert.NoError(t, err)
-	defer restoreTestData(db, backup)
+	defer repository_test_helper.RestoreTestData(db, backup)
 
 	// テストデータの挿入
 	yesterday := time.Now().AddDate(0, 0, -1)
@@ -100,10 +66,9 @@ func TestUpdateStatus(t *testing.T) {
 	fmt.Println("After Update:", result)
 
 	// テストデータの削除
-	cleanupTestData(db)
+	repository_test_helper.CleanupUpdateStatusTestData(db)
 }
 
 // テストの実行コード
-// go test -v ./test/repository/update_status_repository_test.go -run TestGetAllUpdateStatuses TestUpdateStatus
 // go test -v ./test/repository/update_status_repository_test.go -run TestUpdateStatus
 // go test -v ./test/repository/update_status_repository_test.go -run TestGetAllUpdateStatuses
