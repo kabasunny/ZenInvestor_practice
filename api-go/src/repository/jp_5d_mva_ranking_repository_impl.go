@@ -36,7 +36,7 @@ func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
 		Distinct("date").
 		Order("date DESC").
 		Limit(5).
-		Pluck("date", &tradingDates).Error // GORMのメソッドの一つで、特定のカラムの値を取得する
+		Pluck("date", &tradingDates).Error
 	if err != nil {
 		return err
 	}
@@ -48,16 +48,15 @@ func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
 	latestDate := tradingDates[0]
 
 	// 5日間平均を計算し、ランキングを生成
-	rows, err := repo.db.Raw(`
-        SELECT 
-            ticker, 
-            AVG(value) as avg_value,
-            RANK() OVER (ORDER BY AVG(value) DESC) as ranking,
-            ? AS date -- 最新日付をランキング日付として使用
-        FROM jp_daily_price
-        WHERE date IN (?)
-        GROUP BY ticker
-    `, latestDate, tradingDates).Rows() // tradingDates を使用
+	rows, err := repo.db.Raw(
+		`SELECT 
+			ticker, 
+			AVG(value) as avg_value,
+			RANK() OVER (ORDER BY AVG(value) DESC) as ranking,
+			? AS date
+		FROM jp_daily_price
+		WHERE date IN (?)
+		GROUP BY ticker`, latestDate, tradingDates).Rows()
 	if err != nil {
 		return err
 	}
@@ -71,27 +70,37 @@ func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
 
 	for rows.Next() {
 		var ranking model.Jp5dMvaRanking
-		if err := rows.Scan(&ranking.Ticker, &ranking.AvgVolue, &ranking.Ranking, &ranking.Date); err != nil {
-			tx.Rollback() // エラー発生時はロールバック
+		// ドライバが日付データを []uint8 として返すため、time.Time に直接スキャンできない
+		// 文字列として取得し、time.Parse で変換する
+		var dateStr string
+		if err := rows.Scan(&ranking.Ticker, &ranking.AvgVolue, &ranking.Ranking, &dateStr); err != nil {
+			tx.Rollback()
 			return err
 		}
 
-		// アップサート操作 : OnConflictでレコードが存在する場合は更新、存在しない場合は作成
-		err := tx.Clauses(clause.OnConflict{
-			Columns:   []clause.Column{{Name: "ranking"}, {Name: "ticker"}, {Name: "date"}}, // 衝突(重複)を検出するために使用されるカラムを指定
-			DoUpdates: clause.AssignmentColumns([]string{"avg_volue"}),                      // 衝突が検出された場合にどのカラムを更新するかを指定
+		// 文字列からtime.Time型に変換
+		date, err := time.Parse("2006-01-02", dateStr) // dateStrを解析してtime.Time型に変換
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		ranking.Date = date // 変換されたtime.Time型をranking.Dateにセット
+
+		err = tx.Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "ranking"}, {Name: "ticker"}, {Name: "date"}},
+			DoUpdates: clause.AssignmentColumns([]string{"avg_volue"}),
 		}).Create(&ranking).Error
 		if err != nil {
-			tx.Rollback() // エラー発生時はロールバック
+			tx.Rollback()
 			return err
 		}
 	}
 	if err := rows.Err(); err != nil {
-		tx.Rollback() // エラー発生時はロールバック
+		tx.Rollback()
 		return err
 	}
 
-	return tx.Commit().Error // コミット
+	return tx.Commit().Error
 }
 
 // 売買代金5日平均ランキングデータを削除する
