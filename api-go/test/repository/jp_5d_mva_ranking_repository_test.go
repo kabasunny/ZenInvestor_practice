@@ -24,6 +24,7 @@ func TestGet5dMvaRankingData(t *testing.T) {
 		fmt.Println(ranking)
 	}
 }
+
 func TestAdd5dMvaRankingData(t *testing.T) {
 	db := repository_test_helper.SetupTestDB()
 	repo := repository.NewJp5dMvaRankingRepository(db)
