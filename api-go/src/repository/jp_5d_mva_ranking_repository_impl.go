@@ -1,0 +1,110 @@
+// api-go\src\repository\jp_5d_mva_ranking_repository_impl.go
+
+package repository
+
+import (
+	"api-go/src/model"
+	"fmt"
+	"time"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+)
+
+type jp5dMvaRankingRepositoryImpl struct {
+	db *gorm.DB
+}
+
+func NewJp5dMvaRankingRepository(db *gorm.DB) JP5dMvaRankingRepository {
+	return &jp5dMvaRankingRepositoryImpl{db: db}
+}
+
+// 売買代金5日平均ランキングデータを取得する
+func (r *jp5dMvaRankingRepositoryImpl) Get5dMvaRankingData() (*[]model.Jp5dMvaRanking, error) {
+	var rankings []model.Jp5dMvaRanking
+	if err := r.db.Find(&rankings).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch 5d MVA ranking data: %w", err)
+	}
+	return &rankings, nil
+}
+
+// 売買代金5日平均ランキングデータを追加する
+func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
+	// 最新日付を含む直近5営業日を取得
+	var tradingDates []time.Time
+	err := repo.db.Model(&model.JpDailyPrice{}).
+		Distinct("date").
+		Order("date DESC").
+		Limit(5).
+		Pluck("date", &tradingDates).Error // GORMのメソッドの一つで、特定のカラムの値を取得する
+	if err != nil {
+		return err
+	}
+
+	if len(tradingDates) < 5 {
+		return fmt.Errorf("5日分のデータがありません")
+	}
+
+	latestDate := tradingDates[0]
+
+	// 5日間平均を計算し、ランキングを生成
+	rows, err := repo.db.Raw(`
+        SELECT 
+            ticker, 
+            AVG(value) as avg_value,
+            RANK() OVER (ORDER BY AVG(value) DESC) as ranking,
+            ? AS date -- 最新日付をランキング日付として使用
+        FROM jp_daily_price
+        WHERE date IN (?)
+        GROUP BY ticker
+    `, latestDate, tradingDates).Rows() // tradingDates を使用
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	// トランザクション開始
+	tx := repo.db.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	for rows.Next() {
+		var ranking model.Jp5dMvaRanking
+		if err := rows.Scan(&ranking.Ticker, &ranking.AvgVolue, &ranking.Ranking, &ranking.Date); err != nil {
+			tx.Rollback() // エラー発生時はロールバック
+			return err
+		}
+
+		// アップサート操作 : OnConflictでレコードが存在する場合は更新、存在しない場合は作成
+		err := tx.Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "ranking"}, {Name: "ticker"}, {Name: "date"}}, // 衝突(重複)を検出するために使用されるカラムを指定
+			DoUpdates: clause.AssignmentColumns([]string{"avg_volue"}),                      // 衝突が検出された場合にどのカラムを更新するかを指定
+		}).Create(&ranking).Error
+		if err != nil {
+			tx.Rollback() // エラー発生時はロールバック
+			return err
+		}
+	}
+	if err := rows.Err(); err != nil {
+		tx.Rollback() // エラー発生時はロールバック
+		return err
+	}
+
+	return tx.Commit().Error // コミット
+}
+
+// 売買代金5日平均ランキングデータを削除する
+func (r *jp5dMvaRankingRepositoryImpl) Delete5dMvaRankingData(days int) error {
+	// 現在の日付から指定された日数を引いた日付を計算
+	beforeDate := time.Now().AddDate(0, 0, -days)
+
+	// 指定された日付以前のデータを削除
+	result := r.db.Where("date < ?", beforeDate).Delete(&model.Jp5dMvaRanking{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete 5d MVA ranking data: %w", result.Error)
+	}
+
+	fmt.Printf("Deleted %d records older than %s\n", result.RowsAffected, beforeDate)
+	return nil
+}
