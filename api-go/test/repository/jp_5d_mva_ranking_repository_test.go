@@ -79,8 +79,8 @@ func TestAdd5dMvaRankingData(t *testing.T) {
 	// jp_daily_priceテーブルに挿入したデータを削除する
 	db.Exec("DELETE FROM jp_daily_price WHERE ticker IN ('test6', 'test7')")
 
-	// jp_5d_mva_rankingテーブルに挿入したデータを削除する
-	db.Exec("DELETE FROM jp_5d_mva_ranking WHERE ticker IN ('test6', 'test7')")
+	// jp_5d_mva_rankingテーブルに挿入したデータを本日付で削除する リアル日付の経過とともにjp_daily_priceにある古いデータが無尽蔵に増える
+	db.Exec("DELETE FROM jp_5d_mva_ranking WHERE date = ?", today)
 }
 
 func TestDelete5dMvaRankingData(t *testing.T) {
@@ -90,7 +90,7 @@ func TestDelete5dMvaRankingData(t *testing.T) {
 	// 古い日付のデータを作成
 	oldDate := time.Now().AddDate(0, 0, -31).Truncate(24 * time.Hour)
 	newRankings := []model.Jp5dMvaRanking{
-		{Ranking: 1, Ticker: "test_ticker", Date: oldDate, AvgVolue: 12345.67},
+		{Ranking: 1, Ticker: "test_tic", Date: oldDate, AvgVolue: 12345.67},
 	}
 
 	// ダミーデータを jp_5d_mva_ranking テーブルに直接挿入

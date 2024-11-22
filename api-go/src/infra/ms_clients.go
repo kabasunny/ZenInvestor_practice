@@ -46,6 +46,15 @@ func SetupMsClients(ctx context.Context) (*MSClients, error) { // 戻り値にer
 	msClients["simple_moving_average"] = smaClient // mapに追加
 	fmt.Println("smaClient setup successfully.")
 
+	// ランキング用全株価データ取得用クライアント
+	jdpClient, err := client.NewSimpleMovingAverageClient(ctx) // SimpleMovingAverageClient を初期化
+	fmt.Println("in NewSimpleMovingAverageClient.")
+	if err != nil {
+		log.Fatalf("Failed to create simple moving average client: %v", err)
+	}
+	msClients["jp_daily_price"] = jdpClient // mapに追加
+	fmt.Println("smaClient setup successfully.")
+
 	// 他のマイクロサービス用クライアントの初期化もここに追加
 
 	return &MSClients{
