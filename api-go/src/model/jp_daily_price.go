@@ -8,14 +8,14 @@ package model
 import "time"
 
 type JpDailyPrice struct {
-	Ticker string    `gorm:"primaryKey;type:varchar(10)"` // VARCHAR型に変更し、長さを指定
-	Date   time.Time `gorm:"primaryKey;type:date"`
-	Open   float64   `gorm:"type:real"`
-	Close  float64   `gorm:"type:real"`
-	High   float64   `gorm:"type:real"`
-	Low    float64   `gorm:"type:real"`
-	Volume int64     `gorm:"type:integer"`
-	Value  int64     `gorm:"type:integer"`
+	Ticker   string    `gorm:"primaryKey;type:varchar(10)"` // VARCHAR型に変更し、長さを指定
+	Date     time.Time `gorm:"primaryKey;type:date"`
+	Open     float64   `gorm:"type:real"`
+	Close    float64   `gorm:"type:real"`
+	High     float64   `gorm:"type:real"`
+	Low      float64   `gorm:"type:real"`
+	Volume   int64     `gorm:"type:integer"`
+	Turnover int64     `gorm:"type:integer"`
 }
 
 // TableName カスタムテーブル名を指定するメソッド
