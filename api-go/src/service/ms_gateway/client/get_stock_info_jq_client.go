@@ -1,4 +1,4 @@
-// api-go\src\service\ms_gateway\client\get_stock_info_jq.go
+// api-go\src\service\ms_gateway\client\get_stock_info_jq_client.go
 
 package client
 

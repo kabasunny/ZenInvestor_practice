@@ -42,7 +42,7 @@ func TestAddDailyPriceData(t *testing.T) {
 	fmt.Println("test_add Ticker:", ticker)
 	// 新しいデータの挿入
 	addPrices := []model.JpDailyPrice{
-		{Ticker: ticker, Date: date, Open: 1000.0, Close: 1100.0, High: 1150.0, Low: 950.0, Volume: 10000, Value: 1000000},
+		{Ticker: ticker, Date: date, Open: 1000.0, Close: 1100.0, High: 1150.0, Low: 950.0, Volume: 10000, Turnover: 1000000},
 	}
 
 	err := repo.AddDailyPriceData(&addPrices)
@@ -70,7 +70,7 @@ func TestDeleteDailyPriceData(t *testing.T) {
 	// 古い日付のデータを作成
 	oldDate := time.Now().AddDate(0, 0, -31) // 31日前の日付
 	newPrices := []model.JpDailyPrice{
-		{Ticker: "testdel", Date: oldDate, Open: 1000.0, Close: 1100.0, High: 1150.0, Low: 950.0, Volume: 10000, Value: 1000000},
+		{Ticker: "testdel", Date: oldDate, Open: 1000.0, Close: 1100.0, High: 1150.0, Low: 950.0, Volume: 10000, Turnover: 1000000},
 	}
 
 	err := repo.AddDailyPriceData(&newPrices)

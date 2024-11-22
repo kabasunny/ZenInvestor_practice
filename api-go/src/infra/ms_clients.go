@@ -46,6 +46,24 @@ func SetupMsClients(ctx context.Context) (*MSClients, error) { // 戻り値にer
 	msClients["simple_moving_average"] = smaClient // mapに追加
 	fmt.Println("smaClient setup successfully.")
 
+	// J-QUANTSからの銘柄データ取得用クライアント
+	gsijClient, err := client.NewGetStockInfoJqClient(ctx)
+	fmt.Println("in NewGetStockInfoJqClient.")
+	if err != nil {
+		log.Fatalf("Failed to create get stock info from jq client: %v", err)
+	}
+	msClients["get_stock_info_jq"] = gsijClient // mapに追加
+	fmt.Println("gsijClient setup successfully.")
+
+	// ランキング用全株価データ取得用クライアント
+	gsdwdClient, err := client.NewGetStocksDatalistWithDatesClient(ctx)
+	fmt.Println("in NewGetStockInfoJqClient.")
+	if err != nil {
+		log.Fatalf("Failed to create get stocks datalist with dates client: %v", err)
+	}
+	msClients["get_stocks_datalist_with_dates"] = gsdwdClient // mapに追加
+	fmt.Println("gsdwdClient setup successfully.")
+
 	// 他のマイクロサービス用クライアントの初期化もここに追加
 
 	return &MSClients{

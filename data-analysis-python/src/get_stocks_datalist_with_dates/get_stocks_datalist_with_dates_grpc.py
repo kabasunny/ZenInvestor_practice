@@ -23,12 +23,14 @@ class GetStocksDatalistWithDatesService(get_stocks_datalist_with_dates_pb2_grpc.
             response.stock_prices.append(stock_price_pb)
         return response
 
+
 def serve():
+    port = '50002'  # ここでポート番号を変数として定義
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     get_stocks_datalist_with_dates_pb2_grpc.add_GetStocksDatalistWithDatesServiceServicer_to_server(GetStocksDatalistWithDatesService(), server)
-    server.add_insecure_port('[::]:50104')
+    server.add_insecure_port(f'[::]:{port}')  # 変数を使用
     server.start()
-    print("GetStocksDatalistWithDates gRPCServer started, listening on port 50104")
+    print(f"GetStocksDatalistWithDates gRPCServer started, listening on port {port}")
     server.wait_for_termination()
 
 if __name__ == '__main__':
