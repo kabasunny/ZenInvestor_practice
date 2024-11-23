@@ -27,14 +27,30 @@ func (r *jpStockInfoRepositoryImpl) GetAllStockInfo() (*[]model.JpStockInfo, err
 
 // 銘柄データを更新する: 一日一回
 func (r *jpStockInfoRepositoryImpl) UpdateStockInfo(newJpStockInfo *[]model.JpStockInfo) error {
+	fmt.Println("In UpdateStockInfo")
 	tx := r.db.Begin()
+	fmt.Println("In UpdateStockInfo Begin()")
 
 	for _, stock := range *newJpStockInfo {
-		if err := tx.Model(&model.JpStockInfo{}).
-			Where("ticker = ?", stock.Ticker).
-			Updates(stock).Error; err != nil {
-			tx.Rollback()
-			return fmt.Errorf("failed to update stock info for ticker '%s': %w", stock.Ticker, err)
+		// 既存のレコードを検索
+		var existingStock model.JpStockInfo
+		if err := tx.Where("ticker = ?", stock.Ticker).First(&existingStock).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				// レコードが存在しない場合は新規作成
+				if err := tx.Create(&stock).Error; err != nil {
+					tx.Rollback()
+					return fmt.Errorf("failed to create stock info for ticker '%s': %w", stock.Ticker, err)
+				}
+			} else {
+				tx.Rollback()
+				return fmt.Errorf("failed to fetch stock info for ticker '%s': %w", stock.Ticker, err)
+			}
+		} else {
+			// レコードが存在する場合は更新
+			if err := tx.Model(&existingStock).Updates(stock).Error; err != nil {
+				tx.Rollback()
+				return fmt.Errorf("failed to update stock info for ticker '%s': %w", stock.Ticker, err)
+			}
 		}
 	}
 
@@ -42,7 +58,7 @@ func (r *jpStockInfoRepositoryImpl) UpdateStockInfo(newJpStockInfo *[]model.JpSt
 		tx.Rollback()
 		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
-
+	fmt.Println("Out UpdateStockInfo")
 	return nil
 }
 

@@ -110,3 +110,8 @@ func TestGetStockDataIntegration(t *testing.T) {
 	// 7. gRPCサーバーを停止
 	fmt.Println("Step 7: Stopping gRPC server...")
 }
+
+// 全マクロサービスを立ち上げるなら、/ZenInvestor_practiceにて
+// ./StartMicroservices.ps1
+// 本テスト用マイクロサービスを立ち上げるなら、/ZenInvestor_practiceにて
+// ./StartOnlyStockAndChartMicroservices.ps1

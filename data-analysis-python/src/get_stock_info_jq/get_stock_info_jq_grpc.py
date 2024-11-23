@@ -23,11 +23,12 @@ class GetStockInfoJqService(get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceServ
         return response
 
 def serve():
+    port = '50405'  # 異なるポート番号を使用
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     get_stock_info_jq_pb2_grpc.add_GetStockInfoJqServiceServicer_to_server(GetStockInfoJqService(), server)
-    server.add_insecure_port('[::]:50405')
+    server.add_insecure_port(f'[::]:{port}')
     server.start()
-    print("GetStockInfoJq gRPC Server started, listening on port 50405")
+    print(f"GetStockInfoJq gRPC Server started, listening on port {port}")
     server.wait_for_termination()
 
 if __name__ == '__main__':
