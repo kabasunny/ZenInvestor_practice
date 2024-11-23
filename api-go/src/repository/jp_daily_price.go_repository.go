@@ -14,5 +14,8 @@ type JpDailyPriceRepository interface {
 	// 株価データを削除する:データが一定数に達したら(一日一回、設定した日数が経過しているレコード)
 	DeleteDailyPriceData(int) error
 
+	// ティッカーに対応する最新の終値を取得
+	GetLatestClosePricesByTickers(tickers []string) (map[string]float64, error)
+
 	// その他、必要に応じて追加
 }

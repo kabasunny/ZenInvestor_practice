@@ -1,5 +1,4 @@
 // api-go\src\repository\jp_stocks_info_repository_impl.go
-
 package repository
 
 import (
@@ -45,4 +44,18 @@ func (r *jpStockInfoRepositoryImpl) UpdateStockInfo(newJpStockInfo *[]model.JpSt
 	}
 
 	return nil
+}
+
+// ティッカーに対応する銘柄情報を取得
+func (r *jpStockInfoRepositoryImpl) GetStockInfoByTickers(tickers []string) (map[string]model.JpStockInfo, error) {
+	var stockList []model.JpStockInfo
+	if err := r.db.Where("ticker IN ?", tickers).Find(&stockList).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch stock info: %w", err)
+	}
+
+	stocks := make(map[string]model.JpStockInfo)
+	for _, stock := range stockList {
+		stocks[stock.Ticker] = stock
+	}
+	return stocks, nil
 }

@@ -10,7 +10,7 @@ service GetStockInfoJqService {
 
 // リクエストメッセージに国を指定するフィールドを追加
 message GetStockInfoJqRequest {
-  string country = 1;  // 国を指定するフィールド
+  // J-QUANTSは日本株なので無し11/23　string country = 1;  // 国を指定するフィールド
 }
 
 // 株式ティッカー情報を格納するレスポンスメッセージ

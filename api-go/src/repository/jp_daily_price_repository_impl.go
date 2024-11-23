@@ -1,4 +1,3 @@
-// api-go\src\repository\jp_daily_price_repository_impl.go
 package repository
 
 import (
@@ -72,4 +71,18 @@ func (r *jpDailyPriceRepositoryImpl) DeleteDailyPriceData(days int) error {
 
 	fmt.Printf("Deleted %d records older than %s\n", result.RowsAffected, beforeDate)
 	return nil
+}
+
+// ティッカーに対応する最新の終値を取得
+func (r *jpDailyPriceRepositoryImpl) GetLatestClosePricesByTickers(tickers []string) (map[string]float64, error) {
+	var prices []model.JpDailyPrice
+	if err := r.db.Where("ticker IN ?", tickers).Order("date desc").Group("ticker").Find(&prices).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch latest prices: %w", err)
+	}
+
+	priceMap := make(map[string]float64)
+	for _, price := range prices {
+		priceMap[price.Ticker] = price.Close
+	}
+	return priceMap, nil
 }
