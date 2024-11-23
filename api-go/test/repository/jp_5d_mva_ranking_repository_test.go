@@ -125,6 +125,40 @@ func TestDelete5dMvaRankingData(t *testing.T) {
 	assert.Error(t, err) // レコードが見つからないエラーを期待
 }
 
+func TestGetStockInfoByTickers(t *testing.T) {
+	db := repository_test_helper.SetupTestDB()
+	repo := repository.NewJpStockInfoRepository(db)
+
+	// テストデータの追加
+	testStocks := []model.JpStockInfo{
+		{Ticker: "test_31", Name: "Test Company 1", Sector: "Tech", Industry: "Software"},
+		{Ticker: "test_32", Name: "Test Company 2", Sector: "Finance", Industry: "Banking"},
+	}
+
+	err := db.Create(&testStocks).Error
+	assert.NoError(t, err)
+
+	// ティッカーリストに基づいて銘柄情報を取得
+	tickers := []string{"test_31", "test_32"}
+	stocks, err := repo.GetStockInfoByTickers(tickers)
+	assert.NoError(t, err)
+
+	// 結果をターミナルに表示
+	fmt.Println("GetStockInfoByTickers:")
+	for ticker, stock := range stocks {
+		fmt.Printf("Ticker: %s, Name: %s, Sector: %s, Industry: %s\n", ticker, stock.Name, stock.Sector, stock.Industry)
+	}
+
+	// 結果の確認
+	assert.Equal(t, 2, len(stocks))
+	assert.Equal(t, "Test Company 1", stocks["test_31"].Name)
+	assert.Equal(t, "Test Company 2", stocks["test_32"].Name)
+
+	// クリーンアップ: 追加したデータを削除
+	db.Where("ticker IN ?", tickers).Delete(&model.JpStockInfo{})
+}
+
 // go test -v ./test/repository/jp_5d_mva_ranking_repository_test.go -run TestGet5dMvaRankingData
 // go test -v ./test/repository/jp_5d_mva_ranking_repository_test.go -run TestAdd5dMvaRankingData
 // go test -v ./test/repository/jp_5d_mva_ranking_repository_test.go -run TestDelete5dMvaRankingData
+// go test -v ./test/repository/jp_5d_mva_ranking_repository_test.go -run TestGetStockInfoByTickers

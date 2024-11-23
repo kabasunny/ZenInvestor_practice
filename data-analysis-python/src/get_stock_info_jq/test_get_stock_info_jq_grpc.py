@@ -33,7 +33,7 @@ class TestGetStockInfoJqGrpcService(unittest.TestCase):
         # gRPCクライアントの設定
         with grpc.insecure_channel(f'localhost:{self.port}') as channel:
             stub = get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceStub(channel)
-            request = get_stock_info_jq_pb2.GetStockInfoJqRequest(country="Japan")
+            request = get_stock_info_jq_pb2.GetStockInfoJqRequest() #(country="Japan") J-QUANTSは日本株なので無し11/23
             response = stub.GetStockInfoJq(request)
 
         # レスポンスの検証

@@ -39,7 +39,7 @@ func TestGetStockInfoJq(t *testing.T) {
 	defer cancel()
 
 	req := &get_stock_info_jq.GetStockInfoJqRequest{
-		Country: "Japan",
+		// J-QUANTSは日本株なので無し11/23　Country: "Japan",
 	}
 
 	// 実際の gRPC サーバーが起動していることを前提とした統合テスト

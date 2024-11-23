@@ -13,6 +13,9 @@ type JpStockInfoRepository interface {
 	// 銘柄データを更新する:一日一回
 	UpdateStockInfo(newJpStockInfo *[]model.JpStockInfo) error
 
+	// ティッカーに対応する銘柄情報を取得
+	GetStockInfoByTickers(tickers []string) (map[string]model.JpStockInfo, error)
+
 	// UpdateStockInfo(newJpStockInfo *[]model.JpStockInfo) error
 	// 銘柄データをすべて削除する:使用未定
 	// DeleteAllStockInfo() error

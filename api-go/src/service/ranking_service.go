@@ -9,5 +9,5 @@ import (
 
 // RankingService は株価データを取得するためのインターフェース
 type RankingService interface {
-	GetRankingData(ctx context.Context) (*[]dto.RankingServiceRespons, error)
+	GetRankingData(ctx context.Context) (*[]dto.RankingServiceResponse, error)
 }
