@@ -57,6 +57,7 @@ func NewGetStockInfoJqClient(ctx context.Context) (GetStockInfoJqClient, error) 
 
 // GetStockInfoJq は指定された国の株式情報を取得
 func (c *getStockInfoJqClientImpl) GetStockInfoJq(ctx context.Context, req *get_stock_info_jq.GetStockInfoJqRequest) (*get_stock_info_jq.GetStockInfoJqResponse, error) {
+	fmt.Println("In GetStockInfoJq")
 	return c.client.GetStockInfoJq(ctx, req)
 }
 

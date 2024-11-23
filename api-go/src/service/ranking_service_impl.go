@@ -42,6 +42,7 @@ func NewRankingService(
 
 // GetRankingData はランキングデータを取得し、DTO にマッピング
 func (s *RankingServiceImpl) GetRankingData(ctx context.Context) (*[]dto.RankingServiceResponse, error) {
+	fmt.Println("In GetRankingData")
 	// update_statusテーブルの構造体を取得
 	statuses, err := s.udsRepo.GetAllUpdateStatuses()
 	if err != nil {
@@ -50,6 +51,7 @@ func (s *RankingServiceImpl) GetRankingData(ctx context.Context) (*[]dto.Ranking
 
 	// 今日の日付を取得
 	today := time.Now().UTC().Truncate(24 * time.Hour)
+	fmt.Println("Got Tody")
 
 	// 各テーブルの更新日を格納する変数を初期化
 	jp5dMvaRankingDate, jpDailyPriceDate, jpStocksInfoDate := getLatestUpdateDates(statuses)
@@ -59,11 +61,13 @@ func (s *RankingServiceImpl) GetRankingData(ctx context.Context) (*[]dto.Ranking
 	// ケース 1: jp_5d_mva_ranking が最新の場合
 	// そのままランキングデータを取得し、 DTO にマッピングして戻す処理を呼び出す
 	case jp5dMvaRankingDate.Equal(today):
+		fmt.Println("In Case1")
 		return s.fetchRankingData()
 
 	// ケース 2: jp_daily_price と jp_stocks_info が最新の場合
 	// 5 日間平均ランキングデータを計算・更新し、更新日付を更新
 	case jpDailyPriceDate.Equal(today) && jpStocksInfoDate.Equal(today):
+		fmt.Println("In Case2")
 		if err := s.updateRanking(ctx); err != nil {
 			return nil, err
 		}
@@ -71,6 +75,7 @@ func (s *RankingServiceImpl) GetRankingData(ctx context.Context) (*[]dto.Ranking
 	// ケース 3: jp_daily_price が古いが jp_stocks_info が最新の場合
 	// 最新の株価データを取得・追加し、5 日間平均ランキングデータを計算・更新し、更新日付を更新
 	case !jpDailyPriceDate.Equal(today) && jpStocksInfoDate.Equal(today):
+		fmt.Println("In Case3")
 		startDate := jpDailyPriceDate.AddDate(0, 0, 1).Format("2006-01-02")
 		endDate := today.Format("2006-01-02")
 		if err := s.updateDailyPrices(ctx, startDate, endDate); err != nil {
@@ -83,6 +88,7 @@ func (s *RankingServiceImpl) GetRankingData(ctx context.Context) (*[]dto.Ranking
 	// ケース 4: jp_daily_price と jp_stocks_info が古い場合
 	// 銘柄情報と株価データの両方を取得・更新し、5 日間平均ランキングデータを計算・更新し、更新日付を更新
 	case !jpDailyPriceDate.Equal(today) && !jpStocksInfoDate.Equal(today):
+		fmt.Println("In Case4")
 		if err := s.updateStockInfo(ctx); err != nil {
 			return nil, err
 		}
@@ -101,6 +107,8 @@ func (s *RankingServiceImpl) GetRankingData(ctx context.Context) (*[]dto.Ranking
 
 // getLatestUpdateDates は各テーブルの更新日を取得
 func getLatestUpdateDates(statuses []model.UpdateStatus) (time.Time, time.Time, time.Time) {
+	fmt.Println("In getLatestUpdateDates")
+
 	var jp5dMvaRankingDate, jpDailyPriceDate, jpStocksInfoDate time.Time
 	for _, status := range statuses {
 		switch status.TbName {
@@ -139,7 +147,7 @@ func (s *RankingServiceImpl) updateRanking(ctx context.Context) error {
 
 // updateDailyPrices は日次株価データを更新し、ステータスを更新します
 func (s *RankingServiceImpl) updateDailyPrices(ctx context.Context, startDate, endDate string) error {
-	gsdwdClient, ok := s.clients["get_stocks_datalist_with_dates_client"].(client.GetStocksDatalistWithDatesClient)
+	gsdwdClient, ok := s.clients["get_stocks_datalist_with_dates"].(client.GetStocksDatalistWithDatesClient)
 	if !ok {
 		return fmt.Errorf("failed to get get_stocks_datalist_with_dates_client")
 	}
@@ -186,6 +194,7 @@ func (s *RankingServiceImpl) updateDailyPrices(ctx context.Context, startDate, e
 
 // updateStockInfo は銘柄情報を更新し、ステータスを更新
 func (s *RankingServiceImpl) updateStockInfo(ctx context.Context) error {
+	fmt.Println("In updateStockInfo")
 	stockInfoClient, ok := s.clients["get_stock_info_jq"].(client.GetStockInfoJqClient)
 	if !ok {
 		return fmt.Errorf("failed to get get_stock_info_jq_client")

@@ -69,6 +69,43 @@ func TestUpdateStatus(t *testing.T) {
 	repository_test_helper.CleanupUpdateStatusTestData(db)
 }
 
+func TestUpdateStatusForJpStocksInfo(t *testing.T) {
+	db := repository_test_helper.SetupTestDB()
+
+	fmt.Println("TestUpdateStatusForJpStocksInfo")
+
+	// 既存のデータをクリア
+	repository_test_helper.CleanupUpdateStatusTestData(db)
+
+	// テストデータの挿入
+	updateStatus := model.UpdateStatus{Date: time.Now().AddDate(0, 0, -1), TbName: "jp_stocks_info"}
+	db.Create(&updateStatus)
+
+	// 挿入するテストデータを表示
+	fmt.Println("Before Update:", updateStatus)
+
+	repo := repository.NewUpdateStatusRepository(db)
+	err := repo.UpdateStatus("jp_stocks_info")
+	assert.NoError(t, err)
+
+	// データベースから更新状態を取得して確認
+	var result model.UpdateStatus
+	db.First(&result, "tb_name = ?", "jp_stocks_info")
+
+	// 現在の日付
+	today := time.Now().Format("2006-01-02")
+
+	assert.Equal(t, "jp_stocks_info", result.TbName)
+	assert.Equal(t, today, result.Date.Format("2006-01-02"))
+
+	// 更新後のデータの状態を表示
+	fmt.Println("After Update:", result)
+
+	// テストデータの削除
+	repository_test_helper.CleanupUpdateStatusTestData(db)
+}
+
 // テストの実行コード
 // go test -v ./test/repository/update_status_repository_test.go -run TestUpdateStatus
 // go test -v ./test/repository/update_status_repository_test.go -run TestGetAllUpdateStatuses
+// go test -v ./test/repository/update_status_repository_test.go -run TestUpdateStatusForJpStocksInfo

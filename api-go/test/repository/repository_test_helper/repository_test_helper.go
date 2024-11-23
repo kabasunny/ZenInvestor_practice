@@ -5,15 +5,37 @@ package repository_test_helper
 import (
 	"api-go/src/infra"
 	"api-go/src/model"
+	"fmt"
+	"time"
 
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func SetupTestDB() *gorm.DB {
 	godotenv.Load("../../.env") // テストではパスを指定しないとうまく読み取らなかった
 	db := infra.SetupDB()
 	return db
+}
+
+func InitializeUpdateStatusTable(db *gorm.DB) {
+	initialRecords := []model.UpdateStatus{
+		{TbName: "jp_5d_mva_ranking", Date: time.Now().AddDate(0, 0, -1)}, // 1日前
+		{TbName: "jp_daily_price", Date: time.Now().AddDate(0, 0, -1)},    // 1日前
+		{TbName: "jp_stocks_info", Date: time.Now()},                      // 本日の日付に修正
+	}
+	for _, record := range initialRecords {
+		db.Clauses(clause.OnConflict{UpdateAll: true}).Create(&record)
+	}
+}
+
+func PrintUpdateStatusTable(db *gorm.DB) {
+	var statuses []model.UpdateStatus
+	db.Find(&statuses)
+	for _, status := range statuses {
+		fmt.Printf("Table: %s, Date: %s\n", status.TbName, status.Date)
+	}
 }
 
 func CleanupStockTestData(db *gorm.DB) {
