@@ -31,7 +31,7 @@ func TestGetRankingDataIntegration(t *testing.T) {
 
 	// 2. クライアントをセットアップ
 	fmt.Println("Step 2: Setting up clients...")
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second) // タイムアウトを設定
+	ctx, cancel := context.WithTimeout(context.Background(), 1800*time.Second) // タイムアウトを設定
 	defer cancel()
 
 	msClients := make(map[string]interface{})

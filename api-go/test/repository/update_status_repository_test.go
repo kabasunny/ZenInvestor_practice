@@ -85,6 +85,9 @@ func TestUpdateStatusForJpStocksInfo(t *testing.T) {
 	fmt.Println("Before Update:", updateStatus)
 
 	repo := repository.NewUpdateStatusRepository(db)
+	// if err := repo.UpdateStatus("jp_stocks_info"); err != nil {
+	// 	fmt.Errorf("failed to update status for jp_stocks_info: %w", err)
+	// }
 	err := repo.UpdateStatus("jp_stocks_info")
 	assert.NoError(t, err)
 

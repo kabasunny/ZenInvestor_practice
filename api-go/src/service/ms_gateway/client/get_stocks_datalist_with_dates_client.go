@@ -57,6 +57,7 @@ func NewGetStocksDatalistWithDatesClient(ctx context.Context) (GetStocksDatalist
 
 // GetStocksDatalist は指定された銘柄コードと日付範囲の株価情報を取得
 func (c *getStocksDatalistWithDatesClientImpl) GetStocksDatalist(ctx context.Context, req *gsdwd.GetStocksDatalistWithDatesRequest) (*gsdwd.GetStocksDatalistWithDatesResponse, error) {
+	fmt.Println("In GetStocksDatalist")
 	return c.client.GetStocksDatalist(ctx, req)
 }
 

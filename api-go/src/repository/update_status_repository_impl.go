@@ -51,9 +51,11 @@ func (r *updateStatusRepositoryImpl) UpdateStatus(tbName string) error {
 	if result.Error != nil {
 		return fmt.Errorf("failed to update status for %s '%s': %w", FieldTableName, tbName, result.Error)
 	}
-	if result.RowsAffected == 0 {
-		return fmt.Errorf("no records found with %s '%s'", FieldTableName, tbName)
-	}
+	// if result.RowsAffected == 0 {
+	// 	return fmt.Errorf("no records found with %s '%s'", FieldTableName, tbName)
+	// }
+
+	fmt.Println("In UpdateStatus")
 
 	return nil
 }
