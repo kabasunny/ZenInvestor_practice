@@ -39,9 +39,9 @@ func TestGetStocksDatalist(t *testing.T) {
 	defer cancel()
 
 	req := &get_stocks_datalist_with_dates.GetStocksDatalistWithDatesRequest{
-		Symbols:   []string{"AAPL", "GOOGL", "AMZN"},
-		StartDate: "2024-01-01",
-		EndDate:   "2024-12-31",
+		Symbols:   []string{"1320.T", "1309.T", "1332.T"},
+		StartDate: "2024-11-21",
+		EndDate:   "2024-11-21",
 	}
 
 	// 実際の gRPC サーバーが起動していることを前提とした統合テスト
