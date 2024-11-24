@@ -49,6 +49,7 @@ func (r *jpDailyPriceRepositoryImpl) AddDailyPriceData(newPrices *[]model.JpDail
 			tx.Rollback()
 			return fmt.Errorf("failed to add daily price data: %w", err)
 		}
+		fmt.Printf("Successfully added price data for ticker: %s, date: %s\n", price.Ticker, price.Date) // デバッグ情報
 	}
 
 	if err := tx.Commit().Error; err != nil {
