@@ -27,6 +27,7 @@ func (r *jpDailyPriceRepositoryImpl) GetAllDailyPriceList() (*[]model.JpDailyPri
 
 // 株価データを追加する: 一日一回
 func (r *jpDailyPriceRepositoryImpl) AddDailyPriceData(newPrices *[]model.JpDailyPrice) error {
+	fmt.Println("In AddDailyPriceData")
 	tx := r.db.Begin()
 
 	for _, price := range *newPrices {
@@ -54,6 +55,7 @@ func (r *jpDailyPriceRepositoryImpl) AddDailyPriceData(newPrices *[]model.JpDail
 		tx.Rollback()
 		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
+	fmt.Println("Out AddDailyPriceData")
 
 	return nil
 }
