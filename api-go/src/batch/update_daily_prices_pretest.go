@@ -1,4 +1,5 @@
-// api-go\src\batch\update_daily_prices.go
+// api-go\src\batch\update_daily_prices_pretest.go
+
 package batch
 
 import (
@@ -9,12 +10,13 @@ import (
 	"api-go/src/util" // 追加
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 	// その他必要なインポート
 )
 
-func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepository, jsiRepo repository.JpStockInfoRepository, jdpRepo repository.JpDailyPriceRepository, clients map[string]interface{}, startDate, endDate string) error {
+func PreTestUpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepository, jsiRepo repository.JpStockInfoRepository, jdpRepo repository.JpDailyPriceRepository, clients map[string]interface{}, startDate, endDate string) error {
 	// 関数全体の処理開始時刻
 	startTimeOverall := time.Now()
 
@@ -23,23 +25,22 @@ func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepos
 		return fmt.Errorf("failed to get get_stocks_datalist_with_dates_client")
 	}
 
-	var symbols []string
-	stocks, err := jsiRepo.GetAllStockInfo()
-	if err != nil {
-		return fmt.Errorf("failed to get all stock info: %w", err)
-	}
+	// 指定された銘柄
+	symbols := []string{"7997", "6932"} // 適当な2銘柄
+
+	// デバッグ: 指定された日付範囲を確認
+	startDate = "2024-11-19"
+	endDate = "2024-11-22"
+	fmt.Printf("指定された日付範囲: 開始日: %s, 終了日: %s\n", startDate, endDate)
 
 	// シンボル抽出の処理時間
 	startTimeTicker := time.Now()
-	for _, stock := range *stocks {
-		symbol := stock.Ticker // + ".T" マイクロサービス側で追加する。
-		symbols = append(symbols, symbol)
-	}
 	endTimeTicker := time.Now()
 	fmt.Printf("シンボルを抽出の処理時間: %s\n", endTimeTicker.Sub(startTimeTicker))
+	fmt.Printf("選択されたシンボル: %v\n", symbols) // シンボルのデバッグログ
 
-	// 共通のチャンク分割関数を使用
-	chunks := util.ChunkSymbols(symbols, 100)
+	// 共通のチャンク分割関数を使用してチャンク分割
+	chunks := util.ChunkSymbols(symbols, 5) // 2銘柄なので1つのチャンク
 
 	var wg sync.WaitGroup
 	var mu sync.Mutex
@@ -58,6 +59,9 @@ func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepos
 				EndDate:   endDate,
 			}
 
+			// デバッグ: リクエスト内容を確認
+			fmt.Printf("バッチ %d のリクエスト: シンボル: %s, 開始日: %s, 終了日: %s\n", batchNumber, strings.Join(chunk, ", "), req.StartDate, req.EndDate)
+
 			gsdwdResponse, err := gsdwdClient.GetStocksDatalist(ctx, req)
 			endTimeDownload := time.Now()
 			fmt.Printf("バッチ %d のデータ取得の処理時間: %s\n", batchNumber, endTimeDownload.Sub(startTimeDownload))
@@ -67,6 +71,12 @@ func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepos
 				overallErr = fmt.Errorf("failed to get stocks data list with dates: %w", err)
 				mu.Unlock()
 				return
+			}
+
+			if len(gsdwdResponse.StockPrices) == 0 {
+				fmt.Printf("バッチ %d のレスポンスにデータが含まれていません\n", batchNumber)
+			} else {
+				fmt.Printf("バッチ %d のレスポンス: %+v\n", batchNumber, gsdwdResponse) // レスポンスのデバッグログ
 			}
 
 			// シンボルごとにデータを処理の処理時間

@@ -6,10 +6,14 @@ import get_stocks_datalist_with_dates_pb2_grpc
 from get_stocks_datalist_with_dates_service import get_stocks_datalist_with_dates
 import time
 
+request_count = 0  # リクエストカウントを追加
+
 class GetStocksDatalistWithDatesService(get_stocks_datalist_with_dates_pb2_grpc.GetStocksDatalistWithDatesServiceServicer):
     def GetStocksDatalist(self, request, context):
+        global request_count
+        request_count += 1
         
-        print("gRPCサーバー : get_stocks_datalist_with_datesサービス リクエスト")
+        print(f"gRPCサーバー : get_stocks_datalist_with_datesサービス リクエスト (回数: {request_count})")
 
         # 処理開始時刻の記録
         start_time = time.time()
@@ -28,6 +32,8 @@ class GetStocksDatalistWithDatesService(get_stocks_datalist_with_dates_pb2_grpc.
                 turnover=stock_price['turnover']      # 売買代金（取引金額）を追加
             )
             response.stock_prices.append(stock_price_pb)
+
+        print(response)
 
         # 処理終了時刻の記録
         end_time = time.time()
