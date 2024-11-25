@@ -33,12 +33,12 @@ class TestGetStocksDatalistWithDatesGrpc(unittest.TestCase):
         self.stub = get_stocks_datalist_with_dates_pb2_grpc.GetStocksDatalistWithDatesServiceStub(self.channel)
 
     def test_get_stocks_datalist_with_dates_us(self):
-        symbols = ["AAPL", "MSFT", "GOOGL"]  # Apple, Microsoft, Google
-        start_date = "2023-11-9"
-        end_date = "2023-11-15"
-        self._test_get_stocks_datalist_with_dates(symbols, start_date, end_date, 'us_stock_prices_with_dates_grpc.csv')
+        symbols = ["7997", "6932"]  # 適当な2銘柄
+        start_date = "2024-11-19"
+        end_date = "2024-11-21"
+        self._test_get_stocks_datalist_with_dates(symbols, start_date, end_date)
 
-    def _test_get_stocks_datalist_with_dates(self, symbols, start_date, end_date, output_file_name):
+    def _test_get_stocks_datalist_with_dates(self, symbols, start_date, end_date):
         # リクエストを作成
         request = get_stocks_datalist_with_dates_pb2.GetStocksDatalistWithDatesRequest(
             symbols=symbols, start_date=start_date, end_date=end_date)
@@ -68,11 +68,12 @@ class TestGetStocksDatalistWithDatesGrpc(unittest.TestCase):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         
-        # CSVファイルとして保存
-        output_file = os.path.join(output_dir, output_file_name)
+        # 現在の時間を取得し、ファイル名に追加
+        current_time = time.strftime("%Y%m%d_%H%M%S")
+        output_file = os.path.join(output_dir, f"test_stock_prices_with_dates_grpc_{current_time}.csv")
         df.to_csv(output_file, index=False)
         
-        print(f"株価情報がCSVファイルとして保存されました: {output_file}")
+        print(f"株価情報がCSVファイルとして保存: {output_file}")
 
 if __name__ == '__main__':
     unittest.main()

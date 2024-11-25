@@ -28,36 +28,20 @@ func (r *jpDailyPriceRepositoryImpl) GetAllDailyPriceList() (*[]model.JpDailyPri
 // 株価データを追加する: 一日一回
 func (r *jpDailyPriceRepositoryImpl) AddDailyPriceData(newPrices *[]model.JpDailyPrice) error {
 	fmt.Println("In AddDailyPriceData")
-	tx := r.db.Begin()
 
 	for _, price := range *newPrices {
 		// 日付を日単位に統一（時刻をゼロにする）
 		price.Date = time.Date(price.Date.Year(), price.Date.Month(), price.Date.Day(), 0, 0, 0, 0, price.Date.Location())
 
-		var existingPrice model.JpDailyPrice
-		err := tx.Where("ticker = ? AND date = ?", price.Ticker, price.Date).First(&existingPrice).Error
-		if err == nil {
-			// 重複エントリの場合スキップ
-			fmt.Printf("Skipping duplicate entry for ticker: %s, date: %s\n", price.Ticker, price.Date)
-			continue
-		} else if err != nil && err != gorm.ErrRecordNotFound {
-			tx.Rollback()
-			return fmt.Errorf("failed to check existing daily price data: %w", err)
+		// Saveメソッドはレコードが存在すれば更新し、存在しなければ挿入
+		if err := r.db.Save(&price).Error; err != nil {
+			return fmt.Errorf("failed to upsert daily price data for ticker: %s, date: %s: %w", price.Ticker, price.Date, err)
 		}
 
-		if err := tx.Create(&price).Error; err != nil {
-			tx.Rollback()
-			return fmt.Errorf("failed to add daily price data: %w", err)
-		}
-		fmt.Printf("Successfully added price data for ticker: %s, date: %s\n", price.Ticker, price.Date) // デバッグ情報
+		fmt.Printf("Upserted price data for ticker: %s, date: %s\n", price.Ticker, price.Date)
 	}
 
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback()
-		return fmt.Errorf("failed to commit transaction: %w", err)
-	}
 	fmt.Println("Out AddDailyPriceData")
-
 	return nil
 }
 
