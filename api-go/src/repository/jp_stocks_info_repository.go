@@ -17,8 +17,12 @@ type JpStockInfoRepository interface {
 	GetStockInfoByTickers(tickers []string) (map[string]model.JpStockInfo, error)
 
 	// UpdateStockInfo(newJpStockInfo *[]model.JpStockInfo) error
-	// 銘柄データをすべて削除する:使用未定
-	// DeleteAllStockInfo() error
+
+	// 銘柄データをすべて削除する
+	DeleteAllStockInfo() error
+
+	// 銘柄データを更新する:一日一回
+	InsertStockInfo(newJpStockInfo *[]model.JpStockInfo) error
 
 	// 銘柄を指定して削除する:使用未定
 	// DeleteStockInfoByTick(tickerCode string) error

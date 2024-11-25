@@ -8,6 +8,9 @@ from get_stock_data_service import get_stock_data  # 株価データ取得関数
 
 class GetStockDataService(get_stock_data_pb2_grpc.GetStockDataServiceServicer):
     def GetStockData(self, request, context):
+
+        print("gRPCサーバー : get_stock_dataサービス リクエスト")
+
         ticker = request.ticker
         period = request.period  # リクエストから期間を取得
         stock_name, stock_data_dict = get_stock_data(ticker, period)  # 数値データと銘柄名を取得
@@ -24,7 +27,9 @@ class GetStockDataService(get_stock_data_pb2_grpc.GetStockDataServiceServicer):
             for date, values in stock_data_dict.items()
         }
 
-        print("grpcサーバーが、get_stock_dataサービスを呼び出し")
+        
+        print("gRPCサーバー : get_stock_dataサービス レスポンス")
+
         return get_stock_data_pb2.GetStockDataResponse(stock_name=stock_name, stock_data=stock_data)
 
 

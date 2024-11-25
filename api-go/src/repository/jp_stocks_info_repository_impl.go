@@ -62,6 +62,29 @@ func (r *jpStockInfoRepositoryImpl) UpdateStockInfo(newJpStockInfo *[]model.JpSt
 	return nil
 }
 
+// 銘柄データをすべて削除する
+func (r *jpStockInfoRepositoryImpl) DeleteAllStockInfo() error {
+	if err := r.db.Exec("DELETE FROM jp_stocks_info").Error; err != nil {
+		return fmt.Errorf("failed to delete all stock info: %w", err)
+	}
+	return nil
+}
+
+// 新しい銘柄データを挿入する
+func (r *jpStockInfoRepositoryImpl) InsertStockInfo(newJpStockInfo *[]model.JpStockInfo) error {
+	tx := r.db.Begin()
+	if err := tx.Create(newJpStockInfo).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to insert stock info: %w", err)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+	return nil
+}
+
 // ティッカーに対応する銘柄情報を取得
 func (r *jpStockInfoRepositoryImpl) GetStockInfoByTickers(tickers []string) (map[string]model.JpStockInfo, error) {
 	var stockList []model.JpStockInfo
