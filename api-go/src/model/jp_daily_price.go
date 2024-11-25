@@ -15,7 +15,7 @@ type JpDailyPrice struct {
 	High     float64   `gorm:"type:real"`
 	Low      float64   `gorm:"type:real"`
 	Volume   int64     `gorm:"type:integer"`
-	Turnover float64   `gorm:"type:integer"`
+	Turnover float64   `gorm:"type:bigint"`
 }
 
 // TableName カスタムテーブル名を指定するメソッド
