@@ -1,4 +1,4 @@
-// api-go\cmd\batch_update_daily_prices_pretest\main.go
+// api-go\cmd\batch_update_daily_prices_midtest\main.go
 package main
 
 import (
@@ -36,11 +36,11 @@ func main() {
 	endDate := "2024-11-22"
 
 	// バッチ処理の呼び出し
-	err = batch.PreTestUpdateDailyPrices(ctx, udsRepo, jsiRepo, jdpRepo, clients, startDate, endDate)
+	err = batch.MidTestUpdateDailyPrices(ctx, udsRepo, jsiRepo, jdpRepo, clients, startDate, endDate)
 	if err != nil {
 		log.Fatalf("Failed to update daily prices: %v", err)
 	}
 }
 
 // 実行コマンド
-// go run ./cmd/batch_update_daily_prices_pretest/main.go
+// go run ./cmd/batch_update_daily_prices_midtest/main.go
