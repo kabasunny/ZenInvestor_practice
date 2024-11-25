@@ -7,13 +7,17 @@ from generate_chart_service import handle_generate_chart_request
 
 class GenerateChartService(generate_chart_pb2_grpc.GenerateChartServiceServicer):
     def GenerateChart(self, request, context):
+        
+        print("gRPCサーバー : generate_chartサービス リクエスト")
+
         # サービスハンドラー関数を呼び出す
         chart_data = handle_generate_chart_request(request)
 
         # レスポンスを作成
         response = generate_chart_pb2.GenerateChartResponse(chart_data=chart_data)
 
-        print("gRPCサーバーが、generate_chartサービスを呼び出し")
+        print("gRPCサーバー : generate_chartサービス レスポンス")
+
         return response
 
 def serve():

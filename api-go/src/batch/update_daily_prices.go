@@ -6,24 +6,13 @@ import (
 	"api-go/src/repository"
 	client "api-go/src/service/ms_gateway/client"
 	gsdwd "api-go/src/service/ms_gateway/get_stocks_datalist_with_dates"
+	"api-go/src/util" // 追加
 	"context"
 	"fmt"
 	"sync"
 	"time"
 	// その他必要なインポート
 )
-
-func chunkSymbols(symbols []string, chunkSize int) [][]string {
-	var chunks [][]string
-	for i := 0; i < len(symbols); i += chunkSize {
-		end := i + chunkSize
-		if end > len(symbols) {
-			end = len(symbols)
-		}
-		chunks = append(chunks, symbols[i:end])
-	}
-	return chunks
-}
 
 func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepository, jsiRepo repository.JpStockInfoRepository, jdpRepo repository.JpDailyPriceRepository, clients map[string]interface{}, startDate, endDate string) error {
 	gsdwdClient, ok := clients["get_stocks_datalist_with_dates"].(client.GetStocksDatalistWithDatesClient)
@@ -38,35 +27,27 @@ func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepos
 	}
 
 	for _, stock := range *stocks {
-		symbol := stock.Ticker + ".T"
+		symbol := stock.Ticker + ".T" // 現状の株価取得は、日本株でyfainanceを想定しているため、末尾に.Tが必要。J-QUANTSに変更を検討
 		symbols = append(symbols, symbol)
 	}
 
-	chunks := chunkSymbols(symbols, 5) // 1バッチ5銘柄に分割
+	// 共通のチャンク分割関数を使用
+	chunks := util.ChunkSymbols(symbols, 100)
 
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var overallErr error
 
 	for i, chunk := range chunks {
-		// 最大5バッチで処理を終了
-		if i >= 5 {
-			break
-		}
-
 		wg.Add(1)
 		go func(chunk []string, batchNumber int) {
 			defer wg.Done()
-
-			// リクエスト間の遅延を追加
-			time.Sleep(2 * time.Second)
 
 			req := &gsdwd.GetStocksDatalistWithDatesRequest{
 				Symbols:   chunk,
 				StartDate: startDate,
 				EndDate:   endDate,
 			}
-			fmt.Printf("Batch %d request: %v\n", batchNumber, req) // リクエストの詳細を表示
 
 			gsdwdResponse, err := gsdwdClient.GetStocksDatalist(ctx, req)
 			if err != nil {
@@ -98,8 +79,6 @@ func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepos
 				newDailyPrices = append(newDailyPrices, dp)
 			}
 
-			fmt.Printf("Batch %d new data: %v\n", batchNumber, newDailyPrices) // 新規データの詳細を表示
-
 			if err := jdpRepo.AddDailyPriceData(&newDailyPrices); err != nil {
 				mu.Lock()
 				overallErr = fmt.Errorf("failed to add daily price data: %w", err)
@@ -107,14 +86,8 @@ func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepos
 				return
 			}
 
-			// 最後のデータをコンソールに表示
-			if len(newDailyPrices) > 0 {
-				lastPrice := newDailyPrices[len(newDailyPrices)-1]
-				fmt.Printf("Batch %d completed successfully. Last added data: Ticker: %s, Date: %s, Open: %.2f, Close: %.2f, High: %.2f, Low: %.2f, Volume: %d, Turnover: %.2f\n",
-					batchNumber, lastPrice.Ticker, lastPrice.Date.Format("2006-01-02"), lastPrice.Open, lastPrice.Close, lastPrice.High, lastPrice.Low, lastPrice.Volume, lastPrice.Turnover)
-			} else {
-				fmt.Printf("Batch %d completed successfully. No data added.\n", batchNumber)
-			}
+			fmt.Printf("Batch %d completed successfully. Last added data: Ticker: %s, Date: %s\n",
+				batchNumber, newDailyPrices[len(newDailyPrices)-1].Ticker, newDailyPrices[len(newDailyPrices)-1].Date)
 		}(chunk, i+1)
 	}
 

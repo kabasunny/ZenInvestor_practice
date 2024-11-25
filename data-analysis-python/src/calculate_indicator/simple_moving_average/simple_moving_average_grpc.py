@@ -9,6 +9,9 @@ class SimpleMovingAverageService(
     simple_moving_average_pb2_grpc.SimpleMovingAverageServiceServicer
 ):
     def CalculateSimpleMovingAverage(self, request, context):
+        
+        print("gRPCサーバー : calculate_simple_moving_averageサービス リクエスト")
+
         # 移動平均を計算する関数を呼び出し、結果を moving_average に格納
         moving_average = calculate_simple_moving_average(request.stock_data, request.window_size)
 
@@ -17,7 +20,8 @@ class SimpleMovingAverageService(
             moving_average=moving_average
         )
 
-        print("gRPCサーバーが、calculate_simple_moving_averageサービスを呼び出し")
+        print("gRPCサーバー : calculate_simple_moving_averageサービス レスポンス")
+
         return response
 
 def serve():

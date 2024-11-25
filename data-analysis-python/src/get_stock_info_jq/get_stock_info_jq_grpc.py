@@ -4,9 +4,16 @@ import grpc
 import get_stock_info_jq_pb2
 import get_stock_info_jq_pb2_grpc
 from get_stock_info_jq_service import fetch_stock_info
+import time
 
 class GetStockInfoJqService(get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceServicer):
     def GetStockInfoJq(self, request, context):
+        
+        print("gRPCサーバー : get_stock_info_jq_serviceサービス リクエスト")
+
+        # 処理開始時刻の記録
+        start_time = time.time()
+
         # サービス呼び出し
         stock_info_list = fetch_stock_info()
 
@@ -20,6 +27,13 @@ class GetStockInfoJqService(get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceServ
                 industry=row['industry']
             )
             response.stocks.append(stock_info_pb)
+        
+        # 処理終了時刻の記録
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        
+        print(f"gRPCサーバー : get_stock_info_jq_serviceサービス レスポンス - 処理時間: {elapsed_time:.2f}秒")
+            
         return response
 
 def serve():
