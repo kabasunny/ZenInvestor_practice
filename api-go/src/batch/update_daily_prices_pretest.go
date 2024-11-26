@@ -29,8 +29,8 @@ func PreTestUpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStat
 	symbols := []string{"7997", "6932"} // 適当な2銘柄
 
 	// デバッグ: 指定された日付範囲を確認
-	startDate = "2024-11-19"
-	endDate = "2024-11-22"
+	startDate = "2024-08-19" // J-Quantsは12週間前の日付
+	endDate = "2024-08-25"   // J-Quantsは12週間前の日付
 	fmt.Printf("指定された日付範囲: 開始日: %s, 終了日: %s\n", startDate, endDate)
 
 	// シンボル抽出の処理時間
