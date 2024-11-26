@@ -3,7 +3,8 @@ from concurrent import futures
 import grpc
 import get_stocks_datalist_with_dates_pb2
 import get_stocks_datalist_with_dates_pb2_grpc
-from get_stocks_datalist_with_dates_service import get_stocks_datalist_with_dates
+# from get_stocks_datalist_with_dates_service import get_stocks_datalist_with_dates
+from get_stocks_datalist_with_dates_jq_service import get_stocks_datalist_with_dates_jq # 修正した関数をインポート
 import time
 
 request_count = 0  # リクエストカウントを追加
@@ -18,7 +19,8 @@ class GetStocksDatalistWithDatesService(get_stocks_datalist_with_dates_pb2_grpc.
         # 処理開始時刻の記録
         start_time = time.time()
 
-        stock_prices_list = get_stocks_datalist_with_dates(request.symbols, request.start_date, request.end_date)
+        stock_prices_list = get_stocks_datalist_with_dates_jq(request.symbols, request.start_date, request.end_date)
+        # stock_prices_list = get_stocks_datalist_with_dates(request.symbols, request.start_date, request.end_date)
         response = get_stocks_datalist_with_dates_pb2.GetStocksDatalistWithDatesResponse()
         for stock_price in stock_prices_list:
             stock_price_pb = get_stocks_datalist_with_dates_pb2.StockPrice(

@@ -34,8 +34,8 @@ class TestGetStocksDatalistWithDatesGrpc(unittest.TestCase):
 
     def test_get_stocks_datalist_with_dates_us(self):
         symbols = ["7997", "6932"]  # 適当な2銘柄
-        start_date = "2024-11-19"
-        end_date = "2024-11-21"
+        start_date = "2024-08-19" # J-Quantsは12週間前の日付
+        end_date = "2024-08-21" # J-Quantsは12週間前の日付
         self._test_get_stocks_datalist_with_dates(symbols, start_date, end_date)
 
     def _test_get_stocks_datalist_with_dates(self, symbols, start_date, end_date):
