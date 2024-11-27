@@ -12,18 +12,18 @@ import (
 func InsertJPStocksInfoData(db *gorm.DB) error {
 	// 現状、初期値が不要のため、テストデータの作成
 	stocksInfo := []model.JpStockInfo{
-		{Ticker: "test1", Name: "Test Stock 1", Sector: "Technology", Industry: "Software"},
-		{Ticker: "test2", Name: "Test Stock 2", Sector: "Healthcare", Industry: "Pharmaceuticals"},
-		{Ticker: "test3", Name: "Test Stock 3", Sector: "Finance", Industry: "Banking"},
-		{Ticker: "test4", Name: "Test Stock 4", Sector: "Energy", Industry: "Oil & Gas"},
-		{Ticker: "test5", Name: "Test Stock 5", Sector: "Consumer Goods", Industry: "Retail"},
+		{Symbol: "test1", Name: "Test Stock 1", Sector: "Technology", Industry: "Software"},
+		{Symbol: "test2", Name: "Test Stock 2", Sector: "Healthcare", Industry: "Pharmaceuticals"},
+		{Symbol: "test3", Name: "Test Stock 3", Sector: "Finance", Industry: "Banking"},
+		{Symbol: "test4", Name: "Test Stock 4", Sector: "Energy", Industry: "Oil & Gas"},
+		{Symbol: "test5", Name: "Test Stock 5", Sector: "Consumer Goods", Industry: "Retail"},
 	}
 
 	for _, stock := range stocksInfo {
 		var existing model.JpStockInfo
-		if err := db.Where("ticker = ?", stock.Ticker).First(&existing).Error; err == nil {
+		if err := db.Where("Symbol = ?", stock.Symbol).First(&existing).Error; err == nil {
 			// エントリが既に存在する場合はスキップ
-			log.Printf("Skipping insert for existing ticker: %v", stock.Ticker)
+			log.Printf("Skipping insert for existing Symbol: %v", stock.Symbol)
 			continue
 		}
 

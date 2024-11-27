@@ -6,7 +6,7 @@ package model
 // 銘柄コード（ティッカーシンボル）を主キーとし、他のテーブルとリレーションを構築。
 
 type JpStockInfo struct {
-	Ticker   string `gorm:"primaryKey;type:varchar(10)"` // VARCHAR型に変更し、長さを10に設定
+	Symbol   string `gorm:"primaryKey;type:varchar(10)"` // VARCHAR型に変更し、長さを10に設定
 	Name     string `gorm:"type:text"`
 	Sector   string `gorm:"type:text"`
 	Industry string `gorm:"type:text"`

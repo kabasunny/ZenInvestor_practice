@@ -25,6 +25,15 @@ func (r *jpStockInfoRepositoryImpl) GetAllStockInfo() (*[]model.JpStockInfo, err
 	return &stocks, nil
 }
 
+// 銘柄コード一覧を取得する
+func (r *jpStockInfoRepositoryImpl) GetAllSymbols() ([]string, error) { // 実装を追加
+	var tickers []string
+	if err := r.db.Model(&model.JpStockInfo{}).Pluck("symbol", &tickers).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch symbols: %w", err)
+	}
+	return tickers, nil
+}
+
 // 銘柄データを更新する: 一日一回
 func (r *jpStockInfoRepositoryImpl) UpdateStockInfo(newJpStockInfo *[]model.JpStockInfo) error {
 	fmt.Println("In UpdateStockInfo")
@@ -32,10 +41,10 @@ func (r *jpStockInfoRepositoryImpl) UpdateStockInfo(newJpStockInfo *[]model.JpSt
 	for _, stock := range *newJpStockInfo {
 		// Saveメソッドを使用してアップサート処理を実行
 		if err := r.db.Save(&stock).Error; err != nil {
-			return fmt.Errorf("failed to upsert stock info for ticker '%s': %w", stock.Ticker, err)
+			return fmt.Errorf("failed to upsert stock info for ticker '%s': %w", stock.Symbol, err)
 		}
 
-		fmt.Printf("Upserted stock info for ticker: %s\n", stock.Ticker)
+		fmt.Printf("Upserted stock info for ticker: %s\n", stock.Symbol)
 	}
 
 	fmt.Println("Out UpdateStockInfo")
@@ -74,7 +83,7 @@ func (r *jpStockInfoRepositoryImpl) GetStockInfoByTickers(tickers []string) (map
 
 	stocks := make(map[string]model.JpStockInfo)
 	for _, stock := range stockList {
-		stocks[stock.Ticker] = stock
+		stocks[stock.Symbol] = stock
 	}
 	return stocks, nil
 }

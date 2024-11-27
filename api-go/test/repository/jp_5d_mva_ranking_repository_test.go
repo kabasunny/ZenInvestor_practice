@@ -37,18 +37,18 @@ func TestAdd5dMvaRankingData(t *testing.T) {
 	ticker1 := "test6"
 	ticker2 := "test7"
 	dummyPrices := []model.JpDailyPrice{
-		{Ticker: ticker1, Date: today.AddDate(0, 0, -6), Turnover: 1000},
-		{Ticker: ticker1, Date: today.AddDate(0, 0, -5), Turnover: 1100},
-		{Ticker: ticker1, Date: today.AddDate(0, 0, -4), Turnover: 1200},
-		{Ticker: ticker1, Date: today.AddDate(0, 0, -3), Turnover: 1300},
-		{Ticker: ticker1, Date: today.AddDate(0, 0, -2), Turnover: 1400},
-		{Ticker: ticker1, Date: today.AddDate(0, 0, -1), Turnover: 1500},
-		{Ticker: ticker2, Date: today.AddDate(0, 0, -6), Turnover: 2000},
-		{Ticker: ticker2, Date: today.AddDate(0, 0, -5), Turnover: 2100},
-		{Ticker: ticker2, Date: today.AddDate(0, 0, -4), Turnover: 2200},
-		{Ticker: ticker2, Date: today.AddDate(0, 0, -3), Turnover: 2300},
-		{Ticker: ticker2, Date: today.AddDate(0, 0, -2), Turnover: 2400},
-		{Ticker: ticker2, Date: today.AddDate(0, 0, -1), Turnover: 2500},
+		{Symbol: ticker1, Date: today.AddDate(0, 0, -6), Turnover: 1000},
+		{Symbol: ticker1, Date: today.AddDate(0, 0, -5), Turnover: 1100},
+		{Symbol: ticker1, Date: today.AddDate(0, 0, -4), Turnover: 1200},
+		{Symbol: ticker1, Date: today.AddDate(0, 0, -3), Turnover: 1300},
+		{Symbol: ticker1, Date: today.AddDate(0, 0, -2), Turnover: 1400},
+		{Symbol: ticker1, Date: today.AddDate(0, 0, -1), Turnover: 1500},
+		{Symbol: ticker2, Date: today.AddDate(0, 0, -6), Turnover: 2000},
+		{Symbol: ticker2, Date: today.AddDate(0, 0, -5), Turnover: 2100},
+		{Symbol: ticker2, Date: today.AddDate(0, 0, -4), Turnover: 2200},
+		{Symbol: ticker2, Date: today.AddDate(0, 0, -3), Turnover: 2300},
+		{Symbol: ticker2, Date: today.AddDate(0, 0, -2), Turnover: 2400},
+		{Symbol: ticker2, Date: today.AddDate(0, 0, -1), Turnover: 2500},
 	}
 
 	for _, price := range dummyPrices {
@@ -90,7 +90,7 @@ func TestDelete5dMvaRankingData(t *testing.T) {
 	// 古い日付のデータを作成
 	oldDate := time.Now().AddDate(0, 0, -31).Truncate(24 * time.Hour)
 	newRankings := []model.Jp5dMvaRanking{
-		{Ranking: 1, Ticker: "test_tic", Date: oldDate, AvgTurnover: 12345.67},
+		{Ranking: 1, Symbol: "test_tic", Date: oldDate, AvgTurnover: 12345.67},
 	}
 
 	// ダミーデータを jp_5d_mva_ranking テーブルに直接挿入
@@ -131,8 +131,8 @@ func TestGetStockInfoByTickers(t *testing.T) {
 
 	// テストデータの追加
 	testStocks := []model.JpStockInfo{
-		{Ticker: "test_31", Name: "Test Company 1", Sector: "Tech", Industry: "Software"},
-		{Ticker: "test_32", Name: "Test Company 2", Sector: "Finance", Industry: "Banking"},
+		{Symbol: "test_31", Name: "Test Company 1", Sector: "Tech", Industry: "Software"},
+		{Symbol: "test_32", Name: "Test Company 2", Sector: "Finance", Industry: "Banking"},
 	}
 
 	err := db.Create(&testStocks).Error
@@ -155,7 +155,7 @@ func TestGetStockInfoByTickers(t *testing.T) {
 	assert.Equal(t, "Test Company 2", stocks["test_32"].Name)
 
 	// クリーンアップ: 追加したデータを削除
-	db.Where("ticker IN ?", tickers).Delete(&model.JpStockInfo{})
+	db.Where("symbol IN ?", tickers).Delete(&model.JpStockInfo{})
 }
 
 // go test -v ./test/repository/jp_5d_mva_ranking_repository_test.go -run TestGet5dMvaRankingData

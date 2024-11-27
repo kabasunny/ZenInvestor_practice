@@ -10,13 +10,16 @@ class TestGetStocksDatalistWithDatesJqService(unittest.TestCase):
     def test_get_stocks_datalist_with_dates_jq(self):
         """株価情報取得メソッドのテスト"""
         # CSVファイルから銘柄リストを読み込む
-        csv_file_path = "./src/get_stocks_datalist_with_dates/test_input/tickers2.csv"
-        if not os.path.exists(csv_file_path):
-            self.fail(f"CSVファイルが存在しません: {csv_file_path}")
+        # csv_file_path = "./src/get_stocks_datalist_with_dates/test_input/tickers1.csv"
+        # if not os.path.exists(csv_file_path):
+        #     self.fail(f"CSVファイルが存在しません: {csv_file_path}")
 
-        codes_df = pd.read_csv(csv_file_path)
-        codes = codes_df['Ticker'].tolist()  # 銘柄コードをリスト形式に変換
-        codes = [str(code) for code in codes]  # 銘柄コードを文字列に変換
+        # codes_df = pd.read_csv(csv_file_path)
+        # codes = codes_df['Ticker'].tolist()  # 銘柄コードをリスト形式に変換
+        # codes = [str(code) for code in codes]  # 銘柄コードを文字列に変換
+
+        codes = ["131A", "6932"] # 適当な2銘柄   1311 131A で実験中
+        print(codes)
 
         from_date = "2024-08-01"  # 開始日
         to_date = "2024-08-01"    # 終了日

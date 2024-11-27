@@ -3,7 +3,6 @@ import os
 import requests
 import time
 from dotenv import load_dotenv
-from datetime import datetime
 
 # 環境変数を読み込み
 load_dotenv()
@@ -70,18 +69,23 @@ def get_stocks_datalist_with_dates_jq(codes=None, date=None, from_date=None, to_
     for code in codes:
         quotes = get_daily_quotes(id_token, code=code, date=date, from_date=from_date, to_date=to_date)
         for quote in quotes:
+            open_price = quote.get("Open", 0.0)
+            close_price = quote.get("Close", 0.0)
+            high_price = quote.get("High", 0.0)
+            low_price = quote.get("Low", 0.0)
+            volume = quote.get("Volume") if quote.get("Volume") is not None else 0
+            turnover = close_price * volume if close_price is not None and volume is not None else 0.0
+
             stock_price = {
                 "symbol": code,
-                "date": quote["Date"],
-                "open": quote["Open"],
-                "close": quote["Close"],
-                "high": quote["High"],
-                "low": quote["Low"],
-                "volume": int(quote["Volume"]),
-                "turnover": quote["Close"] * int(quote["Volume"])  # 売買代金（終値 * 出来高）
+                "date": quote.get("Date", ""),
+                "open": open_price,
+                "close": close_price,
+                "high": high_price,
+                "low": low_price,
+                "volume": int(volume) if volume else 0,  # int() 関数を呼び出す前にチェック
+                "turnover": turnover,
             }
             stock_prices_list.append(stock_price)
 
     return stock_prices_list
-
-

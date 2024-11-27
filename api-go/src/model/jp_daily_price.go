@@ -8,7 +8,7 @@ package model
 import "time"
 
 type JpDailyPrice struct {
-	Ticker   string    `gorm:"primaryKey;type:varchar(10)"` // VARCHAR型に変更し、長さを指定
+	Symbol   string    `gorm:"primaryKey;type:varchar(10)"` // VARCHAR型に変更し、長さを指定
 	Date     time.Time `gorm:"primaryKey;type:date"`
 	Open     float64   `gorm:"type:real"`
 	Close    float64   `gorm:"type:real"`

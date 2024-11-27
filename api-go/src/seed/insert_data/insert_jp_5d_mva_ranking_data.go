@@ -18,11 +18,11 @@ func InsertJP5dMvaRankingData(db *gorm.DB) error {
 
 	// テストデータの作成
 	rankings := []model.Jp5dMvaRanking{
-		{Ranking: 1, Ticker: "test1", Date: yesterday, AvgTurnover: 100000.0},
-		{Ranking: 2, Ticker: "test2", Date: yesterday, AvgTurnover: 90000.0},
-		{Ranking: 3, Ticker: "test3", Date: yesterday, AvgTurnover: 80000.0},
-		{Ranking: 4, Ticker: "test4", Date: yesterday, AvgTurnover: 70000.0},
-		{Ranking: 5, Ticker: "test5", Date: yesterday, AvgTurnover: 60000.0},
+		{Ranking: 1, Symbol: "test1", Date: yesterday, AvgTurnover: 100000.0},
+		{Ranking: 2, Symbol: "test2", Date: yesterday, AvgTurnover: 90000.0},
+		{Ranking: 3, Symbol: "test3", Date: yesterday, AvgTurnover: 80000.0},
+		{Ranking: 4, Symbol: "test4", Date: yesterday, AvgTurnover: 70000.0},
+		{Ranking: 5, Symbol: "test5", Date: yesterday, AvgTurnover: 60000.0},
 	}
 
 	for _, ranking := range rankings {

@@ -35,10 +35,10 @@ func (r *jpDailyPriceRepositoryImpl) AddDailyPriceData(newPrices *[]model.JpDail
 
 		// Saveメソッドはレコードが存在すれば更新し、存在しなければ挿入
 		if err := r.db.Save(&price).Error; err != nil {
-			return fmt.Errorf("failed to upsert daily price data for ticker: %s, date: %s: %w", price.Ticker, price.Date, err)
+			return fmt.Errorf("failed to upsert daily price data for ticker: %s, date: %s: %w", price.Symbol, price.Date, err)
 		}
 
-		fmt.Printf("Upserted price data for ticker: %s, date: %s\n", price.Ticker, price.Date)
+		fmt.Printf("Upserted price data for ticker: %s, date: %s\n", price.Symbol, price.Date)
 	}
 
 	fmt.Println("Out AddDailyPriceData")
@@ -69,7 +69,7 @@ func (r *jpDailyPriceRepositoryImpl) GetLatestClosePricesByTickers(tickers []str
 
 	priceMap := make(map[string]float64)
 	for _, price := range prices {
-		priceMap[price.Ticker] = price.Close
+		priceMap[price.Symbol] = price.Close
 	}
 	return priceMap, nil
 }

@@ -73,7 +73,7 @@ func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
 		// ドライバが日付データを []uint8 として返すため、time.Time に直接スキャンできない
 		// 文字列として取得し、time.Parse で変換する
 		var dateStr string
-		if err := rows.Scan(&ranking.Ticker, &ranking.AvgTurnover, &ranking.Ranking, &dateStr); err != nil {
+		if err := rows.Scan(&ranking.Symbol, &ranking.AvgTurnover, &ranking.Ranking, &dateStr); err != nil {
 			tx.Rollback()
 			return err
 		}

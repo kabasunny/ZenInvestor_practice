@@ -9,7 +9,7 @@ import "time"
 
 type Jp5dMvaRanking struct {
 	Ranking     int       `gorm:"primaryKey"`
-	Ticker      string    `gorm:"primaryKey;type:varchar(10)"`
+	Symbol      string    `gorm:"primaryKey;type:varchar(10)"`
 	Date        time.Time `gorm:"primaryKey;type:date"`
 	AvgTurnover float64   `gorm:"type:real"`
 }
