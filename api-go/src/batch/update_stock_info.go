@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// UpdateStockInfo は銘柄情報を更新し、ステータスを更新します
+// UpdateStockInfo は銘柄情報を更新し、ステータスを更新
 func UpdateStockInfo(ctx context.Context, udsRepo repository.UpdateStatusRepository, jsiRepo repository.JpStockInfoRepository, clients map[string]interface{}) error {
 	startTime := time.Now() // 処理開始時刻の記録
 
@@ -33,7 +33,7 @@ func UpdateStockInfo(ctx context.Context, udsRepo repository.UpdateStatusReposit
 	var newStockInfos []model.JpStockInfo
 	for _, data := range stockInfoRes.Stocks {
 		si := model.JpStockInfo{
-			Ticker:   data.Ticker,
+			Symbol:   data.Ticker,
 			Name:     data.Name,
 			Sector:   data.Sector,
 			Industry: data.Industry,
@@ -50,7 +50,7 @@ func UpdateStockInfo(ctx context.Context, udsRepo repository.UpdateStatusReposit
 	// 銘柄情報のティッカーのみを抽出して文字列のスライスに変換
 	var symbols []string
 	for _, stock := range newStockInfos {
-		symbols = append(symbols, stock.Ticker)
+		symbols = append(symbols, stock.Symbol)
 	}
 
 	// 銘柄情報を100銘柄ごとに分割
@@ -69,7 +69,7 @@ func UpdateStockInfo(ctx context.Context, udsRepo repository.UpdateStatusReposit
 			var chunkStockInfos []model.JpStockInfo
 			for _, ticker := range chunk {
 				for _, stock := range newStockInfos {
-					if stock.Ticker == ticker {
+					if stock.Symbol == ticker {
 						chunkStockInfos = append(chunkStockInfos, stock)
 						break
 					}
@@ -107,7 +107,3 @@ func UpdateStockInfo(ctx context.Context, udsRepo repository.UpdateStatusReposit
 
 	return nil
 }
-
-// UpdateStockInfo completed in 7m32.1925772s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン無し、アップデートメソッド
-// UpdateStockInfo completed in 18.1971501s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン有り、アップデートメソッド
-// UpdateStockInfo completed in 5.798971s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン無し、インサートメソッド

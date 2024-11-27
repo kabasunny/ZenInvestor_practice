@@ -5,10 +5,11 @@ package repository
 import "api-go/src/model"
 
 type JpStockInfoRepository interface {
-	// 銘柄データを取得する:一日一回
+	// 銘柄データ一覧を取得する:一日一回
 	GetAllStockInfo() (*[]model.JpStockInfo, error)
 
-	// GetAllStockInfoByTick(tickerCode string) (*model.JpStockInfo, error)
+	// 銘柄コード一覧を取得する
+	GetAllSymbols() ([]string, error)
 
 	// 銘柄データを更新する:一日一回
 	UpdateStockInfo(newJpStockInfo *[]model.JpStockInfo) error

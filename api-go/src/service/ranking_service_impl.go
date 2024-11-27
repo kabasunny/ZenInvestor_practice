@@ -96,7 +96,7 @@ func (s *RankingServiceImpl) fetchRankingData() (*[]dto.RankingServiceResponse, 
 	// ランキングデータからティッカーのリストを作成
 	tickersSet := make(map[string]struct{})
 	for _, data := range *rankingData {
-		tickersSet[data.Ticker] = struct{}{}
+		tickersSet[data.Symbol] = struct{}{}
 	}
 	var tickers []string
 	for ticker := range tickersSet {
@@ -118,19 +118,19 @@ func (s *RankingServiceImpl) fetchRankingData() (*[]dto.RankingServiceResponse, 
 	// DTO に変換
 	response := make([]dto.RankingServiceResponse, 0, len(*rankingData))
 	for _, data := range *rankingData {
-		stockInfo, ok := stockInfoMap[data.Ticker]
+		stockInfo, ok := stockInfoMap[data.Symbol]
 		if !ok {
-			return nil, fmt.Errorf("stock info not found for ticker %s", data.Ticker)
+			return nil, fmt.Errorf("stock info not found for ticker %s", data.Symbol)
 		}
 
-		latestPrice, ok := latestPrices[data.Ticker]
+		latestPrice, ok := latestPrices[data.Symbol]
 		if !ok {
-			return nil, fmt.Errorf("latest price not found for ticker %s", data.Ticker)
+			return nil, fmt.Errorf("latest price not found for ticker %s", data.Symbol)
 		}
 
 		response = append(response, dto.RankingServiceResponse{
 			Ranking:     data.Ranking,
-			Ticker:      data.Ticker,
+			Ticker:      data.Symbol,
 			Date:        data.Date.Format("2006-01-02"),
 			AvgTurnover: data.AvgTurnover,
 			Name:        stockInfo.Name,

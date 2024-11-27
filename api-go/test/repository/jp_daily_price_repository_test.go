@@ -42,7 +42,7 @@ func TestAddDailyPriceData(t *testing.T) {
 	fmt.Println("test_add Ticker:", ticker)
 	// 新しいデータの挿入
 	addPrices := []model.JpDailyPrice{
-		{Ticker: ticker, Date: date, Open: 1000.0, Close: 1100.0, High: 1150.0, Low: 950.0, Volume: 10000, Turnover: 1000000},
+		{Symbol: ticker, Date: date, Open: 1000.0, Close: 1100.0, High: 1150.0, Low: 950.0, Volume: 10000, Turnover: 1000000},
 	}
 
 	err := repo.AddDailyPriceData(&addPrices)
@@ -58,7 +58,7 @@ func TestAddDailyPriceData(t *testing.T) {
 
 	// 追加したデータの削除 (日付部分のみで判定)
 	dateString := addPrices[0].Date.Format("2006-01-02")
-	db.Where("ticker = ? AND DATE(date) = ?", addPrices[0].Ticker, dateString).Delete(&model.JpDailyPrice{})
+	db.Where("symbol = ? AND DATE(date) = ?", addPrices[0].Symbol, dateString).Delete(&model.JpDailyPrice{})
 }
 
 func TestDeleteDailyPriceData(t *testing.T) {
@@ -69,7 +69,7 @@ func TestDeleteDailyPriceData(t *testing.T) {
 	// 古い日付のデータを作成
 	oldDate := time.Now().AddDate(0, 0, -31) // 31日前の日付
 	newPrices := []model.JpDailyPrice{
-		{Ticker: "testdel", Date: oldDate, Open: 1000.0, Close: 1100.0, High: 1150.0, Low: 950.0, Volume: 10000, Turnover: 1000000},
+		{Symbol: "testdel", Date: oldDate, Open: 1000.0, Close: 1100.0, High: 1150.0, Low: 950.0, Volume: 10000, Turnover: 1000000},
 	}
 
 	err := repo.AddDailyPriceData(&newPrices)
@@ -97,7 +97,7 @@ func TestDeleteDailyPriceData(t *testing.T) {
 
 	// 確認：削除されたデータが存在しないこと
 	var deletedResult model.JpDailyPrice
-	err = db.First(&deletedResult, "ticker = ? AND date = ?", "test_delete", oldDate).Error
+	err = db.First(&deletedResult, "symbol = ? AND date = ?", "test_delete", oldDate).Error
 	assert.Error(t, err) // レコードが見つからないエラーを期待
 }
 
@@ -111,10 +111,10 @@ func TestGetLatestClosePricesByTickers(t *testing.T) {
 	date2 := time.Now().AddDate(0, 0, -1).Truncate(24 * time.Hour) // 1日前の日付
 
 	testPrices := []model.JpDailyPrice{
-		{Ticker: "test_21", Date: date1, Close: 100.0},
-		{Ticker: "test_21", Date: date2, Close: 110.0},
-		{Ticker: "test_22", Date: date1, Close: 200.0},
-		{Ticker: "test_22", Date: date2, Close: 210.0},
+		{Symbol: "test_21", Date: date1, Close: 100.0},
+		{Symbol: "test_21", Date: date2, Close: 110.0},
+		{Symbol: "test_22", Date: date1, Close: 200.0},
+		{Symbol: "test_22", Date: date2, Close: 210.0},
 	}
 
 	err := repo.AddDailyPriceData(&testPrices)
