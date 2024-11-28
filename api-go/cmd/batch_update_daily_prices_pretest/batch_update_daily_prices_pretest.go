@@ -1,4 +1,4 @@
-// api-go\cmd\batch_update_daily_prices_pretest\main.go
+// api-go\cmd\batch_update_daily_prices_pretest\batch_update_daily_prices_pretest.go
 package main
 
 import (
@@ -36,8 +36,8 @@ func main() {
 	symbols := []string{"130A", "6932"} // 適当な2銘柄   1311 131A で実験中
 
 	// デバッグ: 指定された日付範囲を確認
-	startDate := "2024-08-19" // J-Quantsは12週間前の日付
-	endDate := "2024-08-26"   // J-Quantsは12週間前の日付
+	startDate := "2024-07-17" // J-Quantsは12週間前の日付
+	endDate := "2024-07-18"   // J-Quantsは12週間前の日付
 	fmt.Printf("指定された日付範囲: 開始日: %s, 終了日: %s\n", startDate, endDate)
 
 	// バッチ処理の呼び出し
@@ -48,4 +48,4 @@ func main() {
 }
 
 // 実行コマンド
-// go run ./cmd/batch_update_daily_prices_pretest/main.go
+// go run ./cmd/batch_update_daily_prices_pretest/batch_update_daily_prices_pretest.go

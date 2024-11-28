@@ -1,4 +1,4 @@
-// api-go\cmd\batch_update_daily_prices_midtest\main.go
+// api-go\cmd\batch_update_daily_prices_midtest\batch_update_daily_prices_midtest.go
 package main
 
 import (
@@ -47,6 +47,7 @@ func main() {
 }
 
 // 実行コマンド
-// go run ./cmd/batch_update_daily_prices_midtest/main.go
+// go run ./cmd/batch_update_daily_prices_midtest/batch_update_daily_prices_midtest.go
 
 // 全体の処理時間: 55.8217402s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / batchSize := 50 symbolChunkSize := 250
+// 全体の処理時間: 59.042582s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / batchSize := 50 symbolChunkSize := 250

@@ -12,8 +12,8 @@ import (
 	"time"
 )
 
-// processChunks はデータをチャンクに分割し、それぞれのチャンクをGoルーチンで並行に処理してデータベースに格納
-func processChunks(stockPrices []*gsdwd.StockPrice, batchSize int, jdpRepo repository.JpDailyPriceRepository, mu *sync.Mutex, wg *sync.WaitGroup, overallErr *error) {
+// storeChunks はデータをチャンクに分割し、それぞれのチャンクをGoルーチンで並行に処理してデータベースに格納
+func storeChunks(stockPrices []*gsdwd.StockPrice, batchSize int, jdpRepo repository.JpDailyPriceRepository, mu *sync.Mutex, wg *sync.WaitGroup, overallErr *error) {
 	// データをチャンクに分割
 	chunks := util.ChunkData(stockPrices, batchSize)
 	fmt.Printf("データ格納バッチ数: %d\n", len(chunks))

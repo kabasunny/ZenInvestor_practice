@@ -1,4 +1,4 @@
-// api-go\cmd\batch_update_ranking\main.go
+// api-go\cmd\batch_update_ranking\batch_update_ranking.go
 package main
 
 import (
@@ -24,3 +24,6 @@ func main() {
 		log.Fatalf("Failed to update ranking: %v", err)
 	}
 }
+
+// 実行コマンド
+// go run ./cmd/batch_update_ranking/batch_update_ranking.go

@@ -138,7 +138,47 @@ func TestGetLatestClosePricesByTickers(t *testing.T) {
 
 	// クリーンアップ: 追加したデータを削除
 	dateStrings := []string{date1.Format("2006-01-02"), date2.Format("2006-01-02")}
-	db.Where("ticker IN ? AND DATE(date) IN ?", tickers, dateStrings).Delete(&model.JpDailyPrice{})
+	db.Where("symbol IN ? AND DATE(date) IN ?", tickers, dateStrings).Delete(&model.JpDailyPrice{})
+}
+
+func TestGetLatestDate(t *testing.T) {
+	db := repository_test_helper.SetupTestDB()
+
+	repo := repository.NewJpDailyPriceRepository(db)
+
+	// テストデータの追加
+	date1 := time.Now().AddDate(0, 0, -2).Truncate(24 * time.Hour) // 2日前の日付
+	date2 := time.Now().AddDate(0, 0, -1).Truncate(24 * time.Hour) // 1日前の日付
+
+	testPrices := []model.JpDailyPrice{
+		{Symbol: "7203", Date: date1, Close: 100.0}, // トヨタ自動車
+		{Symbol: "7203", Date: date2, Close: 110.0}, // トヨタ自動車
+		{Symbol: "6758", Date: date1, Close: 200.0}, // ソニー
+		{Symbol: "6758", Date: date2, Close: 210.0}, // ソニー
+		{Symbol: "9984", Date: date1, Close: 300.0}, // ソフトバンク
+		{Symbol: "9984", Date: date2, Close: 310.0}, // ソフトバンク
+	}
+
+	err := repo.AddDailyPriceData(&testPrices)
+	assert.NoError(t, err)
+
+	// 最新の日付を取得する
+	latestDate, err := repo.GetLatestDate()
+	assert.NoError(t, err)
+	assert.NotEmpty(t, latestDate)
+
+	// 結果をターミナルに表示
+	fmt.Println("GetLatestDate:")
+	fmt.Println("Latest Date:", latestDate)
+
+	// 結果の確認
+	expectedDate := date2.Format("2006-01-02")
+	assert.Equal(t, expectedDate, latestDate)
+
+	// クリーンアップ: 追加したデータを削除
+	dateStrings := []string{date1.Format("2006-01-02"), date2.Format("2006-01-02")}
+	tickers := []string{"7203", "6758", "9984"}
+	db.Where("symbol IN ? AND DATE(date) IN ?", tickers, dateStrings).Delete(&model.JpDailyPrice{})
 }
 
 // テストの実行コード
@@ -146,3 +186,4 @@ func TestGetLatestClosePricesByTickers(t *testing.T) {
 // go test -v ./test/repository/jp_daily_price_repository_test.go -run TestAddDailyPriceData
 // go test -v ./test/repository/jp_daily_price_repository_test.go -run TestDeleteDailyPriceData
 // go test -v ./test/repository/jp_daily_price_repository_test.go -run TestGetLatestClosePricesByTickers
+// go test -v ./test/repository/jp_daily_price_repository_test.go -run TestGetLatestDate

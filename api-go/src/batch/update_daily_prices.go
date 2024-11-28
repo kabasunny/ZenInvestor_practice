@@ -13,10 +13,18 @@ import (
 	// その他必要なインポート
 )
 
-func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepository, jsiRepo repository.JpStockInfoRepository, jdpRepo repository.JpDailyPriceRepository, clients map[string]interface{}, startDate string, batchSize int, symbolChunkSize int) error {
+func UpdateDailyPrices(ctx context.Context,
+	udsRepo repository.UpdateStatusRepository,
+	jsiRepo repository.JpStockInfoRepository,
+	jdpRepo repository.JpDailyPriceRepository,
+	clients map[string]interface{},
+	startDate string, // 最新データ日付
+	batchSize int, // DB格納時のGoルーチン毎のデータ数
+	symbolChunkSize int, // 株価取得時のリクエスト毎のデータ数
+	lookbackDays int, // 何日前までさかのぼってデータを取得するか
+) error {
 	// 関数全体の処理開始時刻
 	startTimeOverall := time.Now()
-
 	gsdwdClient, ok := clients["get_stocks_datalist_with_dates"].(client.GetStocksDatalistWithDatesClient)
 	if !ok {
 		return fmt.Errorf("failed to get get_stocks_datalist_with_dates_client")
@@ -64,7 +72,7 @@ func UpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStatusRepos
 			fmt.Printf("バッチ %d のデータ取得の処理時間: %s\n", batchNumber, endTimeDownload.Sub(startTimeDownload))
 
 			// チャンクを処理する関数を呼び出し
-			processChunks(gsdwdResponse.StockPrices, batchSize, jdpRepo, &mu, &wg, &overallErr)
+			storeChunks(gsdwdResponse.StockPrices, batchSize, jdpRepo, &mu, &wg, &overallErr)
 
 		}(chunk, i+1)
 	}
