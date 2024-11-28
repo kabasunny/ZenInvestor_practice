@@ -73,3 +73,26 @@ func (r *jpDailyPriceRepositoryImpl) GetLatestClosePricesByTickers(tickers []str
 	}
 	return priceMap, nil
 }
+
+// 信頼性の高い3銘柄の最新レコードを取得し、最も新しい日付を返す
+func (r *jpDailyPriceRepositoryImpl) GetLatestDate() (string, error) {
+	tickers := []string{"7203", "6758", "9984"} // トヨタ自動車 (7203)、ソニー (6758)、ソフトバンク (9984)
+
+	var latestPrices []model.JpDailyPrice
+	if err := r.db.Where("symbol IN ?", tickers).Order("date desc").Limit(3).Find(&latestPrices).Error; err != nil {
+		return "", fmt.Errorf("failed to fetch latest prices: %w", err)
+	}
+
+	if len(latestPrices) == 0 {
+		return "", fmt.Errorf("no data found for the specified tickers")
+	}
+
+	latestDate := latestPrices[0].Date
+	for _, price := range latestPrices {
+		if price.Date.After(latestDate) {
+			latestDate = price.Date
+		}
+	}
+
+	return latestDate.Format("2006-01-02"), nil
+}

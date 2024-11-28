@@ -70,7 +70,7 @@ func MidTestUpdateDailyPrices(ctx context.Context, udsRepo repository.UpdateStat
 			fmt.Printf("バッチ %d のデータ取得の処理時間: %s\n", batchNumber, endTimeDownload.Sub(startTimeDownload))
 
 			// チャンクを処理する関数を呼び出し
-			processChunks(gsdwdResponse.StockPrices, batchSize, jdpRepo, &mu, &wg, &overallErr)
+			storeChunks(gsdwdResponse.StockPrices, batchSize, jdpRepo, &mu, &wg, &overallErr)
 
 		}(chunk, i+1)
 	}

@@ -1,4 +1,4 @@
-// api-go\cmd\batch_update_stock_info\main.go
+// api-go\cmd\batch_update_stock_info\batch_update_stock_info.go
 
 package main
 
@@ -38,8 +38,9 @@ func main() {
 }
 
 // 実行コマンド
-// go run ./cmd/batch_update_stock_info/main.go
+// go run ./cmd/batch_update_stock_info/batch_update_stock_info.go
 
 // UpdateStockInfo completed in 7m32.1925772s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン無し、アップデートメソッド
 // UpdateStockInfo completed in 18.1971501s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン有り、アップデートメソッド
 // UpdateStockInfo completed in 5.798971s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン無し、デリートメソッド + インサートメソッド
+// UpdateStockInfo completed in 12.1142565s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz Goルーチン無し、インサートメソッド
