@@ -20,16 +20,25 @@ func main() {
 	jdpRepo := repository.NewJpDailyPriceRepository(db)
 
 	ctx := context.Background()
-	clients := make(map[string]interface{})
+	msClients := make(map[string]interface{})
 
-	// gRPC クライアント GetStocksDatalistWithDatesClient初期化
+	// gRPC クライアント -------------------------------------------------------------------
+
+	// GetStocksDatalistWithDatesClient初期化
 	gsdwdClient, err := client.NewGetStocksDatalistWithDatesClient(ctx)
 	if err != nil {
-		log.Fatalf("Failed to create gRPC client: %v", err)
+		log.Fatalf("Failed to create get stocks datalist with dates client: %v", err)
 	}
+	msClients["get_stocks_datalist_with_dates"] = gsdwdClient // そのままインスタンスをUpdateDailyPricesの引数で渡してもよいが…
 
-	// clientsの初期化
-	clients["get_stocks_datalist_with_dates"] = gsdwdClient // そのままインスタンスをUpdateDailyPricesの引数で渡してもよいが…
+	// GetTradingCalendarJqClient初期化
+	gtcjClient, err := client.NewGetTradingCalendarJqClient(ctx)
+	if err != nil {
+		log.Fatalf("Failed to create get stock info from jq client: %v", err)
+	}
+	msClients["get_trading_calendar_jq"] = gtcjClient // mapに追加
+
+	// ----------------------------------------------------------------------------------
 
 	// J-QUANTS API フリープラン用の日付設定
 	now := time.Now()
@@ -50,7 +59,7 @@ func main() {
 
 	log.Printf("Batch size: %d, Symbol chunk size: %d\n, Look back days: %d\n", batchSize, symbolChunkSize, lookbackDays)
 
-	err = batch.UpdateDailyPrices(ctx, udsRepo, jsiRepo, jdpRepo, clients, startDate, batchSize, symbolChunkSize, lookbackDays)
+	err = batch.UpdateDailyPrices(ctx, udsRepo, jsiRepo, jdpRepo, msClients, startDate, batchSize, symbolChunkSize, lookbackDays)
 	if err != nil {
 		log.Fatalf("Failed to update daily prices: %v", err)
 	}

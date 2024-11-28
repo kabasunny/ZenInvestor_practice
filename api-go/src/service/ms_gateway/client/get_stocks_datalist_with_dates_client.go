@@ -61,7 +61,7 @@ func (c *getStocksDatalistWithDatesClientImpl) GetStocksDatalist(ctx context.Con
 	return c.client.GetStocksDatalist(ctx, req)
 }
 
-// Close はgRPC接続を閉じます。
+// Close はgRPC接続を閉じる
 func (c *getStocksDatalistWithDatesClientImpl) Close() error {
 	return c.conn.Close()
 }

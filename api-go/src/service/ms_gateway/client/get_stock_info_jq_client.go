@@ -61,7 +61,7 @@ func (c *getStockInfoJqClientImpl) GetStockInfoJq(ctx context.Context, req *get_
 	return c.client.GetStockInfoJq(ctx, req)
 }
 
-// Close はgRPC接続を閉じます。
+// Close はgRPC接続を閉じる
 func (c *getStockInfoJqClientImpl) Close() error {
 	return c.conn.Close()
 }

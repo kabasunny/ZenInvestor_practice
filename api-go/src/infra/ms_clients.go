@@ -47,6 +47,7 @@ func SetupMsClients(ctx context.Context) (*MSClients, error) { // 戻り値にer
 	fmt.Println("smaClient setup successfully.")
 
 	// J-QUANTSからの銘柄データ取得用クライアント
+	// アプリケーションから独立させ、コメントアウトするか
 	gsijClient, err := client.NewGetStockInfoJqClient(ctx)
 	fmt.Println("in NewGetStockInfoJqClient.")
 	if err != nil {
@@ -55,7 +56,18 @@ func SetupMsClients(ctx context.Context) (*MSClients, error) { // 戻り値にer
 	msClients["get_stock_info_jq"] = gsijClient // mapに追加
 	fmt.Println("gsijClient setup successfully.")
 
-	// ランキング用全株価データ取得用クライアント
+	// J-QUANTSからの休日データ取得用クライアント
+	// アプリケーションから独立させ、コメントアウトするか
+	gtcjClient, err := client.NewGetTradingCalendarJqClient(ctx)
+	fmt.Println("in NewGetTradingCalendarJqClient.")
+	if err != nil {
+		log.Fatalf("Failed to create get stock info from jq client: %v", err)
+	}
+	msClients["get_trading_calendar_jq"] = gtcjClient // mapに追加
+	fmt.Println("gtcjClient setup successfully.")
+
+	// ランキング用、J-QUANTSからの全株価データ取得用クライアント
+	// アプリケーションから独立させ、コメントアウトするか
 	gsdwdClient, err := client.NewGetStocksDatalistWithDatesClient(ctx)
 	fmt.Println("in NewGetStockInfoJqClient.")
 	if err != nil {
