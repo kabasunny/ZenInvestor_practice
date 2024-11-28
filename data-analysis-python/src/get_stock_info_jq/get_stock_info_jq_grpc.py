@@ -9,7 +9,7 @@ import time
 class GetStockInfoJqService(get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceServicer):
     def GetStockInfoJq(self, request, context):
         
-        print("gRPCサーバー : get_stock_info_jq_serviceサービス リクエスト")
+        print("gRPCサーバー : get_stock_info_jq_service リクエスト")
 
         # 処理開始時刻の記録
         start_time = time.time()
@@ -32,7 +32,7 @@ class GetStockInfoJqService(get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceServ
         end_time = time.time()
         elapsed_time = end_time - start_time
         
-        print(f"gRPCサーバー : get_stock_info_jq_serviceサービス レスポンス - 処理時間: {elapsed_time:.2f}秒")
+        print(f"gRPCサーバー : get_stock_info_jq_service レスポンス - 処理時間: {elapsed_time:.2f}秒")
             
         return response
 

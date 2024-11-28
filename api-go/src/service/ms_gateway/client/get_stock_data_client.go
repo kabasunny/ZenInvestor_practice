@@ -59,7 +59,7 @@ func (c *getStockDataClientImpl) GetStockData(ctx context.Context, req *get_stoc
 	return c.client.GetStockData(ctx, req)
 }
 
-// Close はgRPC接続を閉じます。
+// Close はgRPC接続を閉じる
 func (c *getStockDataClientImpl) Close() error {
 	return c.conn.Close()
 }
