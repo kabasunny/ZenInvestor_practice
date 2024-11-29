@@ -26,8 +26,8 @@ func CalculateLookbackDate(ctx context.Context,
 	// latestDate の取得とエラーチェック
 	latestDate, err := jdpRepo.GetLatestDate() // DB内の銘柄情報として保持する日付を取得
 	if err != nil || latestDate == "" {
-		fmt.Println("GetLatestDate error or latestDate is empty, using startDate - 3 days")
-		latestDate = start.AddDate(0, 0, -5).Format("2006-01-02")
+		fmt.Println("GetLatestDate error or latestDate is empty")
+		latestDate = start.AddDate(0, 0, -7).Format("2006-01-02")
 	}
 
 	// latestDate を time.Time 型に変換

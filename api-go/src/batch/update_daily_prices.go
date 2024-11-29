@@ -20,7 +20,7 @@ func UpdateDailyPrices(ctx context.Context,
 	gsdwdClient client.GetStocksDatalistWithDatesClient,
 	//clients map[string]interface{},
 	startDate string, // 最新データ日付
-	lookbackDays []string, // 何日前までさかのぼってデータを取得するか
+	// lookbackDays []string, // 何日前までさかのぼってデータを取得するか
 	batchSize int, // DB格納時のGoルーチン毎のデータ数
 	symbolChunkSize int, // 株価取得時のリクエスト毎のデータ数
 ) error {

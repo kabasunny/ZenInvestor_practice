@@ -50,13 +50,13 @@ func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
 	// 5日間平均を計算し、ランキングを生成
 	rows, err := repo.db.Raw(
 		`SELECT 
-			ticker, 
-			AVG(value) as avg_value,
-			RANK() OVER (ORDER BY AVG(value) DESC) as ranking,
-			? AS date
-		FROM jp_daily_price
-		WHERE date IN (?)
-		GROUP BY ticker`, latestDate, tradingDates).Rows()
+            symbol, 
+            AVG(turnover) as avg_turnover,
+            RANK() OVER (ORDER BY AVG(turnover) DESC) as ranking,
+            ? AS date
+        FROM jp_daily_price
+        WHERE date IN (?)
+        GROUP BY symbol`, latestDate, tradingDates).Rows()
 	if err != nil {
 		return err
 	}
@@ -87,8 +87,8 @@ func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
 		ranking.Date = date // 変換されたtime.Time型をranking.Dateにセット
 
 		err = tx.Clauses(clause.OnConflict{
-			Columns:   []clause.Column{{Name: "ranking"}, {Name: "ticker"}, {Name: "date"}},
-			DoUpdates: clause.AssignmentColumns([]string{"avg_volue"}),
+			Columns:   []clause.Column{{Name: "ranking"}, {Name: "symbol"}, {Name: "date"}},
+			DoUpdates: clause.AssignmentColumns([]string{"avg_turnover"}),
 		}).Create(&ranking).Error
 		if err != nil {
 			tx.Rollback()
