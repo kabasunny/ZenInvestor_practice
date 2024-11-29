@@ -9,10 +9,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 	// その他必要なインポート
 )
 
 func main() {
+	startTimeOverall := time.Now()
 	infra.Initialize()          // 主に環境変数の初期化処理
 	db := infra.SetupDB()       // DBのセットアップ
 	ctx := context.Background() // コンテキスト
@@ -71,17 +73,29 @@ func main() {
 
 	log.Printf("Look back days: %s\n, Batch size: %d, Symbol chunk size: %d\n", lookbackDays, batchSize, symbolChunkSize)
 
-	err = batch.UpdateDailyPrices_3(ctx, udsRepo, jsiRepo, jdpRepo, gsdwdClient, startDate, lookbackDays, batchSize, symbolChunkSize)
-	if err != nil {
-		log.Fatalf("Failed to update daily prices: %v", err)
+	// lookbackDays の日付をループで取り出して処理
+	for _, fetchDate := range lookbackDays {
+		fmt.Printf("取得日: %s\n", fetchDate) // 取得日を表示
+
+		err = batch.UpdateDailyPrices_3(ctx, udsRepo, jsiRepo, jdpRepo, gsdwdClient, fetchDate, batchSize, symbolChunkSize)
+		if err != nil {
+			log.Fatalf("Failed to update daily prices: %v", err)
+		}
 	}
+	// 関数全体の処理終了時刻
+	endTimeOverall := time.Now()
+	fmt.Printf("株価取得バッチの処理時間: %s\n", endTimeOverall.Sub(startTimeOverall))
 }
 
 // 実行コマンド
 // go run ./cmd/batch_update_daily_prices/batch_update_daily_prices.go
 
+// UpdateDailyPrices   : 非同期処理のリクエスト
+// UpdateDailyPrices_2 : シリアル処理のリクエスト
+// UpdateDailyPrices_3 : 非同期処理の遅延リクエスト　これかな
+
 // UpdateDailyPrices 全体の処理時間: 57.6495232s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄
-// UpdateDailyPrices_2 全体の処理時間: 1m4.0582447s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄
+// UpdateDailyPrices_2 全体の処理時間: 1m48.8636617s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄
 // UpdateDailyPrices_3 全体の処理時間: 58.7952742s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄
 
 // 全体の処理時間:  : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / test 500 銘柄
