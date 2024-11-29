@@ -35,13 +35,13 @@ class GetStocksDatalistWithDatesService(get_stocks_datalist_with_dates_pb2_grpc.
             )
             response.stock_prices.append(stock_price_pb)
 
-        print(response)
+        # print(response)
 
         # 処理終了時刻の記録
         end_time = time.time()
         elapsed_time = end_time - start_time
 
-        print(f"gRPCサーバー : get_stocks_datalist_with_datesサービス レスポンス - 処理時間: {elapsed_time:.2f}秒")
+        print(f"gRPCサーバー : get_stocks_datalist_with_datesサービス レスポンス (回数: {request_count}) - 処理時間: {elapsed_time:.2f}秒")
 
         return response
 

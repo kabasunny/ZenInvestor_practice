@@ -23,6 +23,7 @@ message GetTradingCalendarJqResponse {
 message TradingCalendar {
   string Date = 1;               // 日付
   string HolidayDivision = 2;    // 休日区分
+  // 非営業日:0	営業日:1 東証半日立会日:2 非営業日(祝日取引あり):3
 }
 
 

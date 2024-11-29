@@ -38,7 +38,7 @@ func (r *jpDailyPriceRepositoryImpl) AddDailyPriceData(newPrices *[]model.JpDail
 			return fmt.Errorf("failed to upsert daily price data for ticker: %s, date: %s: %w", price.Symbol, price.Date, err)
 		}
 
-		fmt.Printf("Upserted price data for ticker: %s, date: %s\n", price.Symbol, price.Date)
+		// fmt.Printf("Upserted price data for ticker: %s, date: %s\n", price.Symbol, price.Date)
 	}
 
 	fmt.Println("Out AddDailyPriceData")
