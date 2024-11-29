@@ -1,4 +1,4 @@
-// api-go\src\batch\update_daily_prices.go
+// api-go\src\batch\update_daily_prices_3.go
 package batch
 
 import (
@@ -13,7 +13,7 @@ import (
 	// その他必要なインポート
 )
 
-func UpdateDailyPrices(ctx context.Context,
+func UpdateDailyPrices_3(ctx context.Context,
 	udsRepo repository.UpdateStatusRepository,
 	jsiRepo repository.JpStockInfoRepository,
 	jdpRepo repository.JpDailyPriceRepository,
@@ -28,7 +28,7 @@ func UpdateDailyPrices(ctx context.Context,
 	startTimeOverall := time.Now()
 	// gsdwdClient, ok := clients["get_stocks_datalist_with_dates"].(client.GetStocksDatalistWithDatesClient)
 	// if !ok {
-	// 	return fmt.Errorf("failed to get get_stocks_datalist_with_dates_client")
+	//  return fmt.Errorf("failed to get get_stocks_datalist_with_dates_client")
 	// }
 
 	// シンボル抽出の処理時間
@@ -54,20 +54,20 @@ func UpdateDailyPrices(ctx context.Context,
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var overallErr error
+	delay := 1 * time.Second // 遅延時間を1秒に設定
 
 	// チャンクごとにデータを取得して処理する
 	for i, chunk := range symbolChunks {
+		// データ取得の処理時間
+		startTimeDownload := time.Now()
+		req := &gsdwd.GetStocksDatalistWithDatesRequest{
+			Symbols:   chunk,
+			StartDate: startDate,
+			EndDate:   startDate,
+		}
 		wg.Add(1)
-		go func(chunk []string, batchNumber int) {
+		go func(req *gsdwd.GetStocksDatalistWithDatesRequest, batchNumber int) {
 			defer wg.Done()
-
-			// データ取得の処理時間
-			startTimeDownload := time.Now()
-			req := &gsdwd.GetStocksDatalistWithDatesRequest{
-				Symbols:   chunk,
-				StartDate: startDate,
-				EndDate:   startDate,
-			}
 			gsdwdResponse, err := gsdwdClient.GetStocksDatalist(ctx, req)
 			endTimeDownload := time.Now()
 			if err != nil {
@@ -81,8 +81,10 @@ func UpdateDailyPrices(ctx context.Context,
 
 			// チャンクを処理する関数を呼び出し
 			storeChunks(gsdwdResponse.StockPrices, batchSize, jdpRepo, &mu, &wg, &overallErr)
+		}(req, i+1)
 
-		}(chunk, i+1)
+		// リクエスト間の遅延を設ける (例: 1秒)
+		time.Sleep(delay)
 	}
 
 	wg.Wait()
@@ -97,7 +99,7 @@ func UpdateDailyPrices(ctx context.Context,
 
 	// 関数全体の処理終了時刻
 	endTimeOverall := time.Now()
-	fmt.Printf("UpdateDailyPrices 全体の処理時間: %s\n", endTimeOverall.Sub(startTimeOverall))
+	fmt.Printf("UpdateDailyPrices_3 全体の処理時間: %s\n", endTimeOverall.Sub(startTimeOverall))
 
 	return nil
 }

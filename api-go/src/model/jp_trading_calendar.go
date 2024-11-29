@@ -7,7 +7,7 @@ package model
 
 type JpTradingCalender struct {
 	Date     string `gorm:"primaryKey;type:varchar(10)"` // 文字列でやり取りするのがよさそうなので、文字列で
-	Division string `gorm:"type:char"`                   // とりあえず、ここも文字で　非営業日:0	営業日:1 東証半日立会日:2 非営業日(祝日取引あり):3
+	Division string `gorm:"type:char"`                   // とりあえず、ここも文字で　非営業日:0 営業日:1 東証半日立会日:2 非営業日(祝日取引あり):3
 }
 
 // TableName カスタムテーブル名を指定するメソッド

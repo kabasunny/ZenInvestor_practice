@@ -28,8 +28,8 @@ type getTradingCalendarJqClientImpl struct {
 
 // NewGetTradingCalendarJqClient は GetTradingCalendarJqClient の新しいインスタンスを作成
 func NewGetTradingCalendarJqClient(ctx context.Context) (GetTradingCalendarJqClient, error) {
-	port := os.Getenv("GET_TRADING_CALENDAR_MS_PORT") // .envを確認
-	address := fmt.Sprintf("localhost:%s", port)      // 環境変数からポート番号を取得
+	port := os.Getenv("GET_TRADING_CALENDAR_JQ_MS_PORT") // .envを確認
+	address := fmt.Sprintf("localhost:%s", port)         // 環境変数からポート番号を取得
 
 	// NewClient を使用して ClientConn を作成
 	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -61,7 +61,7 @@ func (c *getTradingCalendarJqClientImpl) GetTradingCalendarJq(ctx context.Contex
 	return c.client.GetTradingCalendarJq(ctx, req)
 }
 
-// Close はgRPC接続を閉じます。
+// Close はgRPC接続を閉じる
 func (c *getTradingCalendarJqClientImpl) Close() error {
 	return c.conn.Close()
 }

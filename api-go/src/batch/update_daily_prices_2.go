@@ -1,4 +1,4 @@
-// api-go\src\batch\update_daily_prices.go
+// api-go\src\batch\update_daily_prices_2.go
 package batch
 
 import (
@@ -13,7 +13,7 @@ import (
 	// その他必要なインポート
 )
 
-func UpdateDailyPrices(ctx context.Context,
+func UpdateDailyPrices_2(ctx context.Context,
 	udsRepo repository.UpdateStatusRepository,
 	jsiRepo repository.JpStockInfoRepository,
 	jdpRepo repository.JpDailyPriceRepository,
@@ -28,7 +28,7 @@ func UpdateDailyPrices(ctx context.Context,
 	startTimeOverall := time.Now()
 	// gsdwdClient, ok := clients["get_stocks_datalist_with_dates"].(client.GetStocksDatalistWithDatesClient)
 	// if !ok {
-	// 	return fmt.Errorf("failed to get get_stocks_datalist_with_dates_client")
+	//  return fmt.Errorf("failed to get get_stocks_datalist_with_dates_client")
 	// }
 
 	// シンボル抽出の処理時間
@@ -57,32 +57,31 @@ func UpdateDailyPrices(ctx context.Context,
 
 	// チャンクごとにデータを取得して処理する
 	for i, chunk := range symbolChunks {
+		// データ取得の処理時間
+		startTimeDownload := time.Now()
+		req := &gsdwd.GetStocksDatalistWithDatesRequest{
+			Symbols:   chunk,
+			StartDate: startDate,
+			EndDate:   startDate,
+		}
+		gsdwdResponse, err := gsdwdClient.GetStocksDatalist(ctx, req)
+		endTimeDownload := time.Now()
+		if err != nil {
+			overallErr = fmt.Errorf("バッチ %d でシンボル %v のデータ取得に失敗: %w", i+1, chunk, err)
+			break
+		}
+
+		fmt.Printf("バッチ %d のデータ取得の処理時間: %s\n", i+1, endTimeDownload.Sub(startTimeDownload))
+
+		// チャンクを処理する関数を呼び出し
 		wg.Add(1)
-		go func(chunk []string, batchNumber int) {
+		go func(stockPrices []*gsdwd.StockPrice, batchNumber int) {
 			defer wg.Done()
+			storeChunks(stockPrices, batchSize, jdpRepo, &mu, &wg, &overallErr)
+		}(gsdwdResponse.StockPrices, i+1)
 
-			// データ取得の処理時間
-			startTimeDownload := time.Now()
-			req := &gsdwd.GetStocksDatalistWithDatesRequest{
-				Symbols:   chunk,
-				StartDate: startDate,
-				EndDate:   startDate,
-			}
-			gsdwdResponse, err := gsdwdClient.GetStocksDatalist(ctx, req)
-			endTimeDownload := time.Now()
-			if err != nil {
-				mu.Lock()
-				overallErr = fmt.Errorf("バッチ %d でシンボル %v のデータ取得に失敗: %w", batchNumber, chunk, err)
-				mu.Unlock()
-				return
-			}
-
-			fmt.Printf("バッチ %d のデータ取得の処理時間: %s\n", batchNumber, endTimeDownload.Sub(startTimeDownload))
-
-			// チャンクを処理する関数を呼び出し
-			storeChunks(gsdwdResponse.StockPrices, batchSize, jdpRepo, &mu, &wg, &overallErr)
-
-		}(chunk, i+1)
+		// リクエスト間の遅延を設ける (例: 1秒)
+		time.Sleep(1 * time.Second)
 	}
 
 	wg.Wait()
@@ -97,7 +96,7 @@ func UpdateDailyPrices(ctx context.Context,
 
 	// 関数全体の処理終了時刻
 	endTimeOverall := time.Now()
-	fmt.Printf("UpdateDailyPrices 全体の処理時間: %s\n", endTimeOverall.Sub(startTimeOverall))
+	fmt.Printf("UpdateDailyPrices_2 全体の処理時間: %s\n", endTimeOverall.Sub(startTimeOverall))
 
 	return nil
 }

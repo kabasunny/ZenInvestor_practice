@@ -49,6 +49,7 @@ def fetch_trading_calendar(from_date, to_date):
     refresh_token = get_refresh_token() # リフレッシュトークンの有効期間は1週間
     id_token = get_id_token(refresh_token) # IDトークンの有効期間は24時間
     return get_trading_calendar(id_token, from_date, to_date)
+    # 非営業日:0 営業日:1 東証半日立会日:2 非営業日(祝日取引あり):3
 
 # 使用例
 if __name__ == "__main__":
