@@ -20,7 +20,7 @@ func main() {
 	jsiRepo := repository.NewJpStockInfoRepository(db)
 
 	ctx := context.Background()
-	clients := make(map[string]interface{})
+	// clients := make(map[string]interface{})
 
 	// client.NewGetStockInfoJqClient から2つの値を受け取る
 	gsijClient, err := client.NewGetStockInfoJqClient(ctx)
@@ -29,9 +29,9 @@ func main() {
 	}
 
 	// clientsの初期化
-	clients["get_stock_info_jq"] = gsijClient
+	// clients["get_stock_info_jq"] = gsijClient
 
-	err = batch.UpdateStockInfo(ctx, udsRepo, jsiRepo, clients)
+	err = batch.UpdateStockInfo(ctx, udsRepo, jsiRepo, gsijClient)
 	if err != nil {
 		log.Fatalf("Failed to update stock info: %v", err)
 	}
@@ -43,4 +43,4 @@ func main() {
 // UpdateStockInfo completed in 7m32.1925772s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン無し、アップデートメソッド
 // UpdateStockInfo completed in 18.1971501s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン有り、アップデートメソッド
 // UpdateStockInfo completed in 5.798971s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz Goルーチン無し、デリートメソッド + インサートメソッド
-// UpdateStockInfo completed in 12.1142565s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz Goルーチン無し、インサートメソッド
+// UpdateStockInfo completed in 12.1142565s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz Goルーチン無し、デリートメソッド + インサートメソッド

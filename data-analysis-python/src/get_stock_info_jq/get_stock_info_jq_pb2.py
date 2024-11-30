@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x17get_stock_info_jq.proto\"\x17\n\x15GetStockInfoJqRequest\"4\n\x16GetStockInfoJqResponse\x12\x1a\n\x06stocks\x18\x01 \x03(\x0b\x32\n.StockInfo\"K\n\tStockInfo\x12\x0e\n\x06ticker\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0e\n\x06sector\x18\x03 \x01(\t\x12\x10\n\x08industry\x18\x04 \x01(\t2Z\n\x15GetStockInfoJqService\x12\x41\n\x0eGetStockInfoJq\x12\x16.GetStockInfoJqRequest\x1a\x17.GetStockInfoJqResponseB1Z/api-go/src/service/ms_gateway/get_stock_info_jqb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x17get_stock_info_jq.proto\"\x17\n\x15GetStockInfoJqRequest\"4\n\x16GetStockInfoJqResponse\x12\x1a\n\x06stocks\x18\x01 \x03(\x0b\x32\n.StockInfo\"Y\n\tStockInfo\x12\x0e\n\x06ticker\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0e\n\x06sector\x18\x03 \x01(\t\x12\x10\n\x08industry\x18\x04 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x05 \x01(\t2Z\n\x15GetStockInfoJqService\x12\x41\n\x0eGetStockInfoJq\x12\x16.GetStockInfoJqRequest\x1a\x17.GetStockInfoJqResponseB1Z/api-go/src/service/ms_gateway/get_stock_info_jqb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -37,7 +37,7 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_GETSTOCKINFOJQRESPONSE']._serialized_start=52
   _globals['_GETSTOCKINFOJQRESPONSE']._serialized_end=104
   _globals['_STOCKINFO']._serialized_start=106
-  _globals['_STOCKINFO']._serialized_end=181
-  _globals['_GETSTOCKINFOJQSERVICE']._serialized_start=183
-  _globals['_GETSTOCKINFOJQSERVICE']._serialized_end=273
+  _globals['_STOCKINFO']._serialized_end=195
+  _globals['_GETSTOCKINFOJQSERVICE']._serialized_start=197
+  _globals['_GETSTOCKINFOJQSERVICE']._serialized_end=287
 # @@protoc_insertion_point(module_scope)

@@ -40,8 +40,9 @@ def get_listed_companies(id_token):
         "Code": "ticker",
         "CompanyName": "name",
         "Sector17CodeName": "sector",
-        "Sector33CodeName": "industry"
-    })[["ticker", "name", "sector", "industry"]]
+        "Sector33CodeName": "industry",
+        "Date": "date",
+    })[["ticker", "name", "sector", "industry", "date"]]
 
     # ティッカーの末尾の0を削除（5桁以上かつ末尾が0の場合）
     def trim_ticker(ticker):

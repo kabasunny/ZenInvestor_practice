@@ -69,46 +69,50 @@ func TestUpdateStatus(t *testing.T) {
 	repository_test_helper.CleanupUpdateStatusTestData(db)
 }
 
-func TestUpdateStatusForJpStocksInfo(t *testing.T) {
+func TestUpsertStatus(t *testing.T) {
 	db := repository_test_helper.SetupTestDB()
 
-	fmt.Println("TestUpdateStatusForJpStocksInfo")
+	fmt.Println("TestUpsertStatus")
 
-	// 既存のデータをクリア
+	// テスト環境のクリーンアップ
 	repository_test_helper.CleanupUpdateStatusTestData(db)
 
-	// テストデータの挿入
-	updateStatus := model.UpdateStatus{Date: time.Now().AddDate(0, 0, -1), TbName: "jp_stocks_info"}
-	db.Create(&updateStatus)
-
-	// 挿入するテストデータを表示
-	fmt.Println("Before Update:", updateStatus)
-
 	repo := repository.NewUpdateStatusRepository(db)
-	// if err := repo.UpdateStatus("jp_stocks_info"); err != nil {
-	// 	fmt.Errorf("failed to update status for jp_stocks_info: %w", err)
-	// }
-	err := repo.UpdateStatus("jp_stocks_info")
+
+	// 新しいテーブル名でアップサート
+	err := repo.UpdateStatus("new_table")
 	assert.NoError(t, err)
 
-	// データベースから更新状態を取得して確認
-	var result model.UpdateStatus
-	db.First(&result, "tb_name = ?", "jp_stocks_info")
+	// 新しいテーブル名のレコードが存在することを確認
+	var newResult model.UpdateStatus
+	db.First(&newResult, "tb_name = ?", "new_table")
+	assert.Equal(t, "new_table", newResult.TbName)
+	assert.Equal(t, time.Now().Format("2006-01-02"), newResult.Date.Format("2006-01-02"))
 
-	// 現在の日付
-	today := time.Now().Format("2006-01-02")
+	// 既存のテーブル名でアップサート（更新）
+	yesterday := time.Now().AddDate(0, 0, -1)
+	existingStatus := model.UpdateStatus{Date: yesterday, TbName: "existing_table"}
+	db.Create(&existingStatus)
 
-	assert.Equal(t, "jp_stocks_info", result.TbName)
-	assert.Equal(t, today, result.Date.Format("2006-01-02"))
+	// 挿入するテストデータを表示
+	fmt.Println("Before Update:", existingStatus)
+
+	err = repo.UpdateStatus("existing_table")
+	assert.NoError(t, err)
+
+	// 既存のテーブル名のレコードが更新されたことを確認
+	var existingResult model.UpdateStatus
+	db.First(&existingResult, "tb_name = ?", "existing_table")
+	assert.Equal(t, "existing_table", existingResult.TbName)
+	assert.Equal(t, time.Now().Format("2006-01-02"), existingResult.Date.Format("2006-01-02"))
 
 	// 更新後のデータの状態を表示
-	fmt.Println("After Update:", result)
+	fmt.Println("After Update:", existingResult)
 
 	// テストデータの削除
 	repository_test_helper.CleanupUpdateStatusTestData(db)
 }
 
-// テストの実行コード
 // go test -v ./test/repository/update_status_repository_test.go -run TestUpdateStatus
 // go test -v ./test/repository/update_status_repository_test.go -run TestGetAllUpdateStatuses
-// go test -v ./test/repository/update_status_repository_test.go -run TestUpdateStatusForJpStocksInfo
+// go test -v ./test/repository/update_status_repository_test.go -run TestUpsertStatus

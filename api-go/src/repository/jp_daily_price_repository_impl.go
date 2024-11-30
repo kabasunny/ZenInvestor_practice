@@ -1,3 +1,5 @@
+// api-go\src\repository\jp_daily_price_repository_impl.go
+
 package repository
 
 import (
@@ -35,10 +37,10 @@ func (r *jpDailyPriceRepositoryImpl) AddDailyPriceData(newPrices *[]model.JpDail
 
 		// Saveメソッドはレコードが存在すれば更新し、存在しなければ挿入
 		if err := r.db.Save(&price).Error; err != nil {
-			return fmt.Errorf("failed to upsert daily price data for ticker: %s, date: %s: %w", price.Symbol, price.Date, err)
+			return fmt.Errorf("failed to upsert daily price data for symbol: %s, date: %s: %w", price.Symbol, price.Date, err)
 		}
 
-		// fmt.Printf("Upserted price data for ticker: %s, date: %s\n", price.Symbol, price.Date)
+		// fmt.Printf("Upserted price data for symbol: %s, date: %s\n", price.Symbol, price.Date)
 	}
 
 	fmt.Println("Out AddDailyPriceData")
@@ -61,9 +63,9 @@ func (r *jpDailyPriceRepositoryImpl) DeleteDailyPriceData(days int) error {
 }
 
 // ティッカーに対応する最新の終値を取得
-func (r *jpDailyPriceRepositoryImpl) GetLatestClosePricesByTickers(tickers []string) (map[string]float64, error) {
+func (r *jpDailyPriceRepositoryImpl) GetLatestClosePricesByTickers(symbols []string) (map[string]float64, error) {
 	var prices []model.JpDailyPrice
-	if err := r.db.Where("ticker IN ?", tickers).Order("date desc").Group("ticker").Find(&prices).Error; err != nil {
+	if err := r.db.Where("symbol IN ?", symbols).Order("date desc").Group("symbol").Find(&prices).Error; err != nil {
 		return nil, fmt.Errorf("failed to fetch latest prices: %w", err)
 	}
 
@@ -74,25 +76,11 @@ func (r *jpDailyPriceRepositoryImpl) GetLatestClosePricesByTickers(tickers []str
 	return priceMap, nil
 }
 
-// 信頼性の高い3銘柄の最新レコードを取得し、最も新しい日付を返す
+// 単純に最新の日付を取得する
 func (r *jpDailyPriceRepositoryImpl) GetLatestDate() (string, error) {
-	tickers := []string{"7203", "6758", "9984"} // トヨタ自動車 (7203)、ソニー (6758)、ソフトバンク (9984)
-
-	var latestPrices []model.JpDailyPrice
-	if err := r.db.Where("symbol IN ?", tickers).Order("date desc").Limit(3).Find(&latestPrices).Error; err != nil {
-		return "", fmt.Errorf("failed to fetch latest prices: %w", err)
+	var latestPrice model.JpDailyPrice
+	if err := r.db.Order("date desc").First(&latestPrice).Error; err != nil {
+		return "", fmt.Errorf("failed to fetch latest date: %w", err)
 	}
-
-	if len(latestPrices) == 0 {
-		return "", fmt.Errorf("no data found for the specified tickers")
-	}
-
-	latestDate := latestPrices[0].Date
-	for _, price := range latestPrices {
-		if price.Date.After(latestDate) {
-			latestDate = price.Date
-		}
-	}
-
-	return latestDate.Format("2006-01-02"), nil
+	return latestPrice.Date.Format("2006-01-02"), nil
 }

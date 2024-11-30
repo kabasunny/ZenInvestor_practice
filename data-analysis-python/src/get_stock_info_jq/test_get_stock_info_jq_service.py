@@ -12,7 +12,7 @@ class TestGetStockInfoJqService(unittest.TestCase):
         df = fetch_stock_info()
         self.assertIsNotNone(df)
         self.assertGreater(len(df), 0)
-        self.assertEqual(df.columns.tolist(), ['ticker', 'name', 'sector', 'industry'])
+        self.assertEqual(df.columns.tolist(), ['ticker', 'name', 'sector', 'industry', 'date'])
 
         # CSV出力
         output_dir = "src/get_stock_info_jq/test_output"

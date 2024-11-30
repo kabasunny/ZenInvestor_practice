@@ -33,7 +33,7 @@ const (
 func (r *updateStatusRepositoryImpl) UpdateStatus(tbName string) error {
 	fmt.Println("In UpdateStatus")
 
-	// 現在のテーブルのフィールド一覧を取得して表示
+	// 現在のテーブルのフィールド一覧を取得して表示（デバッグ用）
 	var updateStatuses []model.UpdateStatus
 	if err := r.db.Find(&updateStatuses).Error; err != nil {
 		return fmt.Errorf("failed to fetch update statuses for debugging: %w", err)
@@ -42,20 +42,23 @@ func (r *updateStatusRepositoryImpl) UpdateStatus(tbName string) error {
 		fmt.Printf("Debug - Table: %s, Date: %s\n", status.TbName, status.Date)
 	}
 
-	result := r.db.Model(&model.UpdateStatus{}).
-		Where(fmt.Sprintf("%s = ?", FieldTableName), tbName).
-		Update(FieldDate, time.Now())
+	// アップサート処理
+	updateStatus := model.UpdateStatus{
+		TbName: tbName,
+		Date:   time.Now(),
+	}
+
+	result := r.db.Where(model.UpdateStatus{TbName: tbName}).
+		Assign(model.UpdateStatus{Date: updateStatus.Date}).
+		FirstOrCreate(&updateStatus)
 
 	fmt.Printf("Debug - SQL Result: RowsAffected: %d, Error: %v\n", result.RowsAffected, result.Error)
 
 	if result.Error != nil {
-		return fmt.Errorf("failed to update status for %s '%s': %w", FieldTableName, tbName, result.Error)
+		return fmt.Errorf("failed to upsert update status for %s '%s': %w", FieldTableName, tbName, result.Error)
 	}
-	// if result.RowsAffected == 0 {
-	// 	return fmt.Errorf("no records found with %s '%s'", FieldTableName, tbName)
-	// }
 
-	fmt.Println("In UpdateStatus")
+	fmt.Println("Out UpdateStatus")
 
 	return nil
 }

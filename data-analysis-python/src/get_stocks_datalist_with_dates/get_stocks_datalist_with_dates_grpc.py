@@ -9,9 +9,13 @@ import time
 
 request_count = 0  # リクエストカウントを追加
 
+response_count = 0  # レスポンスカウントを追加
+
 class GetStocksDatalistWithDatesService(get_stocks_datalist_with_dates_pb2_grpc.GetStocksDatalistWithDatesServiceServicer):
     def GetStocksDatalist(self, request, context):
         global request_count
+        global response_count
+        
         request_count += 1
         
         print(f"gRPCサーバー : get_stocks_datalist_with_datesサービス リクエスト (回数: {request_count})")
@@ -41,7 +45,9 @@ class GetStocksDatalistWithDatesService(get_stocks_datalist_with_dates_pb2_grpc.
         end_time = time.time()
         elapsed_time = end_time - start_time
 
-        print(f"gRPCサーバー : get_stocks_datalist_with_datesサービス レスポンス (回数: {request_count}) - 処理時間: {elapsed_time:.2f}秒")
+        response_count += 1
+        
+        print(f"gRPCサーバー : get_stocks_datalist_with_datesサービス レスポンス (回数: {response_count}) - 処理時間: {elapsed_time:.2f}秒")
 
         return response
 

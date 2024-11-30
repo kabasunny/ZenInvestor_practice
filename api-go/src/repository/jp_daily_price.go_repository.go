@@ -17,7 +17,7 @@ type JpDailyPriceRepository interface {
 	// ティッカーに対応する最新の終値を取得
 	GetLatestClosePricesByTickers(tickers []string) (map[string]float64, error)
 
-	// DBに格納されている安定銘柄数種の保持する日付を返す
+	// DBに格納されている株価情報の保持する日付を返す
 	GetLatestDate() (string, error)
 
 	// その他、必要に応じて追加

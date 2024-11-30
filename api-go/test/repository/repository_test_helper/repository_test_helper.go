@@ -45,7 +45,8 @@ func CleanupStockTestData(db *gorm.DB) {
 
 func CleanupUpdateStatusTestData(db *gorm.DB) {
 	// テストデータの削除
-	db.Where("tb_name LIKE ?", "test_table%").Delete(&model.UpdateStatus{})
+	db.Where("tb_name LIKE ?", "existing_table%").Delete(&model.UpdateStatus{})
+	db.Where("tb_name LIKE ?", "new_table%").Delete(&model.UpdateStatus{})
 }
 
 func BackupAndClearTestData(db *gorm.DB) ([]model.UpdateStatus, error) {

@@ -48,7 +48,8 @@ class TestGetStockInfoJqGrpcService(unittest.TestCase):
             "ticker": stock.ticker,
             "name": stock.name,
             "sector": stock.sector,
-            "industry": stock.industry
+            "industry": stock.industry,
+            "date": stock.date
         } for stock in response.stocks])
         df.to_csv(output_file, index=False)
         self.assertTrue(os.path.exists(output_file))

@@ -41,11 +41,11 @@ func UpdateDailyPrices_3(ctx context.Context,
 	fmt.Printf("シンボルを抽出の処理時間: %s\n", endTimeTicker.Sub(startTimeTicker))
 	fmt.Printf("抽出したシンボルの数: %d\n", len(symbols))
 
-	// シンボルの数を500に制限 //test
-	if len(symbols) > 500 { //test
-		symbols = symbols[:500] //test
-	} //test
-	fmt.Printf("制限されたシンボルの数: %d\n", len(symbols)) //test
+	// // シンボルの数を500に制限 //test
+	// if len(symbols) > 500 { //test
+	// 	symbols = symbols[:500] //test
+	// } //test
+	// fmt.Printf("制限されたシンボルの数: %d\n", len(symbols)) //test
 
 	// シンボルリストをチャンクに分割
 	symbolChunks := util.ChunkSymbols(symbols, symbolChunkSize)
