@@ -94,23 +94,23 @@ func (s *RankingServiceImpl) fetchRankingData() (*[]dto.RankingServiceResponse, 
 	}
 
 	// ランキングデータからティッカーのリストを作成
-	tickersSet := make(map[string]struct{})
+	symbolsSet := make(map[string]struct{})
 	for _, data := range *rankingData {
-		tickersSet[data.Symbol] = struct{}{}
+		symbolsSet[data.Symbol] = struct{}{}
 	}
-	var tickers []string
-	for ticker := range tickersSet {
-		tickers = append(tickers, ticker)
+	var symbols []string
+	for symbol := range symbolsSet {
+		symbols = append(symbols, symbol)
 	}
 
 	// ティッカーに対応する銘柄情報を取得
-	stockInfoMap, err := s.jsiRepo.GetStockInfoByTickers(tickers)
+	stockInfoMap, err := s.jsiRepo.GetStockInfoByTickers(symbols)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get stock info: %w", err)
 	}
 
 	// ティッカーに対応する最新の終値を取得
-	latestPrices, err := s.jdpRepo.GetLatestClosePricesByTickers(tickers)
+	latestPrices, err := s.jdpRepo.GetLatestClosePricesByTickers(symbols)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get latest close prices: %w", err)
 	}
@@ -120,12 +120,12 @@ func (s *RankingServiceImpl) fetchRankingData() (*[]dto.RankingServiceResponse, 
 	for _, data := range *rankingData {
 		stockInfo, ok := stockInfoMap[data.Symbol]
 		if !ok {
-			return nil, fmt.Errorf("stock info not found for ticker %s", data.Symbol)
+			return nil, fmt.Errorf("stock info not found for symbol %s", data.Symbol)
 		}
 
 		latestPrice, ok := latestPrices[data.Symbol]
 		if !ok {
-			return nil, fmt.Errorf("latest price not found for ticker %s", data.Symbol)
+			return nil, fmt.Errorf("latest price not found for symbol %s", data.Symbol)
 		}
 
 		response = append(response, dto.RankingServiceResponse{
