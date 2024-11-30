@@ -13,17 +13,25 @@ import (
 
 func CalculateLookbackDate(ctx context.Context,
 	jdpRepo repository.JpDailyPriceRepository,
-	startDate string,
+	// startDate string,
+	jsiRepo repository.JpStockInfoRepository,
 	lookbackDays int,
 	gtcjClient client.GetTradingCalendarJqClient,
 ) ([]string, error) {
+
+	// 銘柄テーブルが更新されている前提で、銘柄データは取得可能な最新の日付を保持している
+	startDate, err := jsiRepo.GetLatestDate()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get startDate: %w", err)
+	}
+
 	// startDate を time.Time 型に変換
 	start, err := time.Parse("2006-01-02", startDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse startDate: %w", err)
 	}
 
-	// latestDate の取得とエラーチェック
+	// 株価データが保持している最新の日付 latestDate の取得とエラーチェック
 	latestDate, err := jdpRepo.GetLatestDate() // DB内の銘柄情報として保持する日付を取得
 	if err != nil || latestDate == "" {
 		fmt.Println("GetLatestDate error or latestDate is empty")
@@ -52,12 +60,12 @@ func CalculateLookbackDate(ctx context.Context,
 	}
 
 	// 必要日数lookbackDays + 7日分 の営業日を確認する
-	reqDate := start.AddDate(0, 0, trueLookbackDays+7).Format("2006-01-02")
+	reqDate := start.AddDate(0, 0, -(trueLookbackDays + 7)).Format("2006-01-02")
 
 	// trueLookbackDays個の営業日の日付の文字列リストを返す
 	req := &get_trading_calendar_jq.GetTradingCalendarJqRequest{
-		FromDate: startDate,
-		ToDate:   reqDate,
+		FromDate: reqDate,   // 取得可能最新日から逆算した日から
+		ToDate:   startDate, // 取得可能最新日まで
 	}
 
 	res, err := gtcjClient.GetTradingCalendarJq(ctx, req)
@@ -74,14 +82,14 @@ func CalculateLookbackDate(ctx context.Context,
 		}
 	}
 
-	// 念のため日付のソート
+	// 日付の昇順にソート
 	sort.Slice(businessDays, func(i, j int) bool {
 		return businessDays[i] < businessDays[j]
 	})
 
-	// trueLookbackDays個の営業日を抽出
+	// 最新の日付から指定された営業日数を抽出し、再び昇順にソート
 	if len(businessDays) > trueLookbackDays {
-		businessDays = businessDays[:trueLookbackDays]
+		businessDays = businessDays[len(businessDays)-trueLookbackDays:]
 	}
 
 	return businessDays, nil

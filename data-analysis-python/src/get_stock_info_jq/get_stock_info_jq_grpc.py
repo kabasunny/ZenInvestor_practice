@@ -24,7 +24,8 @@ class GetStockInfoJqService(get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceServ
                 ticker=row['ticker'],
                 name=row['name'],
                 sector=row['sector'],
-                industry=row['industry']
+                industry=row['industry'],
+                date=row['date']
             )
             response.stocks.append(stock_info_pb)
         
@@ -33,6 +34,10 @@ class GetStockInfoJqService(get_stock_info_jq_pb2_grpc.GetStockInfoJqServiceServ
         elapsed_time = end_time - start_time
         
         print(f"gRPCサーバー : get_stock_info_jq_service レスポンス - 処理時間: {elapsed_time:.2f}秒")
+        
+        # レスポンスの詳細を表示
+        # for stock in response.stocks:
+        #     print(f"Ticker: {stock.ticker}, Name: {stock.name}, Sector: {stock.sector}, Industry: {stock.industry}, Date: {stock.date}")
             
         return response
 

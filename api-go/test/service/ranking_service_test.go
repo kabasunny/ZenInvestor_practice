@@ -55,8 +55,8 @@ func TestGetRankingDataIntegration(t *testing.T) {
 	if db == nil {
 		log.Fatalf("Failed to set up the database")
 	}
-	repository_test_helper.InitializeUpdateStatusTable(db) // 追加: 初期データの投入
-	repository_test_helper.PrintUpdateStatusTable(db)      // 追加: デバッグ用のテーブル内容表示
+	// repository_test_helper.InitializeUpdateStatusTable(db) // 追加: 初期データの投入
+	repository_test_helper.PrintUpdateStatusTable(db) // 追加: デバッグ用のテーブル内容表示
 
 	// 4. サービスの初期化
 	fmt.Println("Step 4: Initializing RankingService...")
@@ -109,7 +109,7 @@ func TestGetRankingDataIntegration(t *testing.T) {
 	defer writer.Flush()
 
 	// ヘッダーを書き込む
-	headers := []string{"Ranking", "Ticker", "Date", "AvgTurnover", "Name", "LatestClose"}
+	headers := []string{"Ranking", "Symbol", "Date", "AvgTurnover", "Name", "LatestClose"}
 	if err := writer.Write(headers); err != nil {
 		t.Errorf("failed to write headers to CSV file: %v", err)
 		return
@@ -138,4 +138,4 @@ func TestGetRankingDataIntegration(t *testing.T) {
 // 全マクロサービスを立ち上げるなら、/ZenInvestor_practiceにて
 // ./StartMicroservices.ps1
 // 本テスト用マイクロサービスを立ち上げるなら、/ZenInvestor_practiceにて
-// ./StartOnly5MAVRankingMicroservices.ps1
+// ./StartForRankingMicroservices.ps1

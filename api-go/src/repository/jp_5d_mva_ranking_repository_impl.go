@@ -30,6 +30,9 @@ func (r *jp5dMvaRankingRepositoryImpl) Get5dMvaRankingData() (*[]model.Jp5dMvaRa
 
 // 売買代金5日平均ランキングデータを追加する
 func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
+	fmt.Println("In Add5dMvaRankingData")
+	startTimeOverall := time.Now()
+
 	// 最新日付を含む直近5営業日を取得
 	var tradingDates []time.Time
 	err := repo.db.Model(&model.JpDailyPrice{}).
@@ -49,14 +52,16 @@ func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
 
 	// 5日間平均を計算し、ランキングを生成
 	rows, err := repo.db.Raw(
-		`SELECT 
-            symbol, 
-            AVG(turnover) as avg_turnover,
-            RANK() OVER (ORDER BY AVG(turnover) DESC) as ranking,
-            ? AS date
-        FROM jp_daily_price
-        WHERE date IN (?)
-        GROUP BY symbol`, latestDate, tradingDates).Rows()
+		`
+		SELECT 
+		symbol, 
+		CEIL(AVG(turnover)) as avg_turnover,
+		RANK() OVER (ORDER BY AVG(turnover) DESC) as ranking,
+		? AS date
+		FROM jp_daily_price
+		WHERE date IN (?)
+		GROUP BY symbol
+		`, latestDate, tradingDates).Rows()
 	if err != nil {
 		return err
 	}
@@ -100,6 +105,9 @@ func (repo *jp5dMvaRankingRepositoryImpl) Add5dMvaRankingData() error {
 		return err
 	}
 
+	endTimeOverall := time.Now()
+	fmt.Printf("raking作成のバッチの処理時間: %s\n", endTimeOverall.Sub(startTimeOverall))
+	fmt.Println("Out Add5dMvaRankingData")
 	return tx.Commit().Error
 }
 

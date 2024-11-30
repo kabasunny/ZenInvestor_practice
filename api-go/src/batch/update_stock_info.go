@@ -14,17 +14,17 @@ import (
 )
 
 // UpdateStockInfo は銘柄情報を更新し、ステータスを更新
-func UpdateStockInfo(ctx context.Context, udsRepo repository.UpdateStatusRepository, jsiRepo repository.JpStockInfoRepository, clients map[string]interface{}) error {
+func UpdateStockInfo(ctx context.Context, udsRepo repository.UpdateStatusRepository, jsiRepo repository.JpStockInfoRepository, gsijClient client.GetStockInfoJqClient) error {
 	startTime := time.Now() // 処理開始時刻の記録
 
-	stockInfoClient, ok := clients["get_stock_info_jq"].(client.GetStockInfoJqClient)
-	if !ok {
-		return fmt.Errorf("failed to get get_stock_info_jq_client")
-	}
+	// stockInfoClient, ok := clients["get_stock_info_jq"].(client.GetStockInfoJqClient)
+	// if !ok {
+	// 	return fmt.Errorf("failed to get get_stock_info_jq_client")
+	// }
 
 	// 銘柄情報の取得
 	stockInfoReq := &get_stock_info_jq.GetStockInfoJqRequest{}
-	stockInfoRes, err := stockInfoClient.GetStockInfoJq(ctx, stockInfoReq)
+	stockInfoRes, err := gsijClient.GetStockInfoJq(ctx, stockInfoReq)
 	if err != nil {
 		return fmt.Errorf("failed to get stock info: %w", err)
 	}
@@ -37,6 +37,7 @@ func UpdateStockInfo(ctx context.Context, udsRepo repository.UpdateStatusReposit
 			Name:     data.Name,
 			Sector:   data.Sector,
 			Industry: data.Industry,
+			Date:     data.Date,
 		}
 		newStockInfos = append(newStockInfos, si)
 	}

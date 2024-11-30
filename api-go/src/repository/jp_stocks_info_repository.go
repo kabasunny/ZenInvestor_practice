@@ -25,6 +25,9 @@ type JpStockInfoRepository interface {
 	// 銘柄データを更新する:一日一回
 	InsertStockInfo(newJpStockInfo *[]model.JpStockInfo) error
 
+	// DBに格納されている銘柄の保持する日付を返す
+	GetLatestDate() (string, error)
+
 	// 銘柄を指定して削除する:使用未定
 	// DeleteStockInfoByTick(tickerCode string) error
 }

@@ -15,6 +15,7 @@ import (
 
 func main() {
 	startTimeOverall := time.Now()
+
 	infra.Initialize()          // 主に環境変数の初期化処理
 	db := infra.SetupDB()       // DBのセットアップ
 	ctx := context.Background() // コンテキスト
@@ -45,12 +46,12 @@ func main() {
 
 	// ----------------------------------------------------------------------------------
 
-	// J-QUANTS API フリープラン用の日付設定
+	// // J-QUANTS API フリープラン用の日付設定
 	// now := time.Now()
 	// startDate := now.AddDate(0, 0, -86).Format("2006-01-02") // 12週間 + 余裕2日前の日付
 
 	//テスト用 //test
-	startDate := "2023-11-01" //test
+	// startDate := "2023-11-01" //test
 
 	// コード内でバッチサイズとシンボルチャンクサイズを指定
 	batchSize := 200 // DB格納時のGoルーチン毎のデータ数
@@ -59,7 +60,7 @@ func main() {
 	// 日数計算ロジック
 	days := 5 // 何日前までさかのぼってデータが必要か設定値
 
-	lookbackDays, err := batch.CalculateLookbackDate(ctx, jdpRepo, startDate, days, gtcjClient) // 実際にさかのぼってデータを取得する日数
+	lookbackDays, err := batch.CalculateLookbackDate(ctx, jdpRepo, jsiRepo, days, gtcjClient) // 実際にさかのぼってデータを取得する日数
 	if err != nil {
 		log.Fatalf("Failed to calculate lookback start date: %v", err)
 	}
@@ -94,8 +95,15 @@ func main() {
 // UpdateDailyPrices_2 : シリアル処理のリクエスト
 // UpdateDailyPrices_3 : 非同期処理の遅延リクエスト　これかな
 
-// UpdateDailyPrices 全体の処理時間: 57.6495232s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄
-// UpdateDailyPrices_2 全体の処理時間: 1m48.8636617s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄
-// UpdateDailyPrices_3 全体の処理時間: 58.7952742s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄
+// UpdateDailyPrices 全体の処理時間: 57.6495232s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄 startDate := "2023-11-01"
+// UpdateDailyPrices_2 全体の処理時間: 1m48.8636617s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄 startDate := "2023-11-01"
+// UpdateDailyPrices_3 全体の処理時間: 58.7952742s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / test 500 銘柄 startDate := "2023-11-01"
 
-// 全体の処理時間:  : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / test 500 銘柄
+// UpdateDailyPrices_3 全体の処理時間: 1m1.665574s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / test 500 銘柄 startDate := "2023-11-01"
+// 株価取得バッチの処理時間: 5m14.2006247s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / test 500 銘柄 startDate := "2023-11-01"
+
+// UpdateDailyPrices_3 全体の処理時間: 2m23.8292159s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / startDate := "2023-11-01"
+// 株価取得バッチの処理時間: 12m4.9949104s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / startDate := "2023-11-01"
+
+// UpdateDailyPrices_3 全体の処理時間: 2m23.8292159s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番
+// 株価取得バッチの処理時間: 12m4.9949104s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番

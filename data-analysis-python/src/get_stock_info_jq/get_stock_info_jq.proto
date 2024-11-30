@@ -24,6 +24,7 @@ message StockInfo {
   string name = 2;    // 銘柄名
   string sector = 3;  // 業種
   string industry = 4; // 業界
+  string date = 5; //
 }
 
 

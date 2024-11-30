@@ -10,6 +10,7 @@ type JpStockInfo struct {
 	Name     string `gorm:"type:text"`
 	Sector   string `gorm:"type:text"`
 	Industry string `gorm:"type:text"`
+	Date     string `gorm:"type:text"`
 	// MarketCap   float64   `gorm:"type:real"` // 無しにする
 	// ListingDate time.Time `gorm:"type:date"` // 無しにする
 }

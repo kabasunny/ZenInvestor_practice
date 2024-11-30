@@ -58,7 +58,20 @@ func NewGetStockInfoJqClient(ctx context.Context) (GetStockInfoJqClient, error) 
 // GetStockInfoJq は指定された国の株式情報を取得
 func (c *getStockInfoJqClientImpl) GetStockInfoJq(ctx context.Context, req *get_stock_info_jq.GetStockInfoJqRequest) (*get_stock_info_jq.GetStockInfoJqResponse, error) {
 	fmt.Println("In GetStockInfoJq")
-	return c.client.GetStockInfoJq(ctx, req)
+
+	response, err := c.client.GetStockInfoJq(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	// // レスポンスの詳細を表示
+	// fmt.Println("Response from GetStockInfoJq:")
+	// for _, stock := range response.Stocks {
+	// 	fmt.Printf("Ticker: %s, Name: %s, Sector: %s, Industry: %s, Date: %s\n",
+	// 		stock.Ticker, stock.Name, stock.Sector, stock.Industry, stock.Date)
+	// }
+
+	return response, nil
 }
 
 // Close はgRPC接続を閉じる

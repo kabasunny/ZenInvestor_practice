@@ -75,14 +75,14 @@ func TestGetStockInfoJq(t *testing.T) {
 	defer writer.Flush()
 
 	// CSVのヘッダーを書き込む
-	header := []string{"Ticker", "Name", "Sector", "Industry"}
+	header := []string{"Ticker", "Name", "Sector", "Industry", "Date"}
 	if err := writer.Write(header); err != nil {
 		t.Fatalf("Failed to write header to file: %v", err)
 	}
 
 	// レスポンスの各株式情報を書き込む
 	for _, stock := range res.Stocks {
-		record := []string{stock.Ticker, stock.Name, stock.Sector, stock.Industry}
+		record := []string{stock.Ticker, stock.Name, stock.Sector, stock.Industry, stock.Date}
 		if err := writer.Write(record); err != nil {
 			t.Fatalf("Failed to write record to file: %v", err)
 		}
