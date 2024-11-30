@@ -54,7 +54,7 @@ func UpdateDailyPrices_3(ctx context.Context,
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var overallErr error
-	delay := 1 * time.Second // 遅延時間を1秒に設定
+	delay := 13 * time.Second // 遅延時間を1秒に設定
 
 	// チャンクごとにデータを取得して処理する
 	for i, chunk := range symbolChunks {

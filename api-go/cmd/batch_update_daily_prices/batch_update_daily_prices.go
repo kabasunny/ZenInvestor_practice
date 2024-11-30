@@ -54,8 +54,8 @@ func main() {
 	// startDate := "2023-11-01" //test
 
 	// コード内でバッチサイズとシンボルチャンクサイズを指定
-	batchSize := 200 // DB格納時のGoルーチン毎のデータ数
-	dataSize := 1000 // 株価取得時のリクエスト毎のデータ数
+	batchSize := 100 // DB格納時のGoルーチン毎のデータ数
+	dataSize := 500  // 株価取得時のリクエスト毎のデータ数
 
 	// 日数計算ロジック
 	days := 5 // 何日前までさかのぼってデータが必要か設定値
@@ -70,15 +70,15 @@ func main() {
 		return
 	}
 
-	symbolChunkSize := dataSize / len(lookbackDays) // さかのぼる日数によって、チャンクサイズを小さくすることで、リクエスト負荷を均一に保つ
+	// symbolChunkSize := dataSize / len(lookbackDays) // さかのぼる日数によって、チャンクサイズを小さくすることで、リクエスト負荷を均一に保つ 今となっては意味ないよね
 
-	log.Printf("Look back days: %s\n, Batch size: %d, Symbol chunk size: %d\n", lookbackDays, batchSize, symbolChunkSize)
+	log.Printf("Look back days: %s\n, Batch size: %d, Symbol chunk size: %d\n", lookbackDays, batchSize, dataSize)
 
 	// lookbackDays の日付をループで取り出して処理
 	for _, fetchDate := range lookbackDays {
 		fmt.Printf("取得日: %s\n", fetchDate) // 取得日を表示
 
-		err = batch.UpdateDailyPrices_3(ctx, udsRepo, jsiRepo, jdpRepo, gsdwdClient, fetchDate, batchSize, symbolChunkSize)
+		err = batch.UpdateDailyPrices_3(ctx, udsRepo, jsiRepo, jdpRepo, gsdwdClient, fetchDate, batchSize, dataSize)
 		if err != nil {
 			log.Fatalf("Failed to update daily prices: %v", err)
 		}
@@ -118,3 +118,12 @@ func main() {
 
 // UpdateDailyPrices_3 全体の処理時間: 2m26.9501114s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番
 // 株価取得バッチの処理時間: 12m27.3960013s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番
+
+// UpdateDailyPrices_3 全体の処理時間: 7m20.3971786s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / batchSize := 200, dataSize := 800, delay := 5 * time.Second
+// 株価取得バッチの処理時間: 21m32.3409058s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / batchSize := 200, dataSize := 800, delay := 5 * time.Second
+
+// UpdateDailyPrices_3 全体の処理時間: 3m9.4279275s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / batchSize := 100, dataSize := 400, delay := 10 * time.Second
+// 株価取得バッチの処理時間: 15m39.2943609s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / batchSize := 100, dataSize := 400, delay := 10 * time.Second
+
+// UpdateDailyPrices_3 全体の処理時間: 3m17.9234813s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / batchSize := 100, dataSize := 500, delay := 15 * time.Second
+// 株価取得バッチの処理時間: 16m35.0355377s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / batchSize := 100, dataSize := 400, delay := 10 * time.Second
