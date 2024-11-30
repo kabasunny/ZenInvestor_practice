@@ -62,16 +62,44 @@ func (r *jpDailyPriceRepositoryImpl) DeleteDailyPriceData(days int) error {
 	return nil
 }
 
+// 株価データを削除する: 特定の日付けを受け取り、それより前の日付をもつデータを削除する
+func (r *jpDailyPriceRepositoryImpl) DeleteBeforeSpecifiedDate(specifiedDate string) error {
+	fmt.Printf("In DeleteBeforeSpecifiedDate")
+
+	// 指定された日付を time.Time 型に変換
+	date, err := time.Parse("2006-01-02", specifiedDate)
+	if err != nil {
+		return fmt.Errorf("failed to parse specified date: %w", err)
+	}
+
+	// 指定された日付以前のデータを削除
+	result := r.db.Where("date < ?", date).Delete(&model.JpDailyPrice{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete daily price data before specified date: %w", result.Error)
+	}
+
+	fmt.Printf("Deleted %d records older than %s\n", result.RowsAffected, specifiedDate)
+	return nil
+}
+
 // ティッカーに対応する最新の終値を取得
 func (r *jpDailyPriceRepositoryImpl) GetLatestClosePricesByTickers(symbols []string) (map[string]float64, error) {
-	var prices []model.JpDailyPrice
-	if err := r.db.Where("symbol IN ?", symbols).Order("date desc").Group("symbol").Find(&prices).Error; err != nil {
+	var results []struct {
+		Symbol string
+		Close  float64
+	}
+
+	if err := r.db.Table("jp_daily_price").
+		Select("symbol, MAX(date) as date, MAX(close) as close").
+		Where("symbol IN ?", symbols).
+		Group("symbol").
+		Scan(&results).Error; err != nil {
 		return nil, fmt.Errorf("failed to fetch latest prices: %w", err)
 	}
 
 	priceMap := make(map[string]float64)
-	for _, price := range prices {
-		priceMap[price.Symbol] = price.Close
+	for _, result := range results {
+		priceMap[result.Symbol] = result.Close
 	}
 	return priceMap, nil
 }

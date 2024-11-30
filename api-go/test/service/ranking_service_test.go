@@ -13,7 +13,6 @@ import (
 
 	"api-go/src/repository"
 	"api-go/src/service"
-	"api-go/src/service/ms_gateway/client"
 	"api-go/test/repository/repository_test_helper"
 
 	"github.com/joho/godotenv"
@@ -21,69 +20,44 @@ import (
 )
 
 func TestGetRankingDataIntegration(t *testing.T) {
-	// 1. gRPCサーバーを起動 (別プロセスで)
-	fmt.Println("Step 1: Starting gRPC server...")
-
-	err := godotenv.Load("../../.env") //テストではパスを指定しないとうまく読み取らない
+	// 環境変数の読み込み
+	err := godotenv.Load("../../.env")
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
 
-	// 2. クライアントをセットアップ
-	fmt.Println("Step 2: Setting up clients...")
-	ctx, cancel := context.WithTimeout(context.Background(), 1800*time.Second) // タイムアウトを設定
+	// コンテキストの設定
+	ctx, cancel := context.WithTimeout(context.Background(), 1800*time.Second)
 	defer cancel()
 
-	msClients := make(map[string]interface{})
-	fmt.Println("Clients setup...")
-
-	getStockInfoJqClient, err := client.NewGetStockInfoJqClient(ctx)
-	if err != nil {
-		log.Fatalf("Failed to create get stock info jq client: %v", err)
-	}
-	msClients["get_stock_info_jq"] = getStockInfoJqClient
-
-	getStocksDatalistWithDatesClient, err := client.NewGetStocksDatalistWithDatesClient(ctx)
-	if err != nil {
-		log.Fatalf("Failed to create get stocks datalist with dates client: %v", err)
-	}
-	msClients["get_stocks_datalist_with_dates"] = getStocksDatalistWithDatesClient
-
-	// 3. データベースのセットアップ
-	fmt.Println("Step 3: Setting up the database...")
+	// データベースのセットアップ
 	db := repository_test_helper.SetupTestDB()
 	if db == nil {
 		log.Fatalf("Failed to set up the database")
 	}
-	// repository_test_helper.InitializeUpdateStatusTable(db) // 追加: 初期データの投入
-	repository_test_helper.PrintUpdateStatusTable(db) // 追加: デバッグ用のテーブル内容表示
 
-	// 4. サービスの初期化
-	fmt.Println("Step 4: Initializing RankingService...")
+	// リポジトリの初期化
 	udsRepo := repository.NewUpdateStatusRepository(db)
 	jsiRepo := repository.NewJpStockInfoRepository(db)
 	jdpRepo := repository.NewJpDailyPriceRepository(db)
 	j5mrRepo := repository.NewJp5dMvaRankingRepository(db)
 
-	rankingService := service.NewRankingService(udsRepo, jsiRepo, jdpRepo, j5mrRepo, msClients)
+	// サービスの初期化
+	rankingService := service.NewRankingService(udsRepo, jsiRepo, jdpRepo, j5mrRepo, nil)
 
-	// 5. サービスの呼び出し
-	fmt.Println("Step 5: Calling GetRankingData service...")
+	// サービスの呼び出し
 	res, err := rankingService.GetRankingData(ctx)
 	if err != nil {
 		fmt.Printf("Error calling GetRankingData service: %v\n", err)
 	}
 	fmt.Println("Service call completed.")
 
-	// 6. アサーション
-	fmt.Println("Step 6: Performing assertions...")
+	// アサーション
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 	assert.NotEmpty(t, *res) // レスポンスにデータが含まれていることを検証
-	fmt.Println("Assertions completed.")
 
-	// 7. 結果をファイルに保存
-	fmt.Println("Step 7: Saving results to CSV file...")
+	// CSV出力
 	outputDir := os.Getenv("TEST_SERVICE_OUTPUT_DIR")
 	if outputDir == "" {
 		outputDir = "api-go/test/test_outputs" // デフォルトの出力ディレクトリ

@@ -83,6 +83,17 @@ func main() {
 			log.Fatalf("Failed to update daily prices: %v", err)
 		}
 	}
+
+	// lookbackDays[0] より5日前の日付を計算
+	beforeDate, err := time.Parse("2006-01-02", lookbackDays[0])
+	if err != nil {
+		log.Fatalf("Failed to parse lookbackDays[0]: %v", err)
+	}
+	beforeDate = beforeDate.AddDate(0, 0, -5)
+
+	// lookbackDays[0]より5日以上前のデータを消去する
+	jdpRepo.DeleteBeforeSpecifiedDate(beforeDate.Format("2006-01-02"))
+
 	// 関数全体の処理終了時刻
 	endTimeOverall := time.Now()
 	fmt.Printf("株価取得バッチの処理時間: %s\n", endTimeOverall.Sub(startTimeOverall))
@@ -105,5 +116,5 @@ func main() {
 // UpdateDailyPrices_3 全体の処理時間: 2m23.8292159s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / startDate := "2023-11-01"
 // 株価取得バッチの処理時間: 12m4.9949104s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / startDate := "2023-11-01"
 
-// UpdateDailyPrices_3 全体の処理時間: 2m23.8292159s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番
-// 株価取得バッチの処理時間: 12m4.9949104s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番
+// UpdateDailyPrices_3 全体の処理時間: 2m26.9501114s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番
+// 株価取得バッチの処理時間: 12m27.3960013s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番
