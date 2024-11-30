@@ -29,3 +29,4 @@ func main() {
 // go run ./cmd/batch_update_ranking/batch_update_ranking.go
 
 // raking作成のバッチの処理時間: 3m49.4033378s : Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz  3.41 GHz / 本番
+// raking作成のバッチの処理時間: 3m48.1005583s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / 本番
