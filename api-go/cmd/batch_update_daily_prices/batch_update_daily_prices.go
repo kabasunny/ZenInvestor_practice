@@ -127,3 +127,6 @@ func main() {
 
 // UpdateDailyPrices_3 全体の処理時間: 3m17.9234813s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / batchSize := 100, dataSize := 500, delay := 15 * time.Second
 // 株価取得バッチの処理時間: 16m35.0355377s : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz / batchSize := 100, dataSize := 400, delay := 10 * time.Second
+
+// UpdateDailyPrices_3 全体の処理時間: 3m22.0738907s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / batchSize := 100, dataSize := 500, delay := 15 * time.Second
+// 株価取得バッチの処理時間: 17m8.9543363s : 12th Gen Intel(R) Core(TM) i7-1255U   1.70 GHz / batchSize := 100, dataSize := 500, delay := 15 * time.Second
