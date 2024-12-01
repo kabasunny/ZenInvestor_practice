@@ -1,3 +1,5 @@
+// api-go\src\controller\stock_controller_impl.go
+
 package controller
 
 import (
@@ -5,18 +7,23 @@ import (
 	"api-go/src/service"
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 // stockControllerImpl は StockController インターフェースの実装
 type stockControllerImpl struct {
-	stockService service.StockService
+	stockService   service.StockService
+	rankingService service.RankingService
 }
 
 // NewStockControllerImpl は StockController の新しいインスタンスを作成
-func NewStockControllerImpl(stockService service.StockService) StockController {
-	return &stockControllerImpl{stockService: stockService}
+func NewStockControllerImpl(stockService service.StockService, rankingService service.RankingService) StockController {
+	return &stockControllerImpl{
+		stockService:   stockService,
+		rankingService: rankingService,
+	}
 }
 
 // 株価データを取得する
@@ -44,8 +51,8 @@ func (c *stockControllerImpl) GetStockChart(ctx *gin.Context) {
 
 	// GET
 	// if err := ctx.ShouldBindQuery(&req); err != nil { // URLクエリパラメータをバインド
-	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
+	//  ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//  return
 	// }
 	// package routerのSetupRouterメソッド内でGETメソッドに変更して、以下でテスト可能
 	// http://localhost:8086/getStockData?ticker=AAPL&period=1y&indicators[0][type]=SMA&indicators[0][params][window_size]=20
@@ -63,6 +70,50 @@ func (c *stockControllerImpl) GetStockChart(ctx *gin.Context) {
 	}
 
 	res, err := c.stockService.GetStockChart(ctx, req.Ticker, req.Period, req.Indicators, req.IncludeVolume) // DTOを渡す
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, res)
+}
+
+// GetTop100Ranking はトップ100のランキングデータを取得する
+func (c *stockControllerImpl) GetInitialRanking(ctx *gin.Context) {
+	// context.Context を取得
+	// reqCtx := ctx.Request.Context()
+	rankingData, err := c.rankingService.GetTop100RankingData()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, rankingData)
+}
+
+// ランキングデータ取得
+func (c *stockControllerImpl) GetRankingDataByRange(ctx *gin.Context) {
+	// クエリパラメータの取得とバインド
+	startRankStr := ctx.Query("startRank")
+	endRankStr := ctx.Query("endRank")
+
+	startRank, err := strconv.Atoi(startRankStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid startRank parameter"})
+		return
+	}
+
+	endRank, err := strconv.Atoi(endRankStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid endRank parameter"})
+		return
+	}
+
+	// context.Context を取得
+	// reqCtx := ctx.Request.Context()
+
+	// サービスの呼び出し
+	res, err := c.rankingService.GetRankingDataByRange(startRank, endRank)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

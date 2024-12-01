@@ -9,4 +9,10 @@ type StockController interface {
 
 	// 株価チャート取得
 	GetStockChart(ctx *gin.Context)
+
+	// ランキングデータ取得
+	GetInitialRanking(ctx *gin.Context)
+
+	// 期間を指定したランキングデータ取得
+	GetRankingDataByRange(ctx *gin.Context)
 }

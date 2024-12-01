@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css'; // スタイルのインポート
 import { Autoplay } from 'swiper/modules'; // モジュールのインポート
@@ -9,6 +9,26 @@ interface ImageSliderProps {
 }
 
 const ImageSlider: React.FC<ImageSliderProps> = ({ images, direction }) => {
+  const [imagesLoaded, setImagesLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    let loadedCount = 0;
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        loadedCount += 1;
+        if (loadedCount === images.length) {
+          setImagesLoaded(true);
+        }
+      };
+    });
+  }, [images]);
+
+  if (!imagesLoaded) {
+    return null; // 画像が読み込まれるまで何も表示しない
+  }
+
   return (
     <Swiper
       modules={[Autoplay]}
@@ -34,31 +54,3 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images, direction }) => {
 };
 
 export default ImageSlider;
-
-
-// import React from 'react';
-
-// interface ImageSliderProps {
-//   images: string[];
-//   direction: 'left-to-right' | 'right-to-left';
-// }
-
-// const ImageSlider: React.FC<ImageSliderProps> = ({ images, direction }) => {
-//   if (!images || images.length === 0) {
-//     return null; // 画像がない場合は何も表示しない
-//   }
-
-//   const sliderClass = direction === 'left-to-right' ? 'animate-slide-left' : 'animate-slide-right';
-
-//   return (
-//     <div className="overflow-hidden">
-//       <div className={`flex ${sliderClass}`}>
-//         {images.map((image, index) => (
-//           <img key={index} src={image} alt={`Image ${index}`} className="w-auto h-60" />
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ImageSlider;

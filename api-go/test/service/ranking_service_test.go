@@ -2,7 +2,6 @@
 package service_test
 
 import (
-	"context"
 	"encoding/csv"
 	"fmt"
 	"log"
@@ -27,8 +26,8 @@ func TestGetRankingDataIntegration(t *testing.T) {
 	}
 
 	// コンテキストの設定
-	ctx, cancel := context.WithTimeout(context.Background(), 1800*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), 1800*time.Second)
+	// defer cancel()
 
 	// データベースのセットアップ
 	db := repository_test_helper.SetupTestDB()
@@ -46,7 +45,7 @@ func TestGetRankingDataIntegration(t *testing.T) {
 	rankingService := service.NewRankingService(udsRepo, jsiRepo, jdpRepo, j5mrRepo, nil)
 
 	// サービスの呼び出し
-	res, err := rankingService.GetRankingData(ctx)
+	res, err := rankingService.GetTop100RankingData()
 	if err != nil {
 		fmt.Printf("Error calling GetRankingData service: %v\n", err)
 	}
