@@ -1,4 +1,4 @@
-// pages/Dashboard.tsx
+// pages/ChartView.tsx
 import React, { useState, useEffect } from "react";
 import ChartForm from "../components/ChartForm";
 import StockDataDisplay from "../components/StockDataDisplay";
@@ -8,7 +8,7 @@ import { TrendingUp } from "lucide-react";
 import useStockData from "../hooks/useStockData";
 import useStockChart from "../hooks/useStockChart";
 
-const Dashboard: React.FC = () => {
+const ChartView: React.FC = () => {
   const [ticker, setTicker] = useState<string>("6752.T");
   const [period, setPeriod] = useState<string>("1y");
   const [indicators, setIndicators] = useState<any[]>([
@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6 mb-32">
-      <h1 className="text-3xl font-bold">ダッシュボード</h1>
+      <h1 className="text-3xl font-bold">ダッシュボード＆チャート</h1>
       <div className="grid grid-cols-1 gap-4">
         <div className="bg-teal-50 p-6 rounded-lg shadow-lg">
           <h2 className="text-xl font-semibold mb-4 flex items-center">
@@ -104,4 +104,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default ChartView;

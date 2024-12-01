@@ -1,3 +1,5 @@
+// api-go\main.go
+
 package main
 
 import (
@@ -7,15 +9,14 @@ import (
 	"log" // エラーログ出力用
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 func main() {
 	ctx := context.Background() // バックグラウンドコンテキストを作成
 	infra.Initialize()          // 初期化処理
 
-	// db := infra.SetupDB()               // データベース接続の初期化
-	var db *gorm.DB = nil
+	db := infra.SetupDB() // データベース接続の初期化
+	// var db *gorm.DB = nil
 
 	msClients, err := infra.SetupMsClients(ctx) // マイクロサービス接続の初期化、エラー処理を追加
 	if err != nil {

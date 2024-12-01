@@ -1,9 +1,9 @@
-// frontend-react/src/App.tsx
+// frontend-react\src\App.tsx
 import React, { useState, useEffect, useRef } from 'react';
 // import axios from 'axios';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Dashboard from './pages/ChartView';
+import ChartView from './pages/ChartView';
 import MarketInsights from './pages/MarketInsights';
 import Portfolio from './pages/Portfolio';
 import Education from './pages/Education';
@@ -12,7 +12,9 @@ import { getRandomImage, getMotoSlideImages, getHumanSlideImages, getMoneySlideI
 import ImageSlider from './components/ImageSlider';
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // セッションストレージからログイン状態を取得
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(sessionStorage.getItem('isLoggedIn') === 'true');
+  
   // ログイン前のバックイメージ
   const [backgroundImage, setBackgroundImage] = useState<string>('');
 
@@ -23,7 +25,6 @@ const App: React.FC = () => {
   const [carSlideImages, setCarSlideImages] = useState<string[]>([]);
   const [SnowboradSlideImages, setSnowboradSlideImages] = useState<string[]>([]);
   const [animeSlideImages, setAnimeSlideImages] = useState<string[]>([]);
-
 
   const dashboardRef = useRef<HTMLDivElement>(null);
   const marketInsightsRef = useRef<HTMLDivElement>(null);
@@ -54,6 +55,7 @@ const App: React.FC = () => {
 
   // API実装までダミーでスライド用画像データの取得
   useEffect(() => {
+    console.log('Fetching slider images');
     // Web APIの代わりにローカルの画像を使用
     setMotoSlideImages(getMotoSlideImages());
     setHumanSlideImages(getHumanSlideImages());
@@ -61,9 +63,7 @@ const App: React.FC = () => {
     setCarSlideImages(getCarSlideImages());
     setSnowboradSlideImages(getSnowboradSlideImages());
     setAnimeSlideImages(getAnimeSlideImages());
-  }, []);
-
-
+  }, [isLoggedIn]);  // isLoggedInの依存関係を追加
 
   const scrollToRef = (ref: React.RefObject<HTMLDivElement>) => {
     const offset = 80;
@@ -76,10 +76,12 @@ const App: React.FC = () => {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
+    sessionStorage.setItem('isLoggedIn', 'true'); // セッションストレージにログイン状態を保存
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    sessionStorage.setItem('isLoggedIn', 'false'); // セッションストレージからログイン状態を削除
   };
 
   return (
@@ -87,7 +89,7 @@ const App: React.FC = () => {
       {isLoggedIn ? (
         <>
           <Header
-            onDashboardClick={() => scrollToRef(dashboardRef)}
+            onChartViewClick={() => scrollToRef(dashboardRef)}
             onMarketInsightsClick={() => scrollToRef(marketInsightsRef)}
             onPortfolioClick={() => scrollToRef(portfolioRef)}
             onEducationClick={() => scrollToRef(educationRef)}
@@ -104,7 +106,7 @@ const App: React.FC = () => {
             <ImageSlider images={humanSlideImages} direction="right-to-left" /><br />
 
             <div ref={dashboardRef}>
-              <Dashboard />
+              <ChartView />
             </div>
 
             {/* 右から左へのスライダーを配置 */}
@@ -132,7 +134,7 @@ const App: React.FC = () => {
 
           </main>
 
-          {/* 左から右へのスライダーを配置 */}
+          {/* 右から左へのスライダーを配置 */}
           <ImageSlider images={moneySlideImages} direction="right-to-left" />
 
           <Footer />

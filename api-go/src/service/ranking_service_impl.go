@@ -6,7 +6,6 @@ import (
 	"api-go/src/dto"
 	"api-go/src/model"
 	"api-go/src/repository"
-	"context"
 	"fmt"
 	"time"
 )
@@ -38,7 +37,7 @@ func NewRankingService(
 }
 
 // GetRankingData はランキングデータを取得し、DTO にマッピング
-func (s *RankingServiceImpl) GetRankingData(ctx context.Context) (*[]dto.RankingServiceResponse, error) {
+func (s *RankingServiceImpl) GetFullRankingData() (*[]dto.RankingServiceResponse, error) {
 	fmt.Println("In GetRankingData")
 	// update_statusテーブルの構造体を取得
 	statuses, err := s.udsRepo.GetAllUpdateStatuses()
@@ -62,7 +61,7 @@ func (s *RankingServiceImpl) GetRankingData(ctx context.Context) (*[]dto.Ranking
 		return s.fetchRankingData()
 	} else {
 		fmt.Println("データが最新ではないため、バッチ処理が必要")
-		return nil, fmt.Errorf("data is not up-to-date. Please run batch processes.")
+		return nil, fmt.Errorf("data is not up-to-date. Please run batch processes")
 	}
 }
 
@@ -139,4 +138,36 @@ func (s *RankingServiceImpl) fetchRankingData() (*[]dto.RankingServiceResponse, 
 	}
 
 	return &response, nil
+}
+
+// GetTop100RankingData は上位100銘柄のランキングデータを取得
+func (s *RankingServiceImpl) GetTop100RankingData() (*[]dto.RankingServiceResponse, error) {
+	allRankingData, err := s.GetFullRankingData()
+	if err != nil {
+		return nil, err
+	}
+
+	// 上位100銘柄を抽出
+	if len(*allRankingData) > 100 {
+		*allRankingData = (*allRankingData)[:100]
+	}
+
+	return allRankingData, nil
+}
+
+// GetRankingDataByRange は指定した順位の範囲でランキングデータを取得
+func (s *RankingServiceImpl) GetRankingDataByRange(startRank int, endRank int) (*[]dto.RankingServiceResponse, error) {
+	allRankingData, err := s.GetFullRankingData()
+	if err != nil {
+		return nil, err
+	}
+
+	// 指定された範囲のランキングデータを抽出
+	if startRank < 1 || endRank > len(*allRankingData) || startRank > endRank {
+		return nil, fmt.Errorf("invalid rank range specified")
+	}
+
+	rankingDataByRange := (*allRankingData)[startRank-1 : endRank]
+
+	return &rankingDataByRange, nil
 }

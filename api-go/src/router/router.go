@@ -1,8 +1,10 @@
+// api-go\src\router\router.go
 package router
 
 import (
 	"api-go/src/controller"
 	"api-go/src/infra"
+	"api-go/src/repository"
 	"api-go/src/service"
 	"os"
 	"strings"
@@ -27,28 +29,36 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 		AllowCredentials: true,                                                // クッキーなどの認証情報を許可するかどうかを設定
 	}))
 
-	// ストックデータ取得用
+	// リポジトリの初期化
+	udsRepo := repository.NewUpdateStatusRepository(db)
+	jsiRepo := repository.NewJpStockInfoRepository(db)
+	jdpRepo := repository.NewJpDailyPriceRepository(db)
+	j5mrRepo := repository.NewJp5dMvaRankingRepository(db)
+
+	// サービスの初期化
+	rankingService := service.NewRankingService(udsRepo, jsiRepo, jdpRepo, j5mrRepo, msClients.MSClients)
 	stockService := service.NewStockServiceImpl(msClients.MSClients)
-	stockController := controller.NewStockControllerImpl(stockService)
+
+	// コントローラの初期化
+	stockController := controller.NewStockControllerImpl(stockService, rankingService)
+
 	// 株価データ
-	router.GET("/getStockData", stockController.GetStockData)
+	// router.GET("/getStockData", stockController.GetStockData)
 
 	// 株価チャート
 	router.POST("/getStockChart", stockController.GetStockChart)
 	// http://localhost:8086/getStockChart
 	// {
-	// 	"ticker": "AAPL",
-	// 	"period": "1y",
-	// 	"indicators": [
-	// 	  { "type": "SMA", "params": { "window_size": "20" } }
-	// 	]
-	//   }
+	//  "ticker": "AAPL",
+	//  "period": "1y",
+	//  "indicators": [
+	//    { "type": "SMA", "params": { "window_size": "20" } }
+	//  ]
+	// }
 
-	// // ランキングデータ取得用
-	// stockRankingRepository := repository.NewStockRankingRepository(db)
-	// stockRankingService := service.NewStockRankingService(stockRankingRepository)
-	// stockRankingController := controller.NewStockRankingController(stockRankingService)
-	// router.GET("/", stockRankingController.GetStockRankingData)
+	// ランキングデータ取得用エンドポイント
+	router.GET("/RankingByRange", stockController.GetRankingDataByRange) // http://localhost:8086/RankingByRange?startRank=1&endRank=10
+	router.GET("/InitialRanking", stockController.GetInitialRanking)     //http://localhost:8086/InitialRanking
 
 	// // ユーザーログイン用　後で
 	// loginRepository := repository.NewLoginRepository(db)
