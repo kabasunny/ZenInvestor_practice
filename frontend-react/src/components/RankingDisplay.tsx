@@ -2,30 +2,22 @@
 
 import React, { useState } from "react";
 import useRankingData from "../hooks/useRankingData";
-import useStockChart from "../hooks/useStockChart"; // 追加
 import Modal from "./Modal";
 
 const RankingDisplay: React.FC = () => {
   const { data, loading, error } = useRankingData();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
+  const [selectedStock, setSelectedStock] = useState<string | null>(null);
 
   const openModal = (ticker: string) => {
-    setSelectedTicker(ticker + ".T");
+    setSelectedStock(ticker);
     setModalOpen(true);
   };
 
   const closeModal = () => {
-    setSelectedTicker(null);
+    setSelectedStock(null);
     setModalOpen(false);
   };
-
-  // チャートデータの取得
-  const {
-    chartData,
-    loading: chartLoading,
-    error: chartError,
-  } = useStockChart(selectedTicker ?? "", "1m", [], false, false);
 
   if (loading) return <p>読み込み中...</p>;
   if (error) return <p>{error}</p>;
@@ -70,7 +62,7 @@ const RankingDisplay: React.FC = () => {
         </thead>
         <tbody>
           {data.map((item) => (
-            <tr key={`${item.ranking}-${item.ticker}`}>
+            <tr key={item.ranking}>
               <td className="border px-4 py-2 text-center">{item.ranking}</td>
               <td
                 className="border px-4 py-2 text-center cursor-pointer text-blue-500 underline"
@@ -98,16 +90,8 @@ const RankingDisplay: React.FC = () => {
       {/* モーダル表示 */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <h2 className="text-2xl mb-4">チャート</h2>
-        {chartLoading ? (
-          <p>チャートを読み込み中...</p>
-        ) : chartError ? (
-          <p>{chartError}</p>
-        ) : chartData ? (
-          <img src={`data:image/png;base64,${chartData}`} alt="チャート" />
-        ) : (
-          <p>ここにチャートを表示</p>
-        )}
-        <p>選択された銘柄コード: {selectedTicker}</p>
+        <p>ここにチャートを表示</p>
+        <p>選択された銘柄コード: {selectedStock}</p>
       </Modal>
     </div>
   );

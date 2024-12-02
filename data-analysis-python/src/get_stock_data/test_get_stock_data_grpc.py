@@ -6,8 +6,8 @@ from get_stock_data_grpc import (
     GetStockDataService,
     serve,
 )  # サービスとサーバー起動関数をインポート
-import get_stock_data_pb2 # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
-import get_stock_data_pb2_grpc # Protocol Buffersコンパイラによって生成されるgRPCサービスに関連するコードを含むPythonモジュール
+import get_stock_data_pb2  # Protocol Buffersコンパイラによって生成されるメッセージの定義を含むPythonモジュール
+import get_stock_data_pb2_grpc  # Protocol Buffersコンパイラによって生成されるgRPCサービスに関連するコードを含むPythonモジュール
 from get_stock_data_service import get_stock_data  # 株価データ取得関数をインポート
 
 
@@ -19,7 +19,7 @@ class TestGetStockDataGRPC(unittest.TestCase):  # テストクラスの定義
         get_stock_data_pb2_grpc.add_GetStockDataServiceServicer_to_server(
             GetStockDataService(), cls.server
         )
-        cls.server.add_insecure_port("[::]:51051") # test時は常時ポート+1000
+        cls.server.add_insecure_port("[::]:51051")  # test時は常時ポート+1000
         cls.server.start()
 
     @classmethod
@@ -40,7 +40,7 @@ class TestGetStockDataGRPC(unittest.TestCase):  # テストクラスの定義
                 # 期間の引数のリスト
                 # "1d": 1日, "5d": 5日, "1mo": 1ヶ月, "3mo": 3ヶ月, "6mo": 6ヶ月, "1y": 1年, "2y": 2年, "5y": 5年. "10y": 10年, "ytd": 年初から現在まで, "max": 最大期間（可能な限り最長）
             )  # リクエストを送信
-            print(f"Stock Name: {response.stock_name}") # 銘柄名を表示
+            print(f"Stock Name: {response.stock_name}")  # 銘柄名を表示
             print(
                 "gRPCレスポンスは Protocol Buffers の形式:", response
             )  # レスポンスをターミナルに表示
