@@ -36,12 +36,11 @@ func NewRankingService(
 	}
 }
 
-// GetRankingData はランキングデータを取得し、DTO にマッピング
-func (s *RankingServiceImpl) GetFullRankingData() (*[]dto.RankingServiceResponse, error) {
-	fmt.Println("In GetRankingData")
+// GetRankingDataByRange は指定した順位の範囲でランキングデータを取得
+func (s *RankingServiceImpl) GetRankingDataByRange(startRank int, endRank int) (*[]dto.RankingServiceResponse, error) {
+	fmt.Println("In GetRankingDataByRange")
 	// update_statusテーブルの構造体を取得
 	statuses, err := s.udsRepo.GetAllUpdateStatuses()
-	fmt.Println(statuses)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get update statuses: %w", err)
 	}
@@ -49,52 +48,31 @@ func (s *RankingServiceImpl) GetFullRankingData() (*[]dto.RankingServiceResponse
 	// 今日の日付を取得
 	today := time.Now()
 	today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
-	fmt.Println("Got Today : today =", today)
 
 	// 各テーブルの更新日を格納する変数を初期化
 	jp5dMvaRankingDate, _, _ := getLatestUpdateDates(statuses)
-	fmt.Println("jp5dMvaRankingDate =", jp5dMvaRankingDate)
 
 	// 状態に応じたデータの取得
-	if jp5dMvaRankingDate.Equal(today) {
-		fmt.Println("全てのデータがそろっているため、ランキング取得")
-		return s.fetchRankingData()
-	} else {
-		fmt.Println("データが最新ではないため、バッチ処理が必要")
+	if !jp5dMvaRankingDate.Equal(today) {
 		return nil, fmt.Errorf("data is not up-to-date. Please run batch processes")
 	}
-}
 
-// getLatestUpdateDates は各テーブルの更新日を取得
-func getLatestUpdateDates(statuses []model.UpdateStatus) (time.Time, time.Time, time.Time) {
-	fmt.Println("In getLatestUpdateDates")
-
-	var jp5dMvaRankingDate, jpDailyPriceDate, jpStocksInfoDate time.Time
-	for _, status := range statuses {
-		switch status.TbName {
-		case "jp_5d_mva_ranking":
-			jp5dMvaRankingDate = status.Date
-		case "jp_daily_price":
-			jpDailyPriceDate = status.Date
-		case "jp_stocks_info":
-			jpStocksInfoDate = status.Date
-		}
-	}
-	fmt.Println("Out getLatestUpdateDates")
-	return jp5dMvaRankingDate, jpDailyPriceDate, jpStocksInfoDate
-}
-
-// fetchRankingData はランキングデータを取得し、DTO にマッピングして戻す
-func (s *RankingServiceImpl) fetchRankingData() (*[]dto.RankingServiceResponse, error) {
 	// ランキングデータを取得
 	rankingData, err := s.j5mrRepo.Get5dMvaRankingData()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get ranking data: %w", err)
 	}
 
+	// 指定された範囲のランキングデータを抽出
+	if startRank < 1 || endRank > len(*rankingData) || startRank > endRank {
+		return nil, fmt.Errorf("invalid rank range specified")
+	}
+
+	rankingDataByRange := (*rankingData)[startRank-1 : endRank]
+
 	// ランキングデータからティッカーのリストを作成
 	symbolsSet := make(map[string]struct{})
-	for _, data := range *rankingData {
+	for _, data := range rankingDataByRange {
 		symbolsSet[data.Symbol] = struct{}{}
 	}
 	var symbols []string
@@ -115,8 +93,8 @@ func (s *RankingServiceImpl) fetchRankingData() (*[]dto.RankingServiceResponse, 
 	}
 
 	// DTO に変換
-	response := make([]dto.RankingServiceResponse, 0, len(*rankingData))
-	for _, data := range *rankingData {
+	response := make([]dto.RankingServiceResponse, 0, len(rankingDataByRange))
+	for _, data := range rankingDataByRange {
 		stockInfo, ok := stockInfoMap[data.Symbol]
 		if !ok {
 			return nil, fmt.Errorf("stock info not found for symbol %s", data.Symbol)
@@ -140,34 +118,26 @@ func (s *RankingServiceImpl) fetchRankingData() (*[]dto.RankingServiceResponse, 
 	return &response, nil
 }
 
-// GetTop100RankingData は上位100銘柄のランキングデータを取得
+// GetTop100RankingData は上位100銘柄のランキングデータを取得 UIから初回取得用
 func (s *RankingServiceImpl) GetTop100RankingData() (*[]dto.RankingServiceResponse, error) {
-	allRankingData, err := s.GetFullRankingData()
-	if err != nil {
-		return nil, err
-	}
-
-	// 上位100銘柄を抽出
-	if len(*allRankingData) > 100 {
-		*allRankingData = (*allRankingData)[:100]
-	}
-
-	return allRankingData, nil
+	return s.GetRankingDataByRange(1, 100)
 }
 
-// GetRankingDataByRange は指定した順位の範囲でランキングデータを取得
-func (s *RankingServiceImpl) GetRankingDataByRange(startRank int, endRank int) (*[]dto.RankingServiceResponse, error) {
-	allRankingData, err := s.GetFullRankingData()
-	if err != nil {
-		return nil, err
+// getLatestUpdateDates は各テーブルの更新日を取得
+func getLatestUpdateDates(statuses []model.UpdateStatus) (time.Time, time.Time, time.Time) {
+	fmt.Println("In getLatestUpdateDates")
+
+	var jp5dMvaRankingDate, jpDailyPriceDate, jpStocksInfoDate time.Time
+	for _, status := range statuses {
+		switch status.TbName {
+		case "jp_5d_mva_ranking":
+			jp5dMvaRankingDate = status.Date
+		case "jp_daily_price":
+			jpDailyPriceDate = status.Date
+		case "jp_stocks_info":
+			jpStocksInfoDate = status.Date
+		}
 	}
-
-	// 指定された範囲のランキングデータを抽出
-	if startRank < 1 || endRank > len(*allRankingData) || startRank > endRank {
-		return nil, fmt.Errorf("invalid rank range specified")
-	}
-
-	rankingDataByRange := (*allRankingData)[startRank-1 : endRank]
-
-	return &rankingDataByRange, nil
+	fmt.Println("Out getLatestUpdateDates")
+	return jp5dMvaRankingDate, jpDailyPriceDate, jpStocksInfoDate
 }

@@ -45,7 +45,7 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 
 	// ミドルウェアの適用
 	// router.Use(middleware.AuthMiddleware())          // 認証ミドルウェア まだトークン生成を実装してない
-	router.Use(middleware.RateLimitMiddleware(1, 5)) // レートリミットミドルウェア
+	router.Use(middleware.RateLimitMiddleware(1, 10)) // レートリミットミドルウェア
 
 	// 株価データ
 	router.GET("/getStockData", stockController.GetStockData)

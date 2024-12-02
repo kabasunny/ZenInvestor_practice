@@ -2,20 +2,29 @@
 
 import React, { useState } from "react";
 import useRankingData from "../hooks/useRankingData";
+import ChartModalContent from "./ChartModalContent";
 import Modal from "./Modal";
 
 const RankingDisplay: React.FC = () => {
   const { data, loading, error } = useRankingData();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedRank, setSelectedRank] = useState<number | null>(null);
   const [selectedStock, setSelectedStock] = useState<string | null>(null);
+  const [selectedStockName, setSelectedStockName] = useState<string | null>(
+    null
+  );
 
-  const openModal = (ticker: string) => {
+  const openModal = (rank: number, ticker: string, name: string) => {
+    setSelectedRank(rank);
     setSelectedStock(ticker);
+    setSelectedStockName(name);
     setModalOpen(true);
   };
 
   const closeModal = () => {
+    setSelectedRank(null);
     setSelectedStock(null);
+    setSelectedStockName(null);
     setModalOpen(false);
   };
 
@@ -66,7 +75,7 @@ const RankingDisplay: React.FC = () => {
               <td className="border px-4 py-2 text-center">{item.ranking}</td>
               <td
                 className="border px-4 py-2 text-center cursor-pointer text-blue-500 underline"
-                onClick={() => openModal(item.ticker)}
+                onClick={() => openModal(item.ranking, item.ticker, item.name)}
               >
                 {item.ticker ?? "ティッカーなし"}
               </td>
@@ -87,11 +96,13 @@ const RankingDisplay: React.FC = () => {
         </tbody>
       </table>
 
-      {/* モーダル表示 */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <h2 className="text-2xl mb-4">チャート</h2>
-        <p>ここにチャートを表示</p>
-        <p>選択された銘柄コード: {selectedStock}</p>
+        <h2 className="text-2xl mb-4">(^_^)</h2>
+        <ChartModalContent
+          rank={selectedRank}
+          ticker={selectedStock}
+          stockName={selectedStockName}
+        />
       </Modal>
     </div>
   );
