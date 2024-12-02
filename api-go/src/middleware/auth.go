@@ -1,4 +1,5 @@
-package middlewares
+// api-go\src\middleware\auth.go
+package middleware
 
 import (
 	utils "api-go/src/util"

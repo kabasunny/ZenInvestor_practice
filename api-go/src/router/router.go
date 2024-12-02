@@ -4,6 +4,7 @@ package router
 import (
 	"api-go/src/controller"
 	"api-go/src/infra"
+	"api-go/src/middleware"
 	"api-go/src/repository"
 	"api-go/src/service"
 	"os"
@@ -42,8 +43,12 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 	// コントローラの初期化
 	stockController := controller.NewStockControllerImpl(stockService, rankingService)
 
+	// ミドルウェアの適用
+	router.Use(middleware.AuthMiddleware())          // 認証ミドルウェア
+	router.Use(middleware.RateLimitMiddleware(1, 5)) // レートリミットミドルウェア
+
 	// 株価データ
-	// router.GET("/getStockData", stockController.GetStockData)
+	router.GET("/getStockData", stockController.GetStockData)
 
 	// 株価チャート
 	router.POST("/getStockChart", stockController.GetStockChart)
@@ -57,7 +62,7 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 	// }
 
 	// ランキングデータ取得用エンドポイント
-	router.GET("/RankingByRange", stockController.GetRankingDataByRange) // http://localhost:8086/RankingByRange?startRank=1&endRank=10
+	router.GET("/RankingByRange", stockController.GetRankingDataByRange) // http://localhost:8086/RankingByRange?startRank=1&endRank=100
 	router.GET("/InitialRanking", stockController.GetInitialRanking)     //http://localhost:8086/InitialRanking
 
 	// // ユーザーログイン用　後で
