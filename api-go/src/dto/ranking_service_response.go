@@ -6,7 +6,7 @@ type RankingServiceResponse struct {
 	Ranking     int     `json:"ranking"`
 	Ticker      string  `json:"ticker"`
 	Date        string  `json:"date"`
-	AvgTurnover float64 `json:"avg_volue"`
+	AvgTurnover float64 `json:"avg_turnover"` // ここを修正
 	Name        string  `json:"name"`
 	LatestClose float64 `json:"latest_close"`
 }
