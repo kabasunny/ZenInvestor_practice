@@ -56,16 +56,16 @@ const RankingDisplay: React.FC = () => {
               銘柄名
             </th>
             <th
-              className="border px-4 py-2 text-right"
+              className="border px-4 py-2 text-center"
               style={{ width: "20%" }}
             >
               売買代金(5日平均)
             </th>
             <th
-              className="border px-4 py-2 text-right"
+              className="border px-4 py-2 text-center"
               style={{ width: "20%" }}
             >
-              終値
+              終値(直近)
             </th>
           </tr>
         </thead>
@@ -97,7 +97,7 @@ const RankingDisplay: React.FC = () => {
       </table>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <h2 className="text-2xl mb-4">(^_^)</h2>
+        {/* <h2 className="text-2xl mb-4">(^_^)</h2> */}
         <ChartModalContent
           rank={selectedRank}
           ticker={selectedStock}

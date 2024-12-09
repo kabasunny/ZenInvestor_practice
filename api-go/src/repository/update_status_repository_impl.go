@@ -33,15 +33,6 @@ const (
 func (r *updateStatusRepositoryImpl) UpdateStatus(tbName string) error {
 	fmt.Println("In UpdateStatus")
 
-	// 現在のテーブルのフィールド一覧を取得して表示（デバッグ用）
-	var updateStatuses []model.UpdateStatus
-	if err := r.db.Find(&updateStatuses).Error; err != nil {
-		return fmt.Errorf("failed to fetch update statuses for debugging: %w", err)
-	}
-	for _, status := range updateStatuses {
-		fmt.Printf("Debug - Table: %s, Date: %s\n", status.TbName, status.Date)
-	}
-
 	// アップサート処理
 	updateStatus := model.UpdateStatus{
 		TbName: tbName,
@@ -56,6 +47,15 @@ func (r *updateStatusRepositoryImpl) UpdateStatus(tbName string) error {
 
 	if result.Error != nil {
 		return fmt.Errorf("failed to upsert update status for %s '%s': %w", FieldTableName, tbName, result.Error)
+	}
+
+	// 現在のテーブルのフィールド一覧を取得して表示（デバッグ用）
+	var updateStatuses []model.UpdateStatus
+	if err := r.db.Find(&updateStatuses).Error; err != nil {
+		return fmt.Errorf("failed to fetch update statuses for debugging: %w", err)
+	}
+	for _, status := range updateStatuses {
+		fmt.Printf("Debug - Table: %s, Date: %s\n", status.TbName, status.Date)
 	}
 
 	fmt.Println("Out UpdateStatus")

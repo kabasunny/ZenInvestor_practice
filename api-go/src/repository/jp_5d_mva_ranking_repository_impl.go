@@ -19,12 +19,21 @@ func NewJp5dMvaRankingRepository(db *gorm.DB) JP5dMvaRankingRepository {
 	return &jp5dMvaRankingRepositoryImpl{db: db}
 }
 
-// 売買代金5日平均ランキングデータを取得する
+// 売買代金5日平均ランキングデータを取得する（最新の日付のみ）
 func (r *jp5dMvaRankingRepositoryImpl) Get5dMvaRankingData() (*[]model.Jp5dMvaRanking, error) {
 	var rankings []model.Jp5dMvaRanking
-	if err := r.db.Find(&rankings).Error; err != nil {
+
+	// サブクエリで最新の日付を取得
+	var latestDate time.Time
+	if err := r.db.Model(&model.Jp5dMvaRanking{}).Select("MAX(date)").Scan(&latestDate).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch the latest date: %w", err)
+	}
+
+	// 最新の日付のデータを取得
+	if err := r.db.Where("date = ?", latestDate).Find(&rankings).Error; err != nil {
 		return nil, fmt.Errorf("failed to fetch 5d MVA ranking data: %w", err)
 	}
+
 	return &rankings, nil
 }
 
