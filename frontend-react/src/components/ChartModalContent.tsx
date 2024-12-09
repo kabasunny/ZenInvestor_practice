@@ -22,16 +22,16 @@ const ChartModalContent: React.FC<ChartModalContentProps> = ({
   if (error) return <p>{error}</p>;
 
   return (
-    <div style={{ width: "100%", height: "400px" }}>
+    <div style={{ width: "100%", height: "600px" }}>
       <h3 className="text-xl mb-2">
-        {rank} 位 <br />
-        {stockName}
+        ★直近5日の平均売買代金★
+        <br /> {rank} 位 : {stockName} ( 直近1ヶ月の価格推移 )
       </h3>
       {chartData ? (
         <img
           src={`data:image/png;base64,${chartData}`}
           alt="チャート"
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "100%", height: "90%" }}
         />
       ) : (
         <p>データがありません</p>
