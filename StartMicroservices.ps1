@@ -26,5 +26,17 @@ Start-Process "powershell" -ArgumentList "-NoExit", "python", $GetStockInfoJqSer
 Start-Process "powershell" -ArgumentList "-NoExit", "python", $GetStocksDatalistWithDatesServicePath
 Start-Process "powershell" -ArgumentList "-NoExit", "python", $GetTradingCalendarJqServicePath
 
+# 3秒待機
+Start-Sleep -Seconds 3
+
+# バックエンドAPIサーバーをターミナルウィンドウで起動
+Start-Process powershell -ArgumentList "Start-Process powershell -ArgumentList 'cd ./api-go; air; Pause'"
+
+# さらに3秒待機
+Start-Sleep -Seconds 3
+
+# フロントエンドサーバーをターミナルウィンドウで起動
+Start-Process powershell -ArgumentList "Start-Process powershell -ArgumentList 'cd ./frontend-react; npm start; Pause'"
+
 # サービスの起動メッセージを表示
 Write-Output "All services have been started in new terminal windows."
