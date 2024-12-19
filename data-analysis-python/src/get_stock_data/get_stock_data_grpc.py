@@ -50,10 +50,10 @@ def serve():
         GetStockDataService(), server
     )  # GetStockServiceクラスとサーバーのインスタンス
     server.add_insecure_port(
-        "[::]:50101"
+        "[::]:50004"
     )  # サーバーがポート50051ですべてのIPアドレス（IPv6を含む）でリスンしリクエストを受け付けるように設定
     server.start()  # サーバー起動
-    print("GetStock gRPCServer started, listening on port 50101")
+    print("GetStock gRPCServer started, listening on port 50004")
     server.wait_for_termination()  # サーバーが終了するまで待機
     print("Server terminated")
 

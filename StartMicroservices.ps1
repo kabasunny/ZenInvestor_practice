@@ -18,6 +18,9 @@ $GetStocksDatalistWithDatesServicePath = "./data-analysis-python/src/get_stocks_
 # JPX営業日データ(J-Quantsの制約あり)
 $GetTradingCalendarJqServicePath = "./data-analysis-python/src/get_trading_calendar_jq/get_trading_calendar_jq_grpc.py"
 
+# ロスカットシミュレータ追加が必要
+# バッチ処理は無くても良いな
+
 # 各サービスを新しいターミナルウィンドウで起動
 Start-Process "powershell" -ArgumentList "-NoExit", "python", $SimpleMovingAverageServicePath
 Start-Process "powershell" -ArgumentList "-NoExit", "python", $GenerateChartServicePath
