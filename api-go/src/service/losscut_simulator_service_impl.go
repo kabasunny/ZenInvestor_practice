@@ -1,4 +1,5 @@
 // api-go\src\service\losscut_simulator_service.go
+
 package service
 
 import (
@@ -26,12 +27,13 @@ func NewLosscutSimulatorServiceImpl(clients map[string]interface{}) LosscutSimul
 }
 
 // GetStockChartForLCSim はシミュレーションのために株価データを取得し、ロスカットとトレーリングストップを考慮してシミュレーションを行う
-func (s *LosscutSimulatorServiceImpl) GetStockChartForLCSim(ctx context.Context, ticker string, startDate time.Time, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (*generate_chart_lc_sim.GenerateChartLCResponse, float64, error) {
+func (s *LosscutSimulatorServiceImpl) GetStockChartForLCSim(ctx context.Context, ticker string, simulationDate time.Time, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (*generate_chart_lc_sim.GenerateChartLCResponse, float64, error) {
 	stockClient := s.clients["get_stock_data"].(client.GetStockDataClient)
 	generateChartClient := s.clients["generate_chart_lc_sim"].(client.GenerateChartLCClient)
 
-	// 期間には開始日から2年後の日付を指定
-	endDate := startDate.AddDate(2, 0, 0)
+	// 期間にはシミュレーション日の1年前から2年後の日付を指定
+	startDate := simulationDate.AddDate(-1, 0, 0)
+	endDate := simulationDate.AddDate(2, 0, 0)
 	period := fmt.Sprintf("%s_%s", startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
 
 	req := &getstockdata.GetStockDataRequest{
@@ -48,13 +50,13 @@ func (s *LosscutSimulatorServiceImpl) GetStockChartForLCSim(ctx context.Context,
 		return nil, 0, fmt.Errorf("failed to get stock data: %w", err)
 	}
 
-	purchaseDate, purchasePrice, finalDate, finalPrice, profitLoss, err := GetLossCutSimulatorResults(res.StockData, startDate, stopLossPercentage, trailingStopTrigger, trailingStopUpdate)
+	purchaseDate, purchasePrice, finalDate, finalPrice, profitLoss, err := GetLossCutSimulatorResults(res.StockData, simulationDate, stopLossPercentage, trailingStopTrigger, trailingStopUpdate)
 	if err != nil {
 		return nil, 0, fmt.Errorf("simulation failed: %w", err)
 	}
 
 	generateChartReq := &generate_chart_lc_sim.GenerateChartLCRequest{
-		Dates:         []string{startDate.Format("2006-01-02"), finalDate.Format("2006-01-02")},
+		Dates:         []string{simulationDate.Format("2006-01-02"), finalDate.Format("2006-01-02")},
 		ClosePrices:   []float64{purchasePrice, finalPrice},
 		PurchaseDate:  purchaseDate.Format("2006-01-02"),
 		PurchasePrice: purchasePrice,
