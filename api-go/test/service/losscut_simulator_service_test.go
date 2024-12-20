@@ -80,7 +80,7 @@ func TestGetStockChartForLCSim(t *testing.T) {
 
 	// テスト用のティッカーシンボルとシミュレーション日を設定
 	ticker := "AAPL"
-	simulationDate := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC) // データの範囲内にある日付
+	simulationDate := "2020-01-01" // データの範囲内にある日付
 	stopLossPercentage := 10.0
 	trailingStopTrigger := 5.0
 	trailingStopUpdate := 3.0
