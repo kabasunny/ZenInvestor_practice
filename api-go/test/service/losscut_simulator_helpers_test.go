@@ -4,7 +4,7 @@ package service_test
 
 import (
 	"api-go/src/service"
-	getstockdata "api-go/src/service/ms_gateway/get_stock_data"
+	getstockdatawithdates "api-go/src/service/ms_gateway/get_stock_data_with_dates" // 修正されたインポート
 	"fmt"
 	"testing"
 	"time"
@@ -14,7 +14,7 @@ import (
 
 func TestGetLossCutSimulatorResults(t *testing.T) {
 	// テストデータの作成
-	stockData := map[string]*getstockdata.StockData{
+	stockData := map[string]*getstockdatawithdates.StockDataWithDates{
 		"2023-01-01": {Open: 100, Close: 105, High: 106, Low: 99, Volume: 1000},
 		"2023-01-02": {Open: 105, Close: 104, High: 108, Low: 102, Volume: 1500},
 		"2023-01-03": {Open: 104, Close: 107, High: 110, Low: 103, Volume: 1200},
@@ -42,7 +42,7 @@ func TestGetLossCutSimulatorResults(t *testing.T) {
 
 func TestGetLossCutSimulatorResults_StartDateOutOfRange(t *testing.T) {
 	// テストデータの作成
-	stockData := map[string]*getstockdata.StockData{
+	stockData := map[string]*getstockdatawithdates.StockDataWithDates{
 		"2023-01-01": {Open: 100, Close: 105, High: 106, Low: 99, Volume: 1000},
 		"2023-01-02": {Open: 105, Close: 104, High: 108, Low: 102, Volume: 1500},
 		"2023-01-03": {Open: 104, Close: 107, High: 110, Low: 103, Volume: 1200},

@@ -2,7 +2,7 @@
 package service
 
 import (
-	getstockdata "api-go/src/service/ms_gateway/get_stock_data"
+	getstockdatawithdates "api-go/src/service/ms_gateway/get_stock_data_with_dates" // 修正されたインポート
 	"errors"
 	"fmt"
 	"math"
@@ -10,17 +10,32 @@ import (
 )
 
 // GetLossCutSimulatorResults はシミュレーションの結果を計算
-func GetLossCutSimulatorResults(stockData map[string]*getstockdata.StockData, startDate time.Time, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (time.Time, float64, time.Time, float64, float64, error) {
-	// データの最終日付を取得
-	var maxDate time.Time
+func GetLossCutSimulatorResults(stockData map[string]*getstockdatawithdates.StockDataWithDates, startDate time.Time, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (time.Time, float64, time.Time, float64, float64, error) {
+	// データの最終日付と最初の日付を取得
+	var maxDate, minDate time.Time
+
+	fmt.Println("len(stockData) : ", len(stockData))
 	for date := range stockData {
-		d, err := time.Parse("2006-01-02", date)
+		d, err := time.Parse("2006-01-02", date[:10]) // 日付部分のみを解析
 		if err != nil {
 			return time.Time{}, 0, time.Time{}, 0, 0, fmt.Errorf("failed to parse date: %w", err)
 		}
 		if d.After(maxDate) {
 			maxDate = d
 		}
+		if minDate.IsZero() || d.Before(minDate) {
+			minDate = d
+		}
+		fmt.Println("d : ", d)
+	}
+
+	fmt.Println("maxDate : ", maxDate)
+	fmt.Println("minDate : ", minDate)
+	fmt.Println("startDate : ", startDate)
+
+	// 開始日がデータの範囲外である場合の処理
+	if startDate.Before(minDate) || startDate.After(maxDate) {
+		return time.Time{}, 0, time.Time{}, 0, 0, errors.New("開始日がデータの範囲外です。無限ループを防ぐため、処理を中断")
 	}
 
 	// データが存在する最初の日付を取得
@@ -34,6 +49,8 @@ func GetLossCutSimulatorResults(stockData map[string]*getstockdata.StockData, st
 		startDate = startDate.AddDate(0, 0, 1) // データに存在する日付になるまで日付を進める
 	}
 
+	fmt.Println("Updated startDate : ", startDate)
+
 	// 購入初日の設定
 	purchaseDate := startDate
 	purchasePrice := stockData[purchaseDate.Format("2006-01-02")].Open              // 取引開始日の始値
@@ -46,7 +63,7 @@ func GetLossCutSimulatorResults(stockData map[string]*getstockdata.StockData, st
 
 	// 取引日ごとの確認
 	for dateStr, data := range stockData {
-		currentDate, err := time.Parse("2006-01-02", dateStr)
+		currentDate, err := time.Parse("2006-01-02", dateStr[:10]) // 日付部分のみを解析
 		if err != nil {
 			return time.Time{}, 0, time.Time{}, 0, 0, fmt.Errorf("failed to parse date: %w", err)
 		}

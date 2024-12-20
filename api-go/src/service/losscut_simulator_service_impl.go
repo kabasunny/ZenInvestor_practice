@@ -5,7 +5,7 @@ package service
 import (
 	client "api-go/src/service/ms_gateway/client"
 	generate_chart_lc_sim "api-go/src/service/ms_gateway/generate_chart_lc_sim"
-	getstockdata "api-go/src/service/ms_gateway/get_stock_data"
+	getstockdatawithdates "api-go/src/service/ms_gateway/get_stock_data_with_dates" // 修正されたインポート
 	"context"
 	"fmt"
 	"time"
@@ -28,17 +28,17 @@ func NewLosscutSimulatorServiceImpl(clients map[string]interface{}) LosscutSimul
 
 // GetStockChartForLCSim はシミュレーションのために株価データを取得し、ロスカットとトレーリングストップを考慮してシミュレーションを行う
 func (s *LosscutSimulatorServiceImpl) GetStockChartForLCSim(ctx context.Context, ticker string, simulationDate time.Time, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (*generate_chart_lc_sim.GenerateChartLCResponse, float64, error) {
-	stockClient := s.clients["get_stock_data"].(client.GetStockDataClient)
+	stockClient := s.clients["get_stock_data_with_dates"].(client.GetStockDataWithDatesClient) // 修正されたクライアント
 	generateChartClient := s.clients["generate_chart_lc_sim"].(client.GenerateChartLCClient)
 
 	// 期間にはシミュレーション日の1年前から2年後の日付を指定
 	startDate := simulationDate.AddDate(-1, 0, 0)
 	endDate := simulationDate.AddDate(2, 0, 0)
-	period := fmt.Sprintf("%s_%s", startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
 
-	req := &getstockdata.GetStockDataRequest{
-		Ticker: ticker,
-		Period: period,
+	req := &getstockdatawithdates.GetStockDataWithDatesRequest{ // 修正されたリクエスト
+		Ticker:    ticker,
+		StartDate: startDate.Format("2006-01-02"),
+		EndDate:   endDate.Format("2006-01-02"),
 	}
 
 	res, err := stockClient.GetStockData(ctx, req)
@@ -49,6 +49,8 @@ func (s *LosscutSimulatorServiceImpl) GetStockChartForLCSim(ctx context.Context,
 		}
 		return nil, 0, fmt.Errorf("failed to get stock data: %w", err)
 	}
+
+	fmt.Println("res OK")
 
 	purchaseDate, purchasePrice, finalDate, finalPrice, profitLoss, err := GetLossCutSimulatorResults(res.StockData, simulationDate, stopLossPercentage, trailingStopTrigger, trailingStopUpdate)
 	if err != nil {

@@ -22,11 +22,11 @@ import (
 func setupLossCutClients(ctx context.Context) (map[string]interface{}, error) {
 	msClients := make(map[string]interface{})
 
-	getStockDataClient, err := client.NewGetStockDataClient(ctx)
+	getStockDataWithDatesClient, err := client.NewGetStockDataWithDatesClient(ctx) // 修正されたクライアント
 	if err != nil {
-		return nil, fmt.Errorf("failed to create get stock data client: %w", err)
+		return nil, fmt.Errorf("failed to create get stock data with dates client: %w", err)
 	}
-	msClients["get_stock_data"] = getStockDataClient
+	msClients["get_stock_data_with_dates"] = getStockDataWithDatesClient
 
 	generateChartClient, err := client.NewGenerateChartLCClient(ctx)
 	if err != nil {
