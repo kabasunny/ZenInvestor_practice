@@ -2,75 +2,84 @@
 package service
 
 import (
-	getstockdatawithdates "api-go/src/service/ms_gateway/get_stock_data_with_dates" // 修正されたインポート
-	"errors"
+	getstockdatawithdates "api-go/src/service/ms_gateway/get_stock_data_with_dates"
 	"fmt"
 	"math"
+	"sort"
 	"time"
 )
 
 // GetLossCutSimulatorResults はシミュレーションの結果を計算
-func GetLossCutSimulatorResults(stockData map[string]*getstockdatawithdates.StockDataWithDates, startDate time.Time, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (time.Time, float64, time.Time, float64, float64, error) {
-	// データの最終日付と最初の日付を取得
-	var maxDate, minDate time.Time
-
+func GetLossCutSimulatorResults(stockData map[string]*getstockdatawithdates.StockDataWithDates, startDateString string, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (string, float64, string, float64, float64, error) {
+	fmt.Println("startDate : ", startDateString)
 	fmt.Println("len(stockData) : ", len(stockData))
+
+	// データの最終日付と最初の日付を取得
+	var maxDate, minDate string
 	for date := range stockData {
-		d, err := time.Parse("2006-01-02", date[:10]) // 日付部分のみを解析
-		if err != nil {
-			return time.Time{}, 0, time.Time{}, 0, 0, fmt.Errorf("failed to parse date: %w", err)
+		if date > maxDate {
+			maxDate = date
 		}
-		if d.After(maxDate) {
-			maxDate = d
+		if minDate == "" || date < minDate {
+			minDate = date
 		}
-		if minDate.IsZero() || d.Before(minDate) {
-			minDate = d
-		}
-		fmt.Println("d : ", d)
 	}
 
 	fmt.Println("maxDate : ", maxDate)
 	fmt.Println("minDate : ", minDate)
-	fmt.Println("startDate : ", startDate)
+	fmt.Println("startDate : ", startDateString)
 
-	// 開始日がデータの範囲外である場合の処理
-	if startDate.Before(minDate) || startDate.After(maxDate) {
-		return time.Time{}, 0, time.Time{}, 0, 0, errors.New("開始日がデータの範囲外です。無限ループを防ぐため、処理を中断")
+	// 開始日がデータの範囲内にあるか確認
+	if startDateString < minDate {
+		startDateString = minDate
+	}
+	if startDateString > maxDate {
+		return "", 0, "", 0, 0, fmt.Errorf("開始日がデータの範囲外です。無限ループを防ぐため、処理を中断")
 	}
 
-	// データが存在する最初の日付を取得
-	for {
-		if startDate.After(maxDate) {
-			return time.Time{}, 0, time.Time{}, 0, 0, errors.New("開始日がデータの範囲外です。無限ループを防ぐため、処理を中断")
+	// データが存在するまで次の日に進める
+	for startDateString <= maxDate {
+		if data, exists := stockData[startDateString]; exists {
+			if data != nil {
+				break
+			}
 		}
-		if _, exists := stockData[startDate.Format("2006-01-02")]; exists {
-			break
+		parsedDate, err := time.Parse("2006-01-02", startDateString)
+		if err != nil {
+			fmt.Println("Invalid date format for startDateString:", startDateString)
+			return "", 0, "", 0, 0, fmt.Errorf("invalid date format: %w", err)
 		}
-		startDate = startDate.AddDate(0, 0, 1) // データに存在する日付になるまで日付を進める
+		startDateString = parsedDate.AddDate(0, 0, 1).Format("2006-01-02")
 	}
 
-	fmt.Println("Updated startDate : ", startDate)
+	fmt.Println("Updated startDate: ", startDateString)
+
+	// データを日付順にソート
+	sortedDates := make([]string, 0, len(stockData))
+	for date := range stockData {
+		sortedDates = append(sortedDates, date)
+	}
+	sort.Strings(sortedDates)
 
 	// 購入初日の設定
-	purchaseDate := startDate
-	purchasePrice := stockData[purchaseDate.Format("2006-01-02")].Open              // 取引開始日の始値
+	if stockData[startDateString] == nil {
+		return "", 0, "", 0, 0, fmt.Errorf("データが見つかりません: %s", startDateString)
+	}
+	purchaseDate := startDateString
+	purchasePrice := stockData[startDateString].Open                                // 取引開始日の始値
 	stopLossThreshold := round(purchasePrice*(1-stopLossPercentage/100), 1)         // 初期ロスカット値
 	trailingStopTriggerPrice := round(purchasePrice*(1+trailingStopTrigger/100), 1) // 初期トレーリングストップ値
 
 	// 初期化
-	var endDate time.Time
+	var endDate string
 	var endPrice float64
 
 	// 取引日ごとの確認
-	for dateStr, data := range stockData {
-		currentDate, err := time.Parse("2006-01-02", dateStr[:10]) // 日付部分のみを解析
-		if err != nil {
-			return time.Time{}, 0, time.Time{}, 0, 0, fmt.Errorf("failed to parse date: %w", err)
-		}
-
-		if currentDate.Before(startDate) {
+	for _, dateStr := range sortedDates {
+		if dateStr < startDateString {
 			continue
 		}
+		data := stockData[dateStr]
 		openPrice := data.Open
 		lowPrice := data.Low
 		closePrice := data.Close
@@ -78,14 +87,14 @@ func GetLossCutSimulatorResults(stockData map[string]*getstockdatawithdates.Stoc
 		// ロスカット条件: 当日の始値がロスカット値以下
 		if openPrice <= stopLossThreshold {
 			endPrice = openPrice
-			endDate = currentDate
+			endDate = dateStr
 			break
 		}
 
 		// トレーリングストップ発動条件: 当日の安値がトレーリングストップ値以下
 		if lowPrice <= stopLossThreshold {
 			endPrice = lowPrice
-			endDate = currentDate
+			endDate = dateStr
 			break
 		}
 
@@ -97,9 +106,9 @@ func GetLossCutSimulatorResults(stockData map[string]*getstockdatawithdates.Stoc
 	}
 
 	// 取引終了条件が満たされなかった場合
-	if endDate.IsZero() {
-		endPrice = stockData[maxDate.Format("2006-01-02")].Close // 最終日の終値
-		endDate = maxDate                                        // 最終日
+	if endDate == "" {
+		endPrice = stockData[maxDate].Close // 最終日の終値
+		endDate = maxDate                   // 最終日
 	}
 
 	// 損益の計算

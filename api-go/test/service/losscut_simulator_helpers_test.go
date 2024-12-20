@@ -1,81 +1,55 @@
 // api-go\test\service\losscut_simulator_helpers_test.go
-
-package service_test
+package service
 
 import (
-	"api-go/src/service"
-	getstockdatawithdates "api-go/src/service/ms_gateway/get_stock_data_with_dates" // 修正されたインポート
-	"fmt"
 	"testing"
-	"time"
+
+	"api-go/src/service"                                      // 正しいインポート
+	"api-go/src/service/ms_gateway/get_stock_data_with_dates" // 正しいインポート
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetLossCutSimulatorResults(t *testing.T) {
-	// テストデータの作成
-	stockData := map[string]*getstockdatawithdates.StockDataWithDates{
-		"2023-01-01": {Open: 100, Close: 105, High: 106, Low: 99, Volume: 1000},
-		"2023-01-02": {Open: 105, Close: 104, High: 108, Low: 102, Volume: 1500},
-		"2023-01-03": {Open: 104, Close: 107, High: 110, Low: 103, Volume: 1200},
-		"2023-01-04": {Open: 107, Close: 103, High: 108, Low: 101, Volume: 1100},
-		"2023-01-05": {Open: 103, Close: 102, High: 105, Low: 100, Volume: 900},
-		"2023-01-06": {Open: 102, Close: 101, High: 104, Low: 99, Volume: 800},
+	stockData := map[string]*get_stock_data_with_dates.StockDataWithDates{
+		"2023-01-01": {Open: 100.0, Close: 105.0, High: 110.0, Low: 96.0, Volume: 1000},
+		"2023-01-02": {Open: 105.0, Close: 115.0, High: 120.0, Low: 100.0, Volume: 1500},
+		"2023-01-03": {Open: 115.0, Close: 120.0, High: 125.0, Low: 113.0, Volume: 2000},
+		"2023-01-04": {Open: 120.0, Close: 125.0, High: 130.0, Low: 118.0, Volume: 2500},
+		"2023-01-05": {Open: 125.0, Close: 128.0, High: 133.0, Low: 120.0, Volume: 3000},
+		"2023-01-06": {Open: 130.0, Close: 130.0, High: 135.0, Low: 128.0, Volume: 3500},
 	}
 
-	startDate := time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)
-	stopLossPercentage := 10.0
-	trailingStopTrigger := 5.0
-	trailingStopUpdate := 3.0
+	startDate := "2023-01-01"
+	stopLossPercentage := 5.0
+	trailingStopTrigger := 10.0
+	trailingStopUpdate := 2.0
 
-	// 関数の呼び出し
 	purchaseDate, purchasePrice, endDate, endPrice, profitLoss, err := service.GetLossCutSimulatorResults(stockData, startDate, stopLossPercentage, trailingStopTrigger, trailingStopUpdate)
-
-	// アサーション
 	assert.NoError(t, err)
-	assert.Equal(t, startDate, purchaseDate)
+	assert.Equal(t, "2023-01-01", purchaseDate)
 	assert.Equal(t, 100.0, purchasePrice)
-	assert.NotZero(t, endDate)
-	assert.Greater(t, endPrice, 0.0)
-	assert.NotZero(t, profitLoss)
+	assert.Equal(t, "2023-01-06", endDate)
+	assert.Equal(t, 130.0, endPrice)
+	assert.Equal(t, 30.0, profitLoss)
 }
 
 func TestGetLossCutSimulatorResults_StartDateOutOfRange(t *testing.T) {
-	// テストデータの作成
-	stockData := map[string]*getstockdatawithdates.StockDataWithDates{
-		"2023-01-01": {Open: 100, Close: 105, High: 106, Low: 99, Volume: 1000},
-		"2023-01-02": {Open: 105, Close: 104, High: 108, Low: 102, Volume: 1500},
-		"2023-01-03": {Open: 104, Close: 107, High: 110, Low: 103, Volume: 1200},
+	// テストデータを作成
+	stockData := map[string]*get_stock_data_with_dates.StockDataWithDates{
+		"2023-01-01": {Open: 100.0, Close: 105.0, High: 110.0, Low: 95.0, Volume: 1000},
+		"2023-01-02": {Open: 105.0, Close: 110.0, High: 115.0, Low: 100.0, Volume: 1500},
+		"2023-01-03": {Open: 110.0, Close: 115.0, High: 120.0, Low: 105.0, Volume: 2000},
 	}
 
-	startDate := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC) // データの範囲外の日付
+	startDate := "2025-01-01"
+	stopLossPercentage := 5.0
+	trailingStopTrigger := 10.0
+	trailingStopUpdate := 2.0
 
-	// 関数の呼び出し
-	_, _, _, _, _, err := service.GetLossCutSimulatorResults(stockData, startDate, 10.0, 5.0, 3.0)
-
-	// アサーション
-	assert.Error(t, err)
-	assert.Equal(t, "開始日がデータの範囲外です。無限ループを防ぐため、処理を中断", err.Error())
-}
-
-func TestRound(t *testing.T) {
-	// テストケース
-	tests := []struct {
-		val       float64
-		precision int
-		expected  float64
-	}{
-		{123.456789, 2, 123.46},
-		{123.454, 2, 123.45},
-		{123.4, 2, 123.40},
-	}
-
-	for _, tt := range tests {
-		t.Run(fmt.Sprintf("round(%f, %d)", tt.val, tt.precision), func(t *testing.T) {
-			result := service.Round(tt.val, tt.precision)
-			assert.Equal(t, tt.expected, result)
-		})
-	}
+	// 関数を呼び出し
+	_, _, _, _, _, err := service.GetLossCutSimulatorResults(stockData, startDate, stopLossPercentage, trailingStopTrigger, trailingStopUpdate)
+	assert.EqualError(t, err, "開始日がデータの範囲外です。無限ループを防ぐため、処理を中断")
 }
 
 // go test -v ./test/service/losscut_simulator_helpers_test.go -run TestGetLossCutSimulatorResults

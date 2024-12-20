@@ -8,6 +8,7 @@ import (
 	getstockdatawithdates "api-go/src/service/ms_gateway/get_stock_data_with_dates" // 修正されたインポート
 	"context"
 	"fmt"
+	"sort"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -27,13 +28,18 @@ func NewLosscutSimulatorServiceImpl(clients map[string]interface{}) LosscutSimul
 }
 
 // GetStockChartForLCSim はシミュレーションのために株価データを取得し、ロスカットとトレーリングストップを考慮してシミュレーションを行う
-func (s *LosscutSimulatorServiceImpl) GetStockChartForLCSim(ctx context.Context, ticker string, simulationDate time.Time, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (*generate_chart_lc_sim.GenerateChartLCResponse, float64, error) {
+func (s *LosscutSimulatorServiceImpl) GetStockChartForLCSim(ctx context.Context, ticker string, simulationDate string, stopLossPercentage, trailingStopTrigger, trailingStopUpdate float64) (*generate_chart_lc_sim.GenerateChartLCResponse, float64, error) {
 	stockClient := s.clients["get_stock_data_with_dates"].(client.GetStockDataWithDatesClient) // 修正されたクライアント
 	generateChartClient := s.clients["generate_chart_lc_sim"].(client.GenerateChartLCClient)
 
 	// 期間にはシミュレーション日の1年前から2年後の日付を指定
-	startDate := simulationDate.AddDate(-1, 0, 0)
-	endDate := simulationDate.AddDate(2, 0, 0)
+	parsedSimulationDate, err := time.Parse("2006-01-02", simulationDate)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to parse simulation date: %w", err)
+	}
+
+	startDate := parsedSimulationDate.AddDate(0, -3, 0)
+	endDate := parsedSimulationDate.AddDate(0, 6, 0)
 
 	req := &getstockdatawithdates.GetStockDataWithDatesRequest{ // 修正されたリクエスト
 		Ticker:    ticker,
@@ -57,12 +63,31 @@ func (s *LosscutSimulatorServiceImpl) GetStockChartForLCSim(ctx context.Context,
 		return nil, 0, fmt.Errorf("simulation failed: %w", err)
 	}
 
+	// resから日付と終値を取得し、日付順にソートする
+	var dates []string
+	var closePrices []float64
+	for date, stockData := range res.StockData {
+		dates = append(dates, date)
+		closePrices = append(closePrices, stockData.Close)
+	}
+
+	// 日付順にソート
+	sort.SliceStable(dates, func(i, j int) bool {
+		return dates[i] < dates[j]
+	})
+
+	// ソートされた日付に基づいて終値を並び替える
+	var sortedClosePrices []float64
+	for _, date := range dates {
+		sortedClosePrices = append(sortedClosePrices, res.StockData[date].Close)
+	}
+
 	generateChartReq := &generate_chart_lc_sim.GenerateChartLCRequest{
-		Dates:         []string{simulationDate.Format("2006-01-02"), finalDate.Format("2006-01-02")},
-		ClosePrices:   []float64{purchasePrice, finalPrice},
-		PurchaseDate:  purchaseDate.Format("2006-01-02"),
+		Dates:         dates,
+		ClosePrices:   sortedClosePrices,
+		PurchaseDate:  purchaseDate,
 		PurchasePrice: purchasePrice,
-		EndDate:       finalDate.Format("2006-01-02"),
+		EndDate:       finalDate,
 		EndPrice:      finalPrice,
 	}
 
