@@ -31,7 +31,7 @@ func NewGenerateChartLCClient(ctx context.Context) (GenerateChartLCClient, error
 	address := fmt.Sprintf("localhost:%s", port)       // 環境変数からポート番号を取得
 
 	// NewClient を使用して ClientConn を作成
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create gRPC client: %w", err)
 	}

@@ -37,11 +37,12 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 	j5mrRepo := repository.NewJp5dMvaRankingRepository(db)
 
 	// サービスの初期化
-	rankingService := service.NewRankingService(udsRepo, jsiRepo, jdpRepo, j5mrRepo, msClients.MSClients)
 	stockService := service.NewStockServiceImpl(msClients.MSClients)
+	rankingService := service.NewRankingService(udsRepo, jsiRepo, jdpRepo, j5mrRepo, msClients.MSClients)
+	losscutSIMService := service.NewLosscutSimulatorServiceImpl(msClients.MSClients)
 
 	// コントローラの初期化
-	stockController := controller.NewStockControllerImpl(stockService, rankingService)
+	stockController := controller.NewStockControllerImpl(stockService, rankingService, losscutSIMService)
 
 	// ミドルウェアの適用
 	// router.Use(middleware.AuthMiddleware())          // 認証ミドルウェア まだトークン生成を実装してない
@@ -64,6 +65,9 @@ func SetupRouter(router *gin.Engine, db *gorm.DB, msClients *infra.MSClients) {
 	// ランキングデータ取得用エンドポイント
 	router.GET("/RankingByRange", stockController.GetRankingDataByRange) // http://localhost:8086/RankingByRange?startRank=1&endRank=100
 	router.GET("/InitialRanking", stockController.GetInitialRanking)     //http://localhost:8086/InitialRanking
+
+	// ロスカットシミュレーション用エンドポイント
+	router.POST("/losscutSimulation", stockController.GetLosscutSimulation) //http://localhost:8086/losscutSimulation
 
 	// // ユーザーログイン用　後で
 	// loginRepository := repository.NewLoginRepository(db)

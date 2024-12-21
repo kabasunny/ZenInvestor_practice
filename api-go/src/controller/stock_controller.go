@@ -15,4 +15,7 @@ type StockController interface {
 
 	// 期間を指定したランキングデータ取得
 	GetRankingDataByRange(ctx *gin.Context)
+
+	// ロスカットシミュレーション結果を取得
+	GetLosscutSimulation(ctx *gin.Context)
 }

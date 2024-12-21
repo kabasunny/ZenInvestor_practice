@@ -14,15 +14,17 @@ import (
 
 // stockControllerImpl は StockController インターフェースの実装
 type stockControllerImpl struct {
-	stockService   service.StockService
-	rankingService service.RankingService
+	stockService      service.StockService
+	rankingService    service.RankingService
+	losscutSIMService service.LosscutSimulatorService
 }
 
 // NewStockControllerImpl は StockController の新しいインスタンスを作成
-func NewStockControllerImpl(stockService service.StockService, rankingService service.RankingService) StockController {
+func NewStockControllerImpl(stockService service.StockService, rankingService service.RankingService, losscutSIMService service.LosscutSimulatorService) StockController {
 	return &stockControllerImpl{
-		stockService:   stockService,
-		rankingService: rankingService,
+		stockService:      stockService,
+		rankingService:    rankingService,
+		losscutSIMService: losscutSIMService,
 	}
 }
 
@@ -120,4 +122,28 @@ func (c *stockControllerImpl) GetRankingDataByRange(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, res)
+}
+
+// ロスカットシミュレーション結果を取得
+func (c *stockControllerImpl) GetLosscutSimulation(ctx *gin.Context) {
+	reqCtx := context.Background() // リクエストコンテキスト
+
+	var request dto.LosscutSimulationRequest
+
+	if err := ctx.BindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	generateChartRes, profitLoss, err := c.losscutSIMService.
+		GetStockChartForLCSim(reqCtx, request.Ticker, request.SimulationDate, request.StopLossPercentage, request.TrailingStopTrigger, request.TrailingStopUpdate) // サービスを直接呼び出す
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"chart_data": generateChartRes,
+		"profitLoss": profitLoss,
+	})
 }
