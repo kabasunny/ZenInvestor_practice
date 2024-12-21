@@ -1,5 +1,6 @@
 import React from 'react';
 import { PieChart, TrendingUp, AlertTriangle } from 'lucide-react';
+import LossCutSimulator from '../components/LossCutSimulator';
 
 const Portfolio: React.FC = () => {
   return (
@@ -22,10 +23,9 @@ const Portfolio: React.FC = () => {
         </div>
         <div className="bg-teal-50 p-6 rounded-lg shadow-lg col-span-full">
           <h2 className="text-xl font-semibold mb-4 flex items-center">
-            <AlertTriangle className="mr-2" /> Zenレコメンデーション
+            <AlertTriangle className="mr-2" /> ロスカットシミュレーター
           </h2>
-          <p>感情を考慮したパーソナライズされた投資推奨がここに表示されます。</p>
-          {/* パーソナライズされた推奨のAPIコール */}
+          <LossCutSimulator />
         </div>
       </div>
     </div>

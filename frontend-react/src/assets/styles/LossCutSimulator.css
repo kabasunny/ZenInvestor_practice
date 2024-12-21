@@ -1,0 +1,6 @@
+/* カレンダーのポップアップサイズを調整 */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    transform: scale(2); /* サイズを2倍に拡大 */
+}
+
+
