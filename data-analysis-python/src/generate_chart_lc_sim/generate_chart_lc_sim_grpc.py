@@ -65,7 +65,7 @@ def serve():
     )
     server.add_insecure_port(f"[::]:{port}")
     server.start()
-    print(f"GenerateChartLC gRPC Server started, listening on port {port}")
+    print(f"GenerateChartLC_SIM gRPC Server started, listening on port {port}")
     server.wait_for_termination()
 
 
