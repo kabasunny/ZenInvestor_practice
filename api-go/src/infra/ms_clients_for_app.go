@@ -11,7 +11,7 @@ import (
 
 // infra/client.go 内の SetupMsClients 関数も修正
 func SetupMsClientsForApp(ctx context.Context) (*MSClients, error) { // 戻り値にerrorを追加
-	fmt.Println("in SetupMsClients.")
+	fmt.Println("in SetupMsClients for APP.")
 	msClients := make(map[string]interface{})
 	fmt.Println("Clients setup...")
 
