@@ -11,7 +11,7 @@ import (
 
 // バッチ処理用のマイクロサービス
 func SetupMsClientsForBatch(ctx context.Context) (*MSClients, error) { // 戻り値にerrorを追加
-	fmt.Println("in SetupMsClients.")
+	fmt.Println("in SetupMsClients for Batch.")
 	msClients := make(map[string]interface{})
 	fmt.Println("Clients setup...")
 
