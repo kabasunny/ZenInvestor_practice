@@ -34,6 +34,7 @@ class SimpleMovingAverageService(
 
 
 def serve():
+    port = "50005"  # 異なるポート番号を使用
     # 最大10スレッドのスレッドプールを持つ gRPC サーバーを作成
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     # サーバーに SimpleMovingAverageService を追加
@@ -41,10 +42,10 @@ def serve():
         SimpleMovingAverageService(), server
     )
     # サーバーにポート 50053 を追加
-    server.add_insecure_port("[::]:50201")
+    server.add_insecure_port(f"[::]: {port}")
     # サーバーを起動
     server.start()
-    print("CalculateIndicater_SMA gRPCServer started, listening on port:50201")
+    print(f"CalculateIndicater_SMA gRPCServer started, listening on port: {port}")
     # サーバー終了まで待機
     server.wait_for_termination()
 

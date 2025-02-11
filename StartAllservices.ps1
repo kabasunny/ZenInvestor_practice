@@ -1,4 +1,4 @@
-# StartMicroservices.ps1
+# StartAllservices.ps1
 
 # スクリプトの開始ディレクトリを設定 (相対パス)
 $BasePath = "."

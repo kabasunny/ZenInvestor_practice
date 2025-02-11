@@ -58,7 +58,7 @@ class GenerateChartLCService(
 
 
 def serve():
-    port = "50406"  # 異なるポート番号を使用
+    port = "50006"  # 異なるポート番号を使用
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     generate_chart_lc_sim_pb2_grpc.add_GenerateChartLCServiceServicer_to_server(
         GenerateChartLCService(), server

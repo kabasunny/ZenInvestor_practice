@@ -55,13 +55,14 @@ class GetStockDataWithDatesService(
 
 
 def serve():
+    port = "50007"  # 異なるポート番号を使用
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     get_stock_data_with_dates_pb2_grpc.add_GetStockDataWithDatesServiceServicer_to_server(
         GetStockDataWithDatesService(), server
     )
-    server.add_insecure_port("[::]:50104")
+    server.add_insecure_port(f"[::]:{port}")
     server.start()
-    print("GetStockDataWithDates gRPCServer started, listening on port 50104")
+    print(f"GetStockDataWithDates gRPCServer started, listening on port {port}")
     server.wait_for_termination()
 
 
